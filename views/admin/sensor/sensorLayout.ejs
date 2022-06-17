@@ -1,0 +1,214 @@
+<%- contentFor('title')%>
+<%= __("administrationSensor|Sensor") %> - <%= __("administrationSensor|Administration") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-administration"></span> <%= __("administrationSensor|Administration") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner">
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <%- include('./sensorTree.ejs', {rendering: 'dummy'})%>
+        <!-- // @date 2021-05-31 -->
+      </div>
+    </div>
+    <div class="table-divide">
+      <div id="tab" class="divide-inner">
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <%- include('./sensorTab.ejs', {rendering: 'dummy'})%>
+        <!-- // @date 2021-05-31 -->
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- contentFor('modal')%>
+<div id="modal-new" class="modal"></div>
+<div id="modal-edit" class="modal"></div>
+<div id="modal-setting" class="modal"></div>
+<div id="modal-blocklist" class="modal"></div>
+<div id="modal-diagnosis" class="modal"></div>
+<div id="modal-dataDelete" class="modal"></div>
+
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #administrationSensorNew,
+  #deviceTypeList,
+  #embeddedTypeList,
+  #clientTypeList {
+    min-height: 771px;
+    background: #fff;
+    border-radius: 8px;
+  }
+</style>
+
+<script>
+  var customFilterCondition = {
+    devicetype: [
+  		{
+  			select: {originval: 'group_name', dataval: '<%= __("administrationSensor|Sensor group") %>'},
+  			condition: {type: 'input'}
+  		},
+  		{
+  			select: {originval: 'sensor_name', dataval: '<%= __("administrationSensor|Sensor name") %>'},
+  			condition: {type: 'input'}
+  		},
+      {
+  			select: {originval: 'sensor_id', dataval: '<%= __("administrationSensor|Sensor ID") %>'},
+        condition: {type: 'input'}
+  		},
+      {
+  			select: {originval: 'serial_number', dataval: '<%= __("administrationSensor|Serial number") %>'},
+        condition: {type: 'input'}
+  		},
+      {
+  			select: {originval: 'status', dataval: '<%= __("administrationSensor|Status") %>'},
+  			condition: {
+          type: 'select',
+          options: [
+            {originval: 0, dataval: '<%= __("administrationSensor|Disconnected") %>'},
+            {originval: 1, dataval: '<%= __("administrationSensor|Connected") %>'}
+          ]
+        }
+  		},
+  	],
+    embeddedtype: [
+  		{
+  			select: {originval: 'group_name', dataval: '<%= __("administrationSensor|Sensor group") %>'},
+  			condition: {type: 'input'}
+  		},
+  		{
+  			select: {originval: 'sensor_name', dataval: '<%= __("administrationSensor|Sensor name") %>'},
+  			condition: {type: 'input'}
+  		},
+      {
+  			select: {originval: 'sensor_ip', dataval: '<%= __("administrationSensor|Product IP") %>'},
+  			condition: {type: 'input'}
+  		},
+      {
+  			select: {originval: 'status', dataval: '<%= __("administrationSensor|Status") %>'},
+  			condition: {
+          type: 'select',
+          options: [
+            {originval: 0, dataval: '<%= __("administrationSensor|Disconnected") %>'},
+            {originval: 1, dataval: '<%= __("administrationSensor|Connected") %>'}
+          ]
+        }
+  		},
+  	],
+    clienttype:  [
+      {
+        select: {originval: 'group_name', dataval: '<%= __("administrationSensor|Sensor group") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'sensor_name', dataval: '<%= __("administrationSensor|Sensor name") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'sensor_id', dataval: '<%= __("administrationSensor|Sensor ID") %>'},
+        condition: {type: 'input'}
+      },
+      {
+  			select: {originval: 'serial_number', dataval: '<%= __("administrationSensor|Serial number") %>'},
+        condition: {type: 'input'}
+  		},
+      {
+        select: {originval: 'status', dataval: '<%= __("administrationSensor|Status") %>'},
+        condition: {
+          type: 'select',
+          options: [
+            {originval: 0, dataval: '<%= __("administrationSensor|Disconnected") %>'},
+            {originval: 1, dataval: '<%= __("administrationSensor|Connected") %>'}
+          ]
+        }
+      },
+    ],
+  };
+</script>
+
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    const url = location.href.split("?")[0];
+    history.replaceState(state, null, url);
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+  var maintainState = () => {
+    const selectedTab = getState().selectedTab || 'deviceType';
+    $('#sensorTab').find(`.tab-link`).removeClass('on').find(`a[href="#${selectedTab}List"]`).closest(`.tab-link`).addClass('on');
+    $('#sensorTab').find(`.tab-content`).removeClass('on').filter(`[id="${selectedTab}List"]`).addClass('on');
+
+    const tabObj = getState()[selectedTab] || {};
+    const entries = tabObj.entries || 10;
+    const page = tabObj.page || 1;
+
+    $(`#${selectedTab.toLowerCase()}ListEntries`).find(`option[value="${entries}"]`).prop('selected', true);
+    $(`#${selectedTab.toLowerCase()}Pagination`).find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == page}).addClass('active');
+
+    const filter = tabObj.filter || [];
+    const filterCustom = $(`#${selectedTab}List .filter-custom`).data('filterCustom')
+
+    filterCustom && $.each(filter, function (index, element) {
+      filterCustom.addItem(element)
+    });
+  }
+</script>
+
+<script>
+var openLoading = function($loadingParent, option){
+  const DELAYLOADINGTIME = 300;
+  let data = { isLoaded: false };
+  setTimeout(()=>{
+    if(!data.isLoaded){
+      addLoading($loadingParent, option);
+    }
+  }, DELAYLOADINGTIME);
+
+  return {
+    setLoaded: function(isLoaded){
+      data.isLoaded = isLoaded
+    }
+  }
+}
+</script>
+
+<%- include('./sensor.script.request.ejs')%>
+
+<script>
+window.addEventListener("load", function(event) {
+  requestTree();
+});
+</script>
+<script>
+  var refreshPage = (reset, refreshSetting = {}) => {
+    if(reset){
+      const initialState = {initCheckedDataIDs:[], sid: []};
+      if(getState().selectedTab && !refreshSetting.selectedTab) {
+        initialState[getState().selectedTab] = {...getState()[getState().selectedTab], page: 1, time: null, filter: null};
+      }
+      setState({...initialState, ...refreshSetting});
+    }
+    window.location.reload(true);
+  }
+</script>

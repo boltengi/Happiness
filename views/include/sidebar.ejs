@@ -1,0 +1,84 @@
+<div id="sidebar">
+	<nav class="menu">
+		<ul>
+			<li class="menu-dashboard">
+        <a href="/dashboard/dashboard" data-menu="dashboard"><%= __("sidebar|Dashboard") %></a>
+      </li>
+			<li class="menu-event">
+        <!--
+        * @date 2021-07-23
+        * @desc hide non-threat elemtns
+        * @company BUS_Secure
+        * -->
+        <% if(company == 'BUS_Secure') { %>
+				<a href="/event/threat" data-menu="event"><%= __("sidebar|Event") %></a>
+        <% } else {%>
+        <a href="/event/asset" data-menu="event"><%= __("sidebar|Event") %></a>
+        <% } %>
+        <!-- // @date 2021-07-23 -->
+				<ul>
+					<li><a href="/event/asset" data-menu="asset"><%= __("sidebar|Asset") %></a></li>
+					<li><a href="/event/vulnerability" data-menu="vulnerability"><%= __("sidebar|Vulnerability") %></a></li>
+					<li><a href="/event/threat" data-menu="threat"><%= __("sidebar|Threat") %></a></li>
+				</ul>
+			</li>
+			<li class="menu-asset">
+				<a href="/asset/detection" data-menu="asset"><%= __("sidebar|Asset") %></a>
+				<ul>
+					<li><a href="/asset/detection" data-menu="detection"><%= __("sidebar|Diagnosed status") %></a></li>
+					<li><a href="/asset/scan" data-menu="scan"><%= __("sidebar|Detected status") %></a></li>
+				</ul>
+			</li>
+			<li class="menu-vulnerability">
+				<a href="/vulnerability/vulnerability" data-menu="vulnerability"><%= __("sidebar|Vulnerability") %></a>
+				<ul>
+					<li><a href="/vulnerability/vulnerability" data-menu="vulnerability"><%= __("sidebar|Vulnerability list") %></a></li>
+				</ul>
+			</li>
+			<li class="menu-wireless">
+				<a href="/wireless/radarDetection" data-menu="wireless"><%= __("sidebar|Wireless") %></a>
+				<ul>
+					<li><a href="/wireless/radarDetection" data-menu="radarDetection"><%= __("sidebar|Radar detection") %></a></li>
+					<li><a href="/wireless/apWithStationary" data-menu="apWithStationary"><%= __("sidebar|AP with stationary") %></a></li>
+				</ul>
+			</li>
+			<li class="menu-administration">
+				<a href="/admin/user" data-menu="admin"><%= __("sidebar|Administration") %></a>
+				<ul>
+					<li><a href="/admin/user" data-menu="user"><%= __("sidebar|User") %></a></li>
+					<li><a href="/admin/group" data-menu="group"><%= __("sidebar|Group") %></a></li>
+					<li><a href="/admin/sensor" data-menu="sensor"><%= __("sidebar|Sensor") %></a></li>
+					<li><a href="/admin/asset" data-menu="asset"><%= __("sidebar|Asset") %></a></li>
+					<li><a href="/admin/audit" data-menu="audit"><%= __("sidebar|Audit log") %></a></li>
+					<li><a href="/admin/system" data-menu="system"><%= __("sidebar|Version info") %></a></li>
+				</ul>
+			</li>
+			<li class="menu-notification">
+        <a href="/notification/noti" data-menu="notification"><%= __("sidebar|Email alarm") %></a>
+      </li>
+			<li class="menu-report">
+        <a href="/report/report" data-menu="report"><%= __("sidebar|Report") %></a>
+      </li>
+		</ul>
+	</nav>
+</div>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',()=>{
+	/**
+  * @date 2021-04-15
+  * @desc if click slidebar menu, reset all
+  * @company
+  */
+	$('#sidebar a').click(function(e){
+		history.replaceState(null, null);
+	});
+	/*************************************/
+});
+/*************************************/
+</script>

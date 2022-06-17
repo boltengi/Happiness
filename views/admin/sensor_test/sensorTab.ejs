@@ -1,0 +1,63 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationSensor|Sensor") %></h2>
+    </div>
+    <!-- tab -->
+    <div class="tab data-style wide-style" id="sensorTab">
+      <div class="tab-links">
+        <div class="tab-link on">
+          <a href="#deviceTypeList"><%= __("administrationSensor|Sensor Device") %></a>
+        </div>
+        <div class="tab-link">
+          <a href="#embeddedTypeList"><%= __("administrationSensor|Embedded Software") %></a>
+        </div>
+        <div class="tab-link">
+          <a href="#clientTypeList"><%= __("administrationSensor|Client Software") %></a>
+        </div>
+      </div>
+      <div class="tab-container">
+        <div id="deviceTypeList" class="tab-content on">
+          <div class="tab-content-table">
+
+          </div>
+        </div>
+        <div id="embeddedTypeList" class="tab-content">
+          <div class="tab-content-table">
+
+          </div>
+        </div>
+        <div id="clientTypeList" class="tab-content">
+          <div class="tab-content-table">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- tab -->
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+<script type="text/javascript">
+  tab('.tab')
+
+  // 현재탭을 구한다(currentTab선언 sensorLayout)
+  // 현재 currentTab 찾기 Tab에 on붙은 걸로 찾는다
+  getCurrentTab()
+  // 히스토리 객체에서
+  // current(page), entries 정보를 전역변수에 저장
+  getHistoryInfo()
+
+  requestList(sensorTypeDictionary[currentTab], entries, page)
+</script>
+
+<script>
+  // 탭클릭시 이동
+  tabMove()
+
+  // 탭 초기설정
+  tabInit()
+</script>

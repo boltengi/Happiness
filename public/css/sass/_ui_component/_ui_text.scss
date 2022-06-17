@@ -1,0 +1,85 @@
+/**********************************
+ ********** 안내 TEXT **************
+ **********************************/
+.info-msg
+{
+    position: relative;
+
+    padding-left: 16px;
+}
+
+.info-msg:before
+{
+    position: absolute;
+    top: 6px;
+    left: 0;
+
+    display: block;
+
+    width: 10px;
+    height: 10px;
+
+    content: '';
+
+    border-radius: 50%;
+    background: var(--info-msg-bullet-bg);
+}
+
+/**********************************
+ ********** 기본 색상 **************
+ **********************************/
+.info-color
+{
+    color: var(--color-info);
+}
+
+.success-color
+{
+    color: var(--color-success);
+}
+
+.warning-color
+{
+    color: var(--color-warning);
+}
+
+.connected-color
+{
+    color: var(--color-connected);
+}
+
+.disconnected-color
+{
+    color: var(--color-disconnected);
+}
+
+.registred-color
+{
+    font-size: 14px;
+
+    color: var(--color-registred);
+}
+
+/**********************************
+ ********** 특정 포맷 정보 **************
+ **********************************/
+.time-info
+{
+    display: inline-block;
+}
+
+.time-info .time-standard
+{
+    font-size: 10px;
+
+    vertical-align: text-bottom;
+}
+
+/**********************************
+ ********** 강조 **************
+ **********************************/
+strong,
+.strong
+{
+    font-family: var(--font-family-title);
+}

@@ -1,0 +1,138 @@
+<!--
+* @date 2021-06-04
+* @desc common theme function
+* @company
+* -->
+<%
+  getThemeClass = function (envCompany){
+    const theme = {
+      /**
+      * @date 2021-06-04
+      * @desc draw graph as group if company is BUS_Secure
+      * @company
+      */
+      'SK': ['SK', 'BUS_Secure'],
+      /*************************************/
+      /**
+        * @date 2021-04-20
+        * @desc add theme poilink
+        * @company
+        */
+      'NORMA_MANAGEMENT': ['NORMA_MANAGEMENT'],
+      'PIOLINK': ['PIOLINK'],
+      /*************************************/
+    };
+    const themeArr = Object.entries(theme).find(([k, v])=>v.indexOf(envCompany) > -1);
+    return Array.isArray(themeArr) ? themeArr[0] : '';
+  }
+ %>
+<!-- // @date 2021-06-04 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<!--******* Favicon *******-->
+<!--
+* @date 2021-04-23
+* @desc change favicon by depending env company
+* @company
+* -->
+<link rel="shortcut icon" href="/img/favicon/<% if(company) { %>ui_client/<%= company %>_favicon.ico<% } else { %>favicon.ico<% } %>">
+<link rel="icon" href="/img/favicon/<% if(company) { %>ui_client/favicon_<%= company %>.ico<% } else { %>favicon.ico<% } %>">
+<!-- // @date 2021-04-23 -->
+
+<!--******* PUBLISH CSS *******-->
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<% if (locale == 'kr') { %>
+<link rel="preload" as="font" href="/font/NotoSans/NotoSansKR-Bold.woff2" type="font/woff2" crossOrigin="anonymous">
+<link rel="preload" as="font" href="/font/NotoSans/NotoSansKR-Medium.woff2" type="font/woff2" crossOrigin="anonymous">
+<link rel="preload" as="font" href="/font/NotoSans/NotoSansKR-Regular.woff2" type="font/woff2" crossOrigin="anonymous">
+<% } else { %>
+<link rel="preload" as="font" href="/font/NotoSans/NotoSans-SemiBold.woff2" type="font/woff2" crossOrigin="anonymous">
+<link rel="preload" as="font" href="/font/NotoSans/NotoSans-SemiCondensedMedium.woff2" type="font/woff2" crossOrigin="anonymous">
+<link rel="preload" as="font" href="/font/NotoSans/NotoSans-SemiCondensedBold.woff2" type="font/woff2" crossOrigin="anonymous">
+<% } %>
+<link rel="preload" as="style" href="/css/ui-variable.css">
+<link rel="preload" as="style" href="/css/ui-style.css">
+<link rel="preload" as="style" href="/css/ui-client/ui-variable-iotcare.css">
+<link rel="preload" as="style" href="/css/ui-client/ui-iotcare.css">
+<link rel="preload" as="script" href="/js/lib/jquery-3.3.1.min.js">
+<!-- // @date 2021-05-14 -->
+
+<link rel="stylesheet" href="/css/ui-variable.css">
+<link rel="stylesheet" href="/css/ui-style.css">
+
+<link rel="stylesheet" href="/css/ui-client/ui-variable-iotcare.css">
+<link rel="stylesheet" href="/css/ui-client/ui-iotcare.css">
+
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<% if (getThemeClass(company)) { %>
+  <link rel="stylesheet" href="/css/ui-client/ui-variable-<%= getThemeClass(company).toLowerCase() %>.css">
+  <link rel="stylesheet" href="/css/ui-client/ui-<%= getThemeClass(company).toLowerCase() %>.css">
+<% } %>
+<!-- // @date 2021-05-14 -->
+<!--******* PUBLISH SCRIPT *******-->
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script src="/js/lib/jquery-3.3.1.min.js" defer></script>
+<script src="/js/ui-lib.default.min.js" defer></script>
+<script src="/js/ui-common.js" defer></script>
+<%- include ('../../views/include/ui-theme.ejs') %>
+
+<script>
+let FontFamily;
+window.addEventListener('DOMContentLoaded',()=>{
+<% if (locale !== 'kr') { %>
+  FontFamily = {
+    FontFamilyTitle: 'NotoSans-SemiBold',
+    FontFamilyContent: 'NotoSans-SemiCondensedMedium'
+  }
+<% } else { %>
+  FontFamily = {
+    FontFamilyTitle: 'NotoSansKR-Medium',
+    FontFamilyContent: 'NotoSansKR-Regular'
+  }
+<% } %>
+});
+</script>
+
+<script>
+let DEBUG = false;
+let logdata;
+window.addEventListener('DOMContentLoaded',()=>{
+/**
+* @date 2021-05-18
+* @desc fix bug about arguments of logdata
+* @company
+*/
+logdata = function(request, ...data){
+/*************************************/
+  let _DEBUG = DEBUG;
+  if(typeof _DEBUG === 'undefined') return;
+  if(typeof data[data.length-1] == 'boolean') {
+    _DEBUG = data[data.length-1];
+    data.pop();
+  };
+  if(_DEBUG !== true) return;
+
+  if(arguments.length == 1) return console.log.call(this, arguments[0]);
+  console.log(
+`- request : `, request,`
+  -------------------------------------------------
+  data : `, ...data
+  );
+}
+});
+</script>
+<!-- // @date 2021-05-14 -->

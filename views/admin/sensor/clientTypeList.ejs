@@ -1,0 +1,546 @@
+<!-- search-area -->
+<div class="search-area">
+  <div class="search-right">
+    <!-- search-timefilter -->
+    <div class="search-timefilter">
+      <!-- timesearch-area -->
+      <div class="timesearch-area">
+        <div class="ui-radio default-style">
+          <input type="radio" name="time_type" id="clienttype_reg_time" checked>
+          <label for="clienttype_reg_time"><%= __("administrationSensor|Reg time") %></label>
+        </div>
+        <div class="ui-time">
+          <div class="time-setting">
+            <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("administrationSensor|Quick select") %></span></button>
+            <div class="time-setting-content">
+              <div class="time-setting-header">
+                <h3 class="time-setting-title"><%= __("administrationSensor|Quick select") %></h3>
+                <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+              </div>
+              <ul>
+                <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("administrationSensor|Today") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("administrationSensor|Last 7day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("administrationSensor|Last 30day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("administrationSensor|This week") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("administrationSensor|This month") %></button></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ui-datepicker datepicker-from">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="clienttype_from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+          </div>
+          <span class="form-text">-</span>
+          <div class="ui-datepicker datepicker-to">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="clienttype_to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+          </div>
+        </div>
+      </div>
+      <!-- //.timesearch-area -->
+
+      <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("administrationSensor|search") %></span></span></button>
+
+      <!--
+      * @date 2021-04-15
+      * @desc add reset button
+      * @company
+      * -->
+      <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("administrationSensor|reset") %></span></span></button>
+      <!-- // @date 2021-04-15 -->
+    </div>
+    <!-- //search-timefilter -->
+
+    <!-- filter-custom -->
+    <div class="filter-custom">
+      <div class="custom-result">
+        <!-- <div class="result-item">
+          <div class="result-title" data-result-key="asset_name">Asset name</div>
+          <div class="result-text" data-result-value="Norma">Norma</div>
+          <button type="button" class="btn btn-icon btn-result-delete"><span class="icon icon-custom-search-delete"><span class="sr-only">delete</span></span></button>
+        </div> -->
+      </div>
+      <div class="custom-search">
+        <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("administrationSensor|Add filter") %></span></span></button>
+        <div class="custom-search-content">
+          <div class="custom-search-header">
+            <h3 class="custom-search-title"><%= __("administrationSensor|Add filter") %></h3>
+            <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+          </div>
+          <div class="custom-search-box">
+            <div class="ui-search">
+              <div class="filter-select">
+              </div>
+              <div class="condition-box">
+              </div>
+            </div>
+          </div>
+          <div class="custom-search-footer">
+            <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("administrationSensor|Add") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //filter-custom -->
+  </div>
+</div>
+<!-- //.search-area -->
+<div class="pack">
+  <!-- table-comp -->
+  <div class="table-comp table-check table-accordion">
+    <div class="table-scroll default-style">
+      <div class="thead-scroll">
+        <table class="table default-style multi-thead">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " />
+            <col style="width: 5%; " />
+            <col style="width: 20%; " /><!-- Sensor group -->
+            <col style="width: 20%; " /><!-- Sensor name -->
+            <col style="width: 19%; " /><!-- Asset -->
+            <col style="width: 15%; " /><!-- Diagnosis -->
+            <col style="width: 12%; " /><!-- Diagnosis -->
+            <col style="width: 6%; " /><!-- Diagnosis -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" class="cell-check" rowspan="2">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox" name="clientTypeCheckbox0" id="clientTypeCheckbox0">
+                  <label for="clientTypeCheckbox0"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </th>
+              <th scope="col" class="cell-accordion" rowspan="2">
+                <span class="accordion-empty"></span>
+              </th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor group") %></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor name") %></th>
+              <th scope="col" colspan="1"><%= __("administrationSensor|Detection interval") %> <span
+                  class="unit">(<%= __("administrationSensor|min") %>)</span></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis schedule") %> <br>
+                <span class="unit">(<%= __("administrationSensor|HR 24") %>)</span></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis Target") %></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Edit") %></th>
+            </tr>
+            <tr>
+              <th scope="col"><%= __("administrationSensor|Asset") %></th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tbody-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " />
+            <col style="width: 5%; " />
+            <col style="width: 20%; " /><!-- Sensor group -->
+            <col style="width: 20%; " /><!-- Sensor name -->
+            <col style="width: 19%; " /><!-- Asset -->
+            <col style="width: 15%; " /><!-- Diagnosis -->
+            <col style="width: 12%; " /><!-- Diagnosis -->
+            <col style="width: 6%; " /><!-- Diagnosis -->
+          </colgroup>
+          <tbody>
+            <% for (let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <!-- accordion-content-title -->
+            <tr class="accordion-content-title<%= (data.status) == -1 ? " is-detected cursor-pointer" : ""%>" data-sid="<%= data.idx %>"  data-sensor_id="<%= data.sensor_id %>" data-serial_number="<%= data.serial_number %>">
+              <td class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox"  name="sensor<%= i %>-check" id="sensor<%= i %>-check"">
+                  <label for="sensor<%= i %>-check"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </td>
+              <td class="cell-accordion">
+              <button type="button" class="btn btn-icon btn-accordion"<%= (data.status) == -1 ? " disabled" : ""%>>
+                <span class="icon icon-accordion"><span class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+              </button>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color">-</span>
+                <% } else { %><span class="ellipsis"><%= data.group_name %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= __("administrationSensor|Not Registred") %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_name %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <div class="ui-select default-style mytest" data-width="54px" data-asset_schedule="<%= data.sensor_id %>">
+                  <select name="" id=""<%= (data.status) == -1 || !(data.asset_detection_status) ? " disabled" : undefined%>>
+                    <option value="10"<% if (data.asset_schedule == 10 || (data.status) == -1) { %> selected<% } %>>10</option>
+                    <option value="20"<% if (data.asset_schedule == 20) { %> selected<% } %>>20</option>
+                    <option value="30"<% if (data.asset_schedule == 30) { %> selected<% } %>>30</option>
+                    <option value="40"<% if (data.asset_schedule == 40) { %> selected<% } %>>40</option>
+                    <option value="50"<% if (data.asset_schedule == 50) { %> selected<% } %>>50</option>
+                    <option value="60"<% if (data.asset_schedule == 60) { %> selected<% } %>>60</option>
+                  </select>
+                </div>
+                <div class="ui-switch default-style" data-asset_detection_status="<%= data.sensor_id %>">
+                  <input type="checkbox" name="clientTypeSwitch<%= i %>0" id="clientTypeSwitch<%= i %>0"<% if (data.asset_detection_status) { %> checked<% } %>
+                    <%= (data.status) == -1 ? " disabled" : undefined%>
+                  >
+                  <label for="clientTypeSwitch<%= i %>0"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                </div>
+              </td>
+              <td class="cell-center">
+                <div class="ui-select default-style" data-width="54px" data-vulnerability_schedule="<%= data.sensor_id %>">
+                  <select name="" id=""<%= (data.status) == -1 || !(data.vulnerability_detection_status) ? " disabled" : undefined%>>
+                    <option value="1"<% if (data.vulnerability_schedule == 1) { %> selected<% } %>>1</option>
+                    <option value="2"<% if (data.vulnerability_schedule == 2) { %> selected<% } %>>2</option>
+                    <option value="3"<% if (data.vulnerability_schedule == 3) { %> selected<% } %>>3</option>
+                    <option value="4"<% if (data.vulnerability_schedule == 4) { %> selected<% } %>>4</option>
+                    <option value="5"<% if (data.vulnerability_schedule == 5) { %> selected<% } %>>5</option>
+                    <option value="6"<% if (data.vulnerability_schedule == 6) { %> selected<% } %>>6</option>
+                    <option value="7"<% if (data.vulnerability_schedule == 7) { %> selected<% } %>>7</option>
+                    <option value="8"<% if (data.vulnerability_schedule == 8) { %> selected<% } %>>8</option>
+                    <option value="9"<% if (data.vulnerability_schedule == 9) { %> selected<% } %>>9</option>
+                    <option value="10"<% if (data.vulnerability_schedule == 10) { %> selected<% } %>>10</option>
+                    <option value="11"<% if (data.vulnerability_schedule == 11) { %> selected<% } %>>11</option>
+                    <option value="12"<% if (data.vulnerability_schedule == 12 || (data.status) == -1) { %> selected<% } %>>12</option>
+                    <option value="13"<% if (data.vulnerability_schedule == 13) { %> selected<% } %>>13</option>
+                    <option value="14"<% if (data.vulnerability_schedule == 14) { %> selected<% } %>>14</option>
+                    <option value="15"<% if (data.vulnerability_schedule == 15) { %> selected<% } %>>15</option>
+                    <option value="16"<% if (data.vulnerability_schedule == 16) { %> selected<% } %>>16</option>
+                    <option value="17"<% if (data.vulnerability_schedule == 17) { %> selected<% } %>>17</option>
+                    <option value="18"<% if (data.vulnerability_schedule == 18) { %> selected<% } %>>18</option>
+                    <option value="19"<% if (data.vulnerability_schedule == 19) { %> selected<% } %>>19</option>
+                    <option value="20"<% if (data.vulnerability_schedule == 20) { %> selected<% } %>>20</option>
+                    <option value="21"<% if (data.vulnerability_schedule == 21) { %> selected<% } %>>21</option>
+                    <option value="22"<% if (data.vulnerability_schedule == 22) { %> selected<% } %>>22</option>
+                    <option value="23"<% if (data.vulnerability_schedule == 23) { %> selected<% } %>>23</option>
+                    <option value="24"<% if (data.vulnerability_schedule == 24) { %> selected<% } %>>24</option>
+                  </select>
+                </div>
+                <div class="ui-switch default-style" data-vulnerability_detection_status="<%= data.sensor_id %>">
+                  <input type="checkbox" name="clientTypeSwitch<%= i %>31" id="clientTypeSwitch<%= i %>1"<% if (data.vulnerability_detection_status) { %> checked<% } %>
+                    <%= (data.status) == -1 ? " disabled" : undefined%>
+                  >
+                  <label for="clientTypeSwitch<%= i %>1"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                </div>
+              </td>
+              <td class="cell-center">
+                <button type="button" data-btn="diagnosis" class="btn btn-icon btn-list"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-list"><span class="sr-only"><%= __("administrationSensor|list") %></span></span>
+                </button>
+              </td>
+              <td class="cell-center">
+                <button type="button" class="btn btn-icon btn-edit" data-btn="edit"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-edit"><span class="sr-only"><%= __("administrationSensor|edit") %></span></span>
+                </button>
+              </td>
+            </tr>
+            <!-- //accordion-content-title -->
+            <!-- accordion-content -->
+            <tr class="accordion-content">
+              <td colspan="8">
+                <div class="accordion-content-box">
+
+                </div>
+              </td>
+            </tr>
+            <!-- //accordion-content -->
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- //table-comp -->
+</div>
+<div class="table-bottom">
+  <div class="btn-table-box">
+    <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationSensor|Delete") %></button>
+    <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|New sensor") %></button>
+    <button type="button" data-btn="setting" class="btn btn-normal point-style"><%= __("administrationSensor|Setting") %></button>
+  </div>
+  <div class="table-bottom-right">
+    <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current, paginationID: 'clienttypePagination'}) %>
+    <div class="ui-select default-style" data-direction="up">
+      <select name="" id="clienttypeListEntries">
+        <option value="10" selected><%= __("administrationSensor|Show 10 entries") %></option>
+        <option value="20"><%= __("administrationSensor|Show 20 entries") %></option>
+        <option value="30"><%= __("administrationSensor|Show 30 entries") %></option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/sensor/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script type="text/javascript">
+  setTime('.ui-time');
+  dateTime('.ui-time');
+  filterCustom('#clientTypeList .filter-custom', {data: customFilterCondition['clienttype']});
+  selectDropdown('#clientTypeList .ui-select');
+  tableCheck('.table-check');
+  tableAccordion('.table-accordion', {
+    beforeSlideDown : function(obj){
+      const sensor_id = obj.btnEle.closest('tr').data('sensor_id');
+      return requestDetail(sensor_id, obj);
+    },
+    afterSlideUp: function(obj){
+      obj.btnEle.closest('tr').prev('.accordion-content').find('.accordion-content-box').html('');
+    }
+  })
+  formWidth();
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  var getTime = () => {
+    const time = {
+      type: 'regtime',
+      from: $.trim($('#clienttype_from-datepicker').val()),
+      to: $.trim($('#clienttype_to-datepicker').val())
+    }
+    return time;
+  }
+  var getFilter = () => {
+    const $customResult = $('#clientTypeList .custom-result');
+    const $resultItem = $('#clientTypeList .result-item');
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    const $customResult = $('#clientTypeList .custom-result');
+    const $resultItem = $('#clientTypeList .result-item');
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+
+<script>
+  // entries 변경
+  $('#clienttypeListEntries').off('change.entries').on('change.entries', function(){
+
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'clientType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({clientType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  // page 변경
+  $('#clienttypePagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'clientType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#clienttypeListEntries').find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({clientType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  $('#clientTypeList [data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'clientType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+    setState({clientType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('#clientTypeList [data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'deviceType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({clientType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+  /*************************************/
+</script>
+
+<script>
+  // new sensor
+  $('[data-btn="new"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+
+    const sidGid = getSubContext();
+
+    const dataValue = {
+      status: 2,
+      sensor_type: 2,
+      gid: sidGid.gid
+    }
+
+    requestNewPopup(dataValue);
+  });
+  $('#clientTypeList [data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    const tableCheckedId = $.map($('#clientTypeList').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id');
+    });
+
+    requestDelete(tableCheckedId);
+  });
+</script>
+
+<script type="text/javascript">
+  // setting 수정
+  $('[data-btn="setting"]').off('click.setting').on('click.setting', function(){
+    const sid = $.map($('#clientTypeList td.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sid')
+    });
+
+    const detected_id = $.map($('#clientTypeList .is-detected td.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id')
+    });
+
+    let sensorType = <%- JSON.stringify(ObjView)  %>;
+
+    const dataValue = {
+      sensor_type: sensorType,
+      sid: sid
+    }
+
+    requestSettingPopup(dataValue, detected_id);
+  });
+
+  // edit 수정
+  $('[data-btn="edit"]').off('click.edit').on('click.edit', function(){
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    const dataValue = {}
+
+    requestEditPopup(dataValue, sensor_id);
+  });
+</script>
+
+<script>
+  $('#clientTypeList [data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    const tableCheckedId = $.map($('#clientTypeList').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id');
+    });
+
+    requestDelete(tableCheckedId);
+  });
+</script>
+
+<script type="text/javascript">
+  // 설정 update
+  var updateSensorSetting = (id, body) => {
+    body.sensor_id = [id];
+
+    const dataValue = {...body};
+
+    requestUpdate(dataValue);
+  }
+
+  $('#sensorTab .accordion-content-title').each(function(){
+    const $sensor = $(this);
+    const sensor_id = $sensor.data('sensor_id');
+
+    if($sensor.hasClass('is-detected')) return;
+
+    // asset
+    $sensor.find('[data-asset_schedule] select').on('change', function(){
+      const dataValue = { "asset_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-asset_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "asset_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-asset_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // diagnosis
+    $sensor.find('[data-vulnerability_schedule] select').on('change', function(){
+      const dataValue = { "vulnerability_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-vulnerability_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "vulnerability_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-vulnerability_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+
+      // on 으로 변경시에만 asset 상태가 on으로 함께 변함
+      if (isChecked) $(this).closest('tr').find('[data-asset_detection_status] input').prop('checked', true).trigger('change');
+
+      updateSensorSetting(sensor_id, dataValue);
+    });
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

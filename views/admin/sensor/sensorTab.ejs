@@ -1,0 +1,136 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationSensor|Sensor") %></h2>
+    </div>
+    <!-- tab -->
+    <div class="tab data-style wide-style" id="sensorTab">
+      <div class="tab-links">
+        <div class="tab-link" style="display:none;">
+          <a href="#administrationSensorNew"><%= __("administrationSensor|Sensor Device") %></a>
+        </div>
+        <div class="tab-link on">
+          <a href="#deviceTypeList"><%= __("administrationSensor|Sensor Device") %></a>
+        </div>
+        <div class="tab-link">
+          <a href="#embeddedTypeList"><%= __("administrationSensor|Embedded Software") %></a>
+        </div>
+        <div class="tab-link" style="display:none;">
+          <a href="#clientTypeList"><%= __("administrationSensor|Client Software") %></a>
+        </div>
+      </div>
+      <div class="tab-container">
+        <div id="administrationSensorNew" class="tab-content loading-parent" style="display:none;">
+          <div class="tab-content-table">
+
+          </div>
+        </div>
+        <div id="deviceTypeList" class="tab-content on loading-parent">
+          <div class="tab-content-table">
+            <%- include('./sensorTypeList.ejs', {
+              ObjView : [],
+              pages : 1, current : 1,
+              time : {regtime: 'regtime', from: '', to: ''},
+              rendering: 'dummy'
+            })%>
+          </div>
+        </div>
+        <div id="embeddedTypeList" class="tab-content loading-parent">
+          <div class="tab-content-table">
+            <%- include('./embeddedTypeList.ejs', {
+              ObjView : [],
+              pages : 1, current : 1,
+              time : {regtime: 'regtime', from: '', to: ''},
+              rendering: 'dummy'
+            })%>
+          </div>
+        </div>
+        <div id="clientTypeList" class="tab-content loading-parent">
+          <div class="tab-content-table">
+            <%- include('./clientTypeList.ejs', {
+              ObjView : [],
+              pages : 1, current : 1,
+              time : {regtime: 'regtime', from: '', to: ''},
+              rendering: 'dummy'
+            })%>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- tab -->
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  maintainState();
+</script>
+
+<script>
+  tab('.tab');
+</script>
+
+<script>
+  var selectedTab = getState().selectedTab || 'deviceType';
+  var sensorType = selectedTab == 'deviceType' ? 0 :
+                   selectedTab == 'embeddedType' ? 1 : 2;
+  var tabObj = getState()[selectedTab] || {};
+  var page = tabObj.page || 1;
+  var entries = tabObj.entries || 10;
+  var sid = getState().sid || null;
+  var time = tabObj.time || null;
+  var stateFilter = tabObj.filter && tabObj.filter.length ? tabObj.filter : null;
+  var filters = stateFilter && stateFilter.map(function(element){
+    const filter = {};
+    filter[element.key.originval] = element.value.originval;
+    return filter;
+  });
+
+  requestList(page, entries, sensorType, sid, time, filters);
+</script>
+
+<script>
+  // sensor 탭을 눌렀을때
+  $('#sensorTab .tab-link').off('click.sensorTab').on('click.sensorTab', function(e){
+    e.preventDefault();
+    let selectedTab = $(this).find('a').attr('href');
+    let sensorType = 0;
+    switch (selectedTab) {
+      case '#deviceTypeList':
+        selectedTab = 'deviceType';
+        sensorType = 0;
+        break;
+      case '#embeddedTypeList':
+        selectedTab = 'embeddedType';
+        sensorType = 1;
+        break;
+      case '#clientTypeList':
+        selectedTab = 'clientType';
+        sensorType = 2;
+        break;
+      default:
+        selectedTab = 'deviceType';
+        sensorType = 0;
+    }
+
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+    const sid = getState().sid || null;
+    const time = tabObj.time || null;
+    const stateFilter = tabObj.filter && tabObj.filter.length ? tabObj.filter : null;
+    const filters = stateFilter && stateFilter.map(function(element){
+      const filter = {};
+      filter[element.key.originval] = element.value.originval;
+      return filter;
+    });
+
+    setState({[selectedTab]: {page: page, entries: entries, time: time, filter: stateFilter}, selectedTab: selectedTab});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+</script>
+<% } %>

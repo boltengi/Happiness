@@ -1,0 +1,25 @@
+/**********************************
+ ********** breadcrumb **********
+ **********************************/
+.breadcrumb
+{
+    font-size: 12px;
+
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    margin: 20px 0;
+    padding: 8px 15px;
+
+    list-style: none;
+
+    border-radius: 4px;
+    background-color: var(--breadcrumb-bg);
+}
+.breadcrumb li + li::before
+{
+    padding: 0 5px;
+
+    content: '/\00a0';
+}

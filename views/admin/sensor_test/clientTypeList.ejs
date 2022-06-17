@@ -1,0 +1,222 @@
+<!-- search-area -->
+<!-- <div class="search-area">
+
+</div> -->
+<!-- //.search-area -->
+<div class="pack">
+  <!-- table-comp -->
+  <div class="table-comp table-check table-accordion">
+    <div class="table-scroll default-style">
+      <div class="thead-scroll">
+        <table class="table default-style multi-thead">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " />
+            <col style="width: 5%; " />
+            <col style="width: 20%; " /><!-- Sensor group -->
+            <col style="width: 20%; " /><!-- Sensor name -->
+            <col style="width: 19%; " /><!-- Asset -->
+            <col style="width: 15%; " /><!-- Diagnosis -->
+            <col style="width: 12%; " /><!-- Diagnosis -->
+            <col style="width: 6%; " /><!-- Diagnosis -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" class="cell-check" rowspan="2">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox" name="clientTypeCheckbox0" id="clientTypeCheckbox0">
+                  <label for="clientTypeCheckbox0"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </th>
+              <th scope="col" class="cell-accordion" rowspan="2">
+                <span class="accordion-empty"></span>
+              </th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor group") %></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor name") %></th>
+              <th scope="col" colspan="1"><%= __("administrationSensor|Detection interval") %> <span
+                  class="unit">(<%= __("administrationSensor|min") %>)</span></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis schedule") %> <br>
+                <span class="unit">(<%= __("administrationSensor|HR 24") %>)</span></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis Target") %></th>
+              <th scope="col" rowspan="2"><%= __("administrationSensor|Edit") %></th>
+            </tr>
+            <tr>
+              <th scope="col"><%= __("administrationSensor|Asset") %></th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tbody-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " />
+            <col style="width: 5%; " />
+            <col style="width: 20%; " /><!-- Sensor group -->
+            <col style="width: 20%; " /><!-- Sensor name -->
+            <col style="width: 19%; " /><!-- Asset -->
+            <col style="width: 15%; " /><!-- Diagnosis -->
+            <col style="width: 12%; " /><!-- Diagnosis -->
+            <col style="width: 6%; " /><!-- Diagnosis -->
+          </colgroup>
+          <tbody>
+            <% for (let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <!-- accordion-content-title -->
+            <tr class="accordion-content-title<%= (data.status) == -1 ? " is-detected cursor-pointer" : ""%>" data-sid="<%= data.idx %>"  data-sensor_id="<%= data.sensor_id %>">
+              <td class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox"  name="sensor<%= i %>-check" id="sensor<%= i %>-check"">
+                  <label for="sensor<%= i %>-check"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </td>
+              <td class="cell-accordion">
+              <button type="button" class="btn btn-icon btn-accordion"<%= (data.status) == -1 ? " disabled" : ""%>>
+                <span class="icon icon-accordion"><span class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+              </button>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color">-</span>
+                <% } else { %><span class="ellipsis"><%= data.group_name %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= __("administrationSensor|Not Registred") %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_name %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <div class="ui-select default-style mytest" data-width="54px" data-asset_schedule="<%= data.sensor_id %>">
+                  <select name="" id=""<%= (data.status) == -1 || !(data.asset_detection_status) ? " disabled" : undefined%>>
+                    <option value="10"<% if (data.asset_schedule == 10 || (data.status) == -1) { %> selected<% } %>>10</option>
+                    <option value="20"<% if (data.asset_schedule == 20) { %> selected<% } %>>20</option>
+                    <option value="30"<% if (data.asset_schedule == 30) { %> selected<% } %>>30</option>
+                    <option value="40"<% if (data.asset_schedule == 40) { %> selected<% } %>>40</option>
+                    <option value="50"<% if (data.asset_schedule == 50) { %> selected<% } %>>50</option>
+                    <option value="60"<% if (data.asset_schedule == 60) { %> selected<% } %>>60</option>
+                  </select>
+                </div>
+                <div class="ui-switch default-style" data-asset_detection_status="<%= data.sensor_id %>">
+                  <input type="checkbox" name="clientTypeSwitch<%= i %>0" id="clientTypeSwitch<%= i %>0"<% if (data.asset_detection_status) { %> checked<% } %>
+                    <%= (data.status) == -1 ? " disabled" : undefined%>
+                  >
+                  <label for="clientTypeSwitch<%= i %>0"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                </div>
+              </td>
+              <td class="cell-center">
+                <div class="ui-select default-style" data-width="54px" data-vulnerability_schedule="<%= data.sensor_id %>">
+                  <select name="" id=""<%= (data.status) == -1 || !(data.vulnerability_detection_status) ? " disabled" : undefined%>>
+                    <option value="1"<% if (data.vulnerability_schedule == 1) { %> selected<% } %>>1</option>
+                    <option value="2"<% if (data.vulnerability_schedule == 2) { %> selected<% } %>>2</option>
+                    <option value="3"<% if (data.vulnerability_schedule == 3) { %> selected<% } %>>3</option>
+                    <option value="4"<% if (data.vulnerability_schedule == 4) { %> selected<% } %>>4</option>
+                    <option value="5"<% if (data.vulnerability_schedule == 5) { %> selected<% } %>>5</option>
+                    <option value="6"<% if (data.vulnerability_schedule == 6) { %> selected<% } %>>6</option>
+                    <option value="7"<% if (data.vulnerability_schedule == 7) { %> selected<% } %>>7</option>
+                    <option value="8"<% if (data.vulnerability_schedule == 8) { %> selected<% } %>>8</option>
+                    <option value="9"<% if (data.vulnerability_schedule == 9) { %> selected<% } %>>9</option>
+                    <option value="10"<% if (data.vulnerability_schedule == 10) { %> selected<% } %>>10</option>
+                    <option value="11"<% if (data.vulnerability_schedule == 11) { %> selected<% } %>>11</option>
+                    <option value="12"<% if (data.vulnerability_schedule == 12 || (data.status) == -1) { %> selected<% } %>>12</option>
+                    <option value="13"<% if (data.vulnerability_schedule == 13) { %> selected<% } %>>13</option>
+                    <option value="14"<% if (data.vulnerability_schedule == 14) { %> selected<% } %>>14</option>
+                    <option value="15"<% if (data.vulnerability_schedule == 15) { %> selected<% } %>>15</option>
+                    <option value="16"<% if (data.vulnerability_schedule == 16) { %> selected<% } %>>16</option>
+                    <option value="17"<% if (data.vulnerability_schedule == 17) { %> selected<% } %>>17</option>
+                    <option value="18"<% if (data.vulnerability_schedule == 18) { %> selected<% } %>>18</option>
+                    <option value="19"<% if (data.vulnerability_schedule == 19) { %> selected<% } %>>19</option>
+                    <option value="20"<% if (data.vulnerability_schedule == 20) { %> selected<% } %>>20</option>
+                    <option value="21"<% if (data.vulnerability_schedule == 21) { %> selected<% } %>>21</option>
+                    <option value="22"<% if (data.vulnerability_schedule == 22) { %> selected<% } %>>22</option>
+                    <option value="23"<% if (data.vulnerability_schedule == 23) { %> selected<% } %>>23</option>
+                    <option value="24"<% if (data.vulnerability_schedule == 24) { %> selected<% } %>>24</option>
+                  </select>
+                </div>
+                <div class="ui-switch default-style" data-vulnerability_detection_status="<%= data.sensor_id %>">
+                  <input type="checkbox" name="clientTypeSwitch<%= i %>31" id="clientTypeSwitch<%= i %>1"<% if (data.vulnerability_detection_status) { %> checked<% } %>
+                    <%= (data.status) == -1 ? " disabled" : undefined%>
+                  >
+                  <label for="clientTypeSwitch<%= i %>1"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                </div>
+              </td>
+              <td class="cell-center">
+                <button type="button" data-btn="diagnosis" class="btn btn-icon btn-list"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-list"><span class="sr-only"><%= __("administrationSensor|list") %></span></span>
+                </button>
+              </td>
+              <td class="cell-center">
+                <button type="button" class="btn btn-icon btn-edit" data-btn="edit"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-edit"><span class="sr-only"><%= __("administrationSensor|edit") %></span></span>
+                </button>
+              </td>
+            </tr>
+            <!-- //accordion-content-title -->
+            <!-- accordion-content -->
+            <tr class="accordion-content">
+              <td colspan="8">
+                <div class="accordion-content-box">
+
+                </div>
+              </td>
+            </tr>
+            <!-- //accordion-content -->
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- //table-comp -->
+</div>
+<div class="table-bottom">
+  <div class="btn-table-box">
+    <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationSensor|Delete") %></button>
+    <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|New sensor") %></button>
+    <button type="button" data-btn="setting" class="btn btn-normal point-style"><%= __("administrationSensor|Setting") %></button>
+  </div>
+  <div class="table-bottom-right">
+    <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current, paginationID: 'clienttypePagination'}) %>
+    <div class="ui-select default-style">
+      <select name="" id="clienttypeListEntries">
+        <option value="10" selected><%= __("administrationSensor|Show 10 entries") %></option>
+        <option value="20"><%= __("administrationSensor|Show 20 entries") %></option>
+        <option value="30"><%= __("administrationSensor|Show 30 entries") %></option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var ObjView = <%- JSON.stringify(ObjView) %>;
+  var current = <%- current %>;
+  var pages = <%- pages %>;
+  console.log('ObjView', ObjView)
+  console.log('current', current)
+  console.log('pages', pages)
+</script>
+
+<script>
+  // init historyState
+  // history.state에 embedded 키값이 없으면
+  initHistory()
+
+  setHistory({
+    [currentTab]: {
+       current: history.state[currentTab].current ? history.state[currentTab].current : 1,
+       entries: history.state[currentTab].entries ? history.state[currentTab].entries : 10,
+    },
+    currentTab
+  })
+
+  maintainHistory(getHistory({sensorType:currentTab}))
+</script>
+
+<script>
+  selectDropdown(`#${currentTab}TypeList .ui-select`);
+</script>
+
+<script>
+  // pagination 변경시 정보 서버로 전달
+  pagination_f();
+
+  // entries 변경시 정보를 서버로 전달
+  entries_f();
+</script>

@@ -1,0 +1,56 @@
+::-webkit-scrollbar
+{
+    width: 17px;
+    /* 세로축 스크롤바 길이 */
+    height: 17px;
+    /* 가로축 스크롤바 길이 */
+}
+
+::-webkit-scrollbar-track
+{
+    background-color: var(--webkit-scrollbar-track-bg);
+}
+
+::-webkit-scrollbar-track-piece
+{
+    background-color: var(--webkit-scrollbar-track-bg);
+}
+
+::-webkit-scrollbar-thumb
+{
+    border: 1px solid var(--webkit-scrollbar-thumb-border-color);
+    border-radius: 2px;
+    background-color: var(--webkit-scrollbar-thumb-bg);
+    box-shadow: var(--webkit-scrollbar-thumb-shadow);
+}
+
+::-webkit-scrollbar-button
+{
+    width: 0;
+    height: 0;
+
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-button:start
+{
+    background-color: var(--webkit-scrollbar-btn-bg);
+    /* Top, Left 방향의 이동버튼 */
+}
+
+::-webkit-scrollbar-button:end
+{
+    background-color: var(--webkit-scrollbar-btn-bg);
+    /* Bottom, Right 방향의 이동버튼 */
+}
+
+::-webkit-scrollbar-corner
+{
+    background-color: var(--webkit-scrollbar-corner-bg);
+    /* 우측 하단의 코너 부분 */
+}
+
+::-webkit-resizer
+{
+    background-color: var(--webkit-scrollbar-resizer-bg);
+}

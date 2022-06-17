@@ -1,0 +1,85 @@
+<!-- common -->
+<%- contentFor('title')%>
+<%= __("administrationSensor|step00") %> - <%= __("administrationSensor|Administration") %> - <%= __("common|ProgramName") %>
+
+<%- contentFor('sidebar')%>
+{depth:{depth1:5, depth2:0}}
+<!-- //common -->
+
+<%- contentFor('body')%>
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-administration"></span> <%= __("administrationSensor|Administration") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner"></div>
+    </div>
+    <div class="table-divide">
+      <div id="listTable" class="divide-inner loading-parent">
+        <div class="html-container"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- contentFor('modal')%>
+<div id="modal-new" class="modal"></div>
+<div id="modal-edit" class="modal"></div>
+<div id="modal-setting" class="modal"></div>
+<div id="modal-blocklist" class="modal"></div>
+
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #listTable {
+    min-height: 750px;
+    background: #fff;
+    border-radius: 8px;
+  }
+</style>
+
+<script>
+
+var requestList = (page, entries, sid) => {
+
+  // // table
+  const condition = {
+    entries: entries,
+    sid: sid
+  };
+
+  return fetch(`/admin/sensor_step/${page}`, {
+    method: 'POST',
+    body: JSON.stringify(condition),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(function (response) {
+    return response.text()
+  })
+  .then(function(data){
+    const $listTable = $('#listTable .html-container').html(data);
+  })
+  .catch(function(error){console.error('Error:', error)});
+}
+</script>
+<script>
+window.addEventListener("load", function(event) {
+  fetch('/admin/sensor_step/treelist')
+  .then(function(response){
+    return response.text()
+  })
+  .then(function(data){
+    const $tree = $('#tree').html(data);
+  });
+});
+</script>

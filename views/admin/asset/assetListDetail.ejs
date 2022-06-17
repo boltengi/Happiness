@@ -1,0 +1,60 @@
+<div class="accordion-detail">
+  <!-- accordion-detail-content -->
+  <div class="accordion-detail-content">
+    <div class="table-comp">
+      <table class="table detail-style">
+        <caption><%= __("administrationAsset|assetDetailInformation") %></caption>
+        <colgroup>
+          <col style="width: 50%; " />
+          <col style="width: 50%; " />
+        </colgroup>
+        <tbody>
+          <% for (let i = 0; i < ObjView.length; i++) { %>
+          <% const data = ObjView[i] %>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationAsset|Manufacturer") %></dt>
+                  <dd><%= data.asset_manufacturer %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationAsset|MAC") %></dt>
+                  <dd><%= data.asset_mac %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationAsset|Type") %></dt>
+                  <dd><%= data.asset_type %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationAsset|Model") %></dt>
+                  <dd><%= data.asset_model %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- //accordion-detail-content -->
+</div>
+
+<script>
+  logdata('/admin/asset/assetdetail', <%- JSON.stringify(locals) %>);
+</script>

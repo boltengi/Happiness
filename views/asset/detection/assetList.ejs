@@ -1,0 +1,351 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("asset|Diagnosed status of assets") %></h2>
+      <div class="card-header-right">
+        <!-- timesearch-area -->
+				<div class="timesearch-area">
+					<div class="ui-radio default-style">
+						<input type="radio" name="time_type" id="detection_time" checked>
+						<label for="detection_time"><%= __("asset|Processed time") %></label>
+					</div>
+					<div class="ui-time">
+						<div class="time-setting">
+							<button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("asset|Quick select") %></span></button>
+							<div class="time-setting-content">
+								<div class="time-setting-header">
+									<h3 class="time-setting-title"><%= __("asset|Quick select") %></h3>
+									<button type="button" class="btn-time-setting-close"><span class="sr-only"></span></button>
+								</div>
+								<ul>
+									<li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("asset|Today") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("asset|Last 7day") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("asset|Last 30day") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("asset|This week") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("asset|This month") %></button></li>
+								</ul>
+							</div>
+						</div>
+						<div class="ui-datepicker datepicker-from">
+					    <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+						</div>
+						<span class="form-text">-</span>
+						<div class="ui-datepicker datepicker-to">
+					    <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+						</div>
+					</div>
+				</div>
+				<!-- //.timesearch-area -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("asset|search") %></span></span></button>
+
+        <!--
+        * @date 2021-04-15
+        * @desc add reset button
+        * @company
+        * -->
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("asset|reset") %></span></span></button>
+        <!-- // @date 2021-04-15 -->
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+			<div class="search-area">
+        <!-- filter-custom -->
+        <div class="filter-custom">
+        	<div class="custom-result">
+        	</div>
+					<div class="custom-search">
+						<button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("asset|Add filter") %></span></span></button>
+						<div class="custom-search-content">
+							<div class="custom-search-header">
+								<h3 class="custom-search-title"><%= __("asset|Add filter") %></h3>
+								<button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("asset|close") %></span></button>
+							</div>
+							<div class="custom-search-box">
+								<div class="ui-search">
+									<div class="filter-select">
+									</div>
+									<div class="condition-box">
+									</div>
+								</div>
+							</div>
+							<div class="custom-search-footer">
+								<button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("asset|Add") %></button>
+							</div>
+						</div>
+					</div>
+        </div>
+        <!-- //filter-custom -->
+      </div>
+			<!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+				<div class="table-comp table-check">
+					<div class="table-scroll default-style">
+						<div class="thead-scroll">
+							<table class="table default-style">
+								<caption><span class="sr-only"><%= __("asset|eventAssetList") %></span></caption>
+								<colgroup>
+                  <col style="width: 16%; " /><!-- Processed time -->
+                  <col style="width: 29%; " /><!-- Asset name -->
+                  <col style="width: 33%; " /><!-- Sensor name -->
+                  <col style="width: 10%; " /><!-- Vulnerabilities counted -->
+                  <col style="width: 12%; " /><!-- Allow Deny -->
+								</colgroup>
+								<thead>
+                  <tr>
+                    <th scope="row"><%= __("asset|Processed time") %></th>
+                    <th scope="row"><%= __("asset|Asset name") %></th>
+                    <th scope="row"><%= __("asset|Sensor name") %></th>
+                    <th scope="row"><%= __("asset|Vulnerabilities counted") %></th>
+                    <th scope="row"><%= __("asset|Allow Deny") %></th>
+  				        </tr>
+								</thead>
+							</table>
+						</div>
+					  <div class="tbody-scroll">
+				  		<table class="table default-style">
+								<caption><span class="sr-only"><%= __("asset|eventAssetList") %></span></caption>
+								<colgroup>
+                  <col style="width: 16%; " /><!-- Processed time -->
+                  <col style="width: 29%; " /><!-- Asset name -->
+                  <col style="width: 33%; " /><!-- Sensor name -->
+                  <col style="width: 10%; " /><!-- Vulnerabilities counted -->
+                  <col style="width: 12%; " /><!-- Allow Deny -->
+								</colgroup>
+								<tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+									<tr data-asset_id="<%= data.idx %>" data-sensor_id="<%= data.sensor_id %>">
+                    <td class="cell-center"><%= dateFormat(data.detection_time) %></td>
+                    <td data-link class="cell-link"><span class="ellipsis"><%= data.asset_name %></span></td>
+                    <td><span class="ellipsis"><%= data.sensor_name %></span></td>
+                    <td class="cell-center"><%= data.detection_count %></td>
+                    <td class="cell-center">
+                      <% if (data.allowed == 0) { %><span class="warning-color"><%= __("asset|Denied") %></span><% } else { %><span class="success-color"><%= __("asset|Allowed") %></span><% } %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+					    </table>
+              <!--
+              * @date 2021-05-31
+              * @desc front performance improvement - dummy rendering
+              * @company
+              * -->
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- // @date 2021-05-31 -->
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("asset|No data available") %></p>
+                  <p class="sub-msg"><%= __("asset|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+					  </div>
+					</div>
+				</div>
+				<!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+  			    <select name="" id="listEntries">
+  		        <option value="10" selected><%= __("asset|Show 10 entries") %></option>
+  		        <option value="20"><%= __("asset|Show 20 entries") %></option>
+  		        <option value="30"><%= __("asset|Show 30 entries") %></option>
+  			    </select>
+  				</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/asset/detection/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  dateTime('.ui-time');
+  setTime('.ui-time');
+	filterCustom('.filter-custom', {data: customFilterCondition})
+	formWidth();
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+var getPage = () => {
+  const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+  return page;
+}
+var getEntries = () => {
+  const entries = $('#listEntries option:selected').val() || 10;
+  return entries
+}
+var getSensorID = () => {
+  let sensor_id = $.map($('#tree').find('.tree-item.sensor-type.checked'), function(e){
+    return $(e).data('sensor_id');
+  });
+  sensor_id = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sensor_id);
+  return sensor_id
+}
+var getTime = () => {
+  const time = {
+    type: 'detection_time',
+    from: $('#from-datepicker').val(),
+    to: $('#to-datepicker').val()
+  }
+  return time;
+}
+var getFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const filterSelect = $(element).find('.result-title').data('result-key');
+    const filterCondition = $(element).find('.result-text').data('result-value');
+    const filter = {};
+    filter[filterSelect] = filterCondition;
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+var getStateFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const $filterTitle = $(element).find('.result-title');
+    const $filterText = $(element).find('.result-text');
+    const filterSelect = $filterTitle.data('result-key');
+    const filterCondition = $filterText.data('result-value');
+    const filterSelectText = $filterTitle.text();
+    const filterConditionText = $filterText.text();
+    const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+    const sensor_id = getSensorID();
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+
+    requestList(page, entries, sensor_id, time, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = getEntries() || 10;
+    const sensor_id = getSensorID() || [];
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page});
+
+    requestList(page, entries, sensor_id, time, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = getEntries() || 10;
+    const sensor_id = getSensorID() || [];
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, time: time, filter: stateFilter});
+
+    requestList(page, entries, sensor_id, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sensor_id = getSensorID() || [];
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, time: time, filter: filters});
+
+    requestList(page, entries, sensor_id, time, stateFilter);
+  });
+  /*************************************/
+</script>
+<script>
+  $('#listTable tbody [data-link]').off('click.detail').on('click.detail', function(){
+    const $tr = $(this).closest('tr');
+    const asset_id = $tr.data('asset_id')
+    const sensor_id = $tr.data('sensor_id') || '';
+    location.href = '/asset/detection/assetDetail/' + asset_id + '?sensor_id=' + sensor_id;
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

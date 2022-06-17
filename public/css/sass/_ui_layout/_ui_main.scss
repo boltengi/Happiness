@@ -1,0 +1,133 @@
+/**********************************
+ ********** body **************
+ **********************************/
+html,
+body
+{
+    height: 100%;
+
+    background: var(--main-bg);
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video
+{
+    font-family: var(--font-family-content);
+}
+
+#layout
+{
+    box-sizing: border-box;
+    min-width: 1903px;
+}
+
+/**********************************
+ ********** wrapper **************
+ **********************************/
+#wrapper
+{
+    position: relative;
+
+    box-sizing: border-box;
+    height: 100%;
+    padding-top: 58px;
+    padding-left: 225px;
+
+    text-align: center;
+}
+
+/**********************************
+ ********** main **************
+ **********************************/
+#main
+{
+    display: block;
+
+    box-sizing: border-box;
+    width: 1620px;
+    margin: 0 auto;
+    padding-bottom: 31px;
+
+    text-align: left;
+
+    background: var(--main-bg);
+}

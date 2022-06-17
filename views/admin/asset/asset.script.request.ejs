@@ -1,0 +1,295 @@
+<script>
+
+  const requestTree = () => {
+    fetch('/admin/asset/treelist')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      const $tree = $('#tree').html(data);
+    });
+  }
+
+  const requestList = (page, entries, sid, time = {}, filter = null) => {
+
+    function validFromToTimeReg(time){
+      let valid = { isValid : true, from : true, to : true };
+
+      if (!time) return valid;
+
+      if(time.from !== '' && !moment(time.from)._isValid) valid.from = false;
+      if(time.to !== '' && !moment(time.to)._isValid) valid.to = false;
+      if(!valid.from || !valid.to) valid.isValid = null;
+
+      if(time.from === '' && time.to === '') {} // for admin regtime
+      else if(time.from !== '' && time.to !== '') {}
+      else {
+        valid.isValid = false;
+        if (!time.from) valid.from = false;
+        if (!time.to) valid.to = false;
+      }
+
+      if( new Date(time.from).getTime() > new Date(time.to).getTime() ){
+        valid.from = false;
+        valid.to = false;
+        valid.isValid = null;
+      }
+
+      return valid;
+    }
+    function checkFromToTimeReg(validTime){
+      if(validTime.isValid === true) return true;
+      if(!validTime.isValid){
+        alertModalControl('open', 'alertError', '<%= __("administrationAsset|Check again") %>', {
+          closeCallback: function(){
+            $('#from-datepicker').focus();
+          }
+        });
+        return validTime.isValid;
+      }
+    }
+    function checkRangeTimeReg(time){
+      const isvalidFromToTime = validFromToTimeReg(time);
+      const checkTime = checkFromToTimeReg(isvalidFromToTime);
+      return checkTime
+    }
+    if(!checkRangeTimeReg(time)) time = null;
+
+    const loading = openLoading($(`#listTable`), {size:'large', template: $('#listTable' + ' .search-area').length ? undefined: 'cardTableList', title: '<%= __("administrationAsset|Asset") %>', filter: false});
+
+    // // table
+    const condition = {
+      entries: entries,
+      sid: sid
+    };
+
+    if (time) condition.time = time;
+    if (filter) condition.filter = filter;
+
+    return fetch(`/admin/asset/${page}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response.text(),
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(function(data){
+      const $listTable = $('#listTable .html-container').html(data);
+      return {isLoading: true}
+    })
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $('#listTable');
+        removeLoading($loadingParent);
+      }
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestDetail = (asset_id, obj) => {
+    fetch(`/admin/asset/assetdetail/${asset_id}`)
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      obj.btnEle.closest('tr').next('.accordion-content').find('.accordion-content-box').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestNewPopup = (dataValue) => {
+    fetch(`/admin/asset/newasset`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      $('#modal-new').html(data);
+      // $('#modalNew').data('status',{status:2});
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestEditPopup = (dataValue, asset_id) => {
+    fetch(`/admin/asset/assetedit/${asset_id}`,{
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-edit').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestCreate = (dataValue, validationInstance, $loadingParent) => {
+    validationInstance.checkValidation();
+
+    if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationAsset|Check again") %>', {
+      closeCallback: function(){
+        const $unValidNode = validationInstance.getUnValidItems();
+        if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+      }
+    });
+
+    const loading = openLoading($loadingParent);
+
+    fetch(`/admin/asset/assetcreate`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationAsset|Completed!") %>', {
+        completeCallback: function(){
+          const page = 1; // last pagination is Unknown - $('.pagination').find('li:last-child').data('page');
+          refreshPage(true, {page: page});
+        }
+      });
+    })
+    .then((data)=>{
+      return data.data.text();
+    })
+    .then((data)=>{
+      alertModalControl('open', 'alertError', '<%= __("administrationAsset|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestUpdate = (dataValue, validationInstance, $loadingParent) => {
+
+    if(validationInstance){
+      validationInstance.checkValidation();
+      if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationAsset|Check again") %>', {
+        closeCallback: function(){
+          const $unValidNode = validationInstance.getUnValidItems();
+          if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+        }
+      });
+    }
+
+    let loading;
+    if ($loadingParent) loading = openLoading($loadingParent);
+    else loading = {};
+
+    fetch(`/admin/asset/assetupdate`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationAsset|Completed!") %>', {
+        completeCallback: function(){
+          refreshPage();
+        }
+      });
+    })
+    .then((data)=>{
+      return data.data.text()
+    })
+    .then((data)=>{
+      alertModalControl('open', 'alertError', '<%= __("administrationAsset|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestDelete = (tableCheckedId) => {
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("administrationAsset|Select one more.") %>');
+    else {
+      alertModalControl('open', 'alertConfirm', '<%= __("administrationAsset|Are you sure you want to delete records?") %>', {
+        confirmCallback: function(){
+          const dataValue = {
+            aid: tableCheckedId
+          }
+
+          fetch(`/admin/asset/assetdelete`, {
+            method: 'POST',
+            body: JSON.stringify(dataValue),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(function(response){
+            /**
+            * @date 2021-04-16
+            * @desc go to 1 page if delete user, group, sensor, asset
+            * @company
+            */
+            if(response.status == 200){ refreshPage(true); }
+            /*************************************/
+            if(response.status == 500){ alertModalControl('open', 'alertError', '<%= __("administrationAsset|Error!") %>'); }
+          })
+          .catch(function(errors){console.error('Error:', errors)});
+        }
+      });
+    }
+  }
+</script>

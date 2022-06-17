@@ -1,0 +1,725 @@
+/**********************************
+ ********** blockage (in popup) **************
+ **********************************/
+.blockage-content
+{
+    display: block;
+
+    padding-top: 16px;
+    padding-right: 80px;
+    padding-bottom: 43px;
+    padding-left: 80px;
+}
+
+.blockage-content .blockage-case
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    box-sizing: border-box;
+    height: 40px;
+    padding: 5px;
+
+    border-bottom: 1px solid var(--blockage-case-border-color);
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.blockage-content .blockage-case .text
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    color: var(--blockage-case-color);
+}
+
+.blockage-content .blockage-case .text .rule
+{
+    margin-right: 9px;
+}
+
+.blockage-content .blockage-case + .blockage-case
+{
+    padding-top: 12px;
+}
+
+.scan-setting
+{
+    padding-top: 30px;
+}
+
+/**********************************
+ ********** system (of administration) **************
+ **********************************/
+.system-container
+{
+    padding-top: 44px;
+    padding-bottom: 92px;
+    padding-left: 45px;
+}
+
+.system-content
+{
+    position: relative;
+
+    box-sizing: border-box;
+    height: 546px;
+    padding: 23px 50px;
+
+    border: 1px solid var(--system-content-border-color);
+    border-right: 22px solid var(--system-content-border-color-secondary);
+    border-radius: 12px;
+    border-top-left-radius: 0;
+    box-shadow: var(--system-content-shadow);
+}
+
+.system-content:after
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 14px;
+
+    content: '';
+
+    background: var(--system-content-border-color-primary);
+}
+
+/**********************************
+ ********** data info **************
+ **********************************/
+.data-info > dl > dt
+{
+    font-family: var(--font-family-title);
+    font-size: 13px;
+    line-height: 1.39;
+
+    position: relative;
+
+    margin-top: 14px;
+    padding-left: 45px;
+
+    color: var(--data-info-title-color);
+}
+.data-info > dl > dt:before
+{
+    position: absolute;
+    top: 3px;
+    left: 6px;
+
+    display: block;
+
+    width: 12px;
+    height: 12px;
+
+    content: '';
+
+    background: var(--data-info-title-bullet-color);
+
+    mask: url('../img/content/icon-asterisk.svg') center center no-repeat;
+}
+.data-info > dl > dt .new-status
+{
+    vertical-align: top;
+}
+
+.data-info > dl + dl
+{
+    padding-top: 14px;
+}
+
+.data-info > dl > dd
+{
+    font-size: 13px;
+
+    position: relative;
+
+    padding-top: 6px;
+    padding-bottom: 11px;
+    padding-left: 45px;
+
+    color: var(--data-info-text-color);
+}
+
+.data-info > dl > dd .data-text
+{
+    display: block;
+
+    padding-top: 6px;
+    padding-bottom: 3px;
+    padding-left: 12px;
+}
+
+.data-info > dl > dd .data-text:before
+{
+    padding-right: 9px;
+
+    content: ':';
+}
+
+.data-info > dl > dd .btn-normal
+{
+    margin-left: 11px;
+}
+
+.data-info > dl > dd .info-text
+{
+    padding-left: 12px;
+}
+
+.info-text li
+{
+    padding-bottom: 4px;
+}
+
+.info-text li:last-child
+{
+    padding-bottom: 0;
+}
+
+.info-text li .title
+{
+    font-size: 11px;
+
+    position: relative;
+
+    display: inline-block;
+
+    width: 88px;
+
+    color: var(--info-text-title-color);
+}
+
+.info-text li .text
+{
+    font-size: 11px;
+
+    display: inline-block;
+
+    padding-left: 46px;
+
+    color: var(--info-text-text-color);
+}
+
+.info-text li .title:after
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    content: ':';
+}
+
+/**********************************
+ ********** info group **************
+ **********************************/
+.info-group
+{
+    display: block;
+}
+
+.info-group dl
+{
+    display: block;
+}
+
+.info-group dt
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    position: relative;
+
+    box-sizing: border-box;
+    height: 29px;
+    padding-top: 6px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+    padding-left: 28px;
+
+    color: var(--info-group-title-color);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background: var(--info-group-title-bg);
+}
+
+.info-group dt:before
+{
+    position: absolute;
+    top: 50%;
+    left: 10px;
+
+    box-sizing: border-box;
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
+
+    content: '';
+
+    border: 2px solid var(--info-group-title-bullet-border-color);
+    border-radius: 50%;
+    background: var(--info-group-title-bullet-bg);
+}
+
+.info-group dd
+{
+    font-size: 11px;
+
+    position: relative;
+
+    box-sizing: border-box;
+    min-height: 29px;
+    padding-top: 6px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+    padding-left: 36px;
+
+    color: var(--info-group-text-color);
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    background: var(--info-group-text-bg);
+}
+
+.info-group dd:before
+{
+    position: absolute;
+    top: 6px;
+    left: 28px;
+
+    content: ':';
+}
+
+.info-group.item-style dd
+{
+    padding-left: 28px;
+}
+
+.info-group.item-style dd:before
+{
+    display: none;
+}
+
+/**********************************
+ ********** info group list **************
+ **********************************/
+// 순서가 왼쪽 -> 오른쪽 -> 아래 인 경우
+.info-group-list
+{
+    box-sizing: border-box;
+    padding-right: 25px;
+}
+
+.info-group-list > ul
+{
+    font-size: 0;
+
+    display: flex;
+
+    width: calc(100% + 50px);
+
+    flex-wrap: wrap;
+}
+
+.info-group-list > ul > li:first-child,
+.info-group-list > ul > li:first-child + li
+{
+    margin-top: 0;
+}
+
+.info-group-list > ul > li
+{
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 50%;
+    margin-top: 12px;
+    padding-right: 25px;
+}
+
+.info-group-grid > ul > li .info-group
+{
+    display: inline-block;
+
+    width: 100%;
+}
+
+.info-group-wrap
+{
+    display: flex;
+}
+.info-group-wrap .info-group-column
+{
+    flex: 1;
+}
+
+// 순서가 아래(왼쪽) -> 아래(왼쪽) -> 오른쪽(왼쪽) 인 경우
+.info-group-column
+{
+    display: block;
+}
+
+.info-group-column > ul
+{
+    margin-top: -12px;
+
+    column-count: 2;
+    column-gap: 25px;
+    column-span: 1;
+}
+
+.info-group-column > ul > li
+{
+    padding-top: 12px;
+
+    break-inside: avoid;
+}
+
+// 순서가 무조건 아래로
+.info-group-wrap
+{
+    display: flex;
+}
+
+.info-group-wrap .info-group-row
+{
+    flex: 1;
+}
+
+.info-group-wrap .info-group-row + .info-group-row
+{
+    margin-left: 25px;
+}
+
+.info-group-row
+{
+    display: block;
+}
+
+.info-group-row > ul
+{
+    display: block;
+}
+
+.info-group-row > ul > li
+{
+    padding-top: 12px;
+}
+
+
+/**********************************
+ ********** login, Common **************
+ **********************************/
+#layout.login-page,
+#layout.common-page
+{
+    position: relative;
+
+    overflow: hidden;
+
+    min-width: 840px;
+    min-height: 780px;
+}
+
+#layout.login-page:before,
+#layout.common-page:before
+{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    box-sizing: border-box;
+    width: 328px;
+    height: 320px;
+    margin-right: -128px;
+    margin-bottom: -152px;
+
+    content: '';
+
+    border: 90px solid var(--login-page-sm-circle-border-color);
+    border-radius: 50%;
+}
+
+#layout.login-page:after,
+#layout.common-page:after
+{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    box-sizing: border-box;
+    width: 1302px;
+    height: 1304px;
+    margin-right: -580px;
+    margin-bottom: -691px;
+
+    content: '';
+
+    border: 84px solid var(--login-page-big-circle-border-color);
+    border-radius: 50%;
+}
+
+.login-page,
+.common-page
+{
+    box-sizing: border-box;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    // animation: login-page 1s both;
+
+    text-align: center;
+
+    background-color: var(--login-page-bg);
+    background-image: url('../img/content/login/login-obj2.png'), url('../img/content/login/login-obj1.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: right bottom, left center;
+}
+
+.login-page .login-header,
+.common-page .common-header
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+}
+
+
+.login-page .login-header .login-logo,
+.common-page .common-header .common-logo
+{
+    position: absolute;
+    top: 45px;
+    left: 45px;
+
+    width: 300px;
+    height: 51px;
+
+    text-indent: -9999px;
+
+    background: url('../img/content/login/login-logo.svg') left center no-repeat;
+}
+
+.login-page .login-box,
+.common-page .common-box
+{
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+
+    box-sizing: border-box;
+    width: 700px;
+    height: 485px;
+    margin: auto auto;
+    margin-top: -242px;
+    margin-left: -350px;
+    // animation: login-box 1s both;
+
+    border: 1px solid var(--login-box-border-color);
+    border-radius: 20px;
+    background: var(--login-box-bg);
+}
+
+.common-page .common-box
+{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
+.common-center
+{
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    justify-content: center;
+}
+
+.login-page .login-box .login-welcome,
+.common-page .common-box .common-welcome
+{
+    font-family: var(--font-family-title);
+    font-size: 21px;
+
+    position: relative;
+
+    box-sizing: border-box;
+    min-height: 87px;
+    padding-top: 30px;
+
+    color: var(--login-title-color);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background: var(--login-title-bg);
+}
+
+.login-page .login-box .login-welcome:after,
+.common-page .common-box .common-welcome:after
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 6px;
+
+    content: '';
+
+    border-top: 1px solid var(--login-title-border-outline-color);
+    border-bottom: 1px solid var(--login-title-border-outline-color);
+    background: var(--login-title-border-color);
+}
+
+.login-page .login-box .login-form,
+.common-page .common-box .common-form
+{
+    width: 400px;
+    margin: 0 auto;
+}
+
+.login-page .login-box .login-form,
+{
+    padding-top: 79px;
+}
+
+.ui-login-input,
+.common-page .common-form .ui-input
+{
+    position: relative;
+
+    width: 100%;
+}
+
+.ui-login-input input
+{
+    font-size: 18px;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 43px;
+    padding-left: 40%;
+
+    color: var(--login-input-color);
+    border: none;
+    border-bottom: 2px solid var(--login-input-border-color);
+    background-color: var(--login-input-bg);
+}
+.ui-login-input input:-webkit-autofill,
+.ui-login-input input:-webkit-autofill:hover,
+.ui-login-input input:-webkit-autofill:focus,
+.ui-login-input input:-webkit-autofill:active
+{
+    -webkit-transition: background-color 9999s ease-out;
+
+    -webkit-text-fill-color: var(--login-input-color);
+}
+.ui-login-input input:focus
+{
+    outline: none;
+}
+
+.common-page .common-form .ui-input input
+{
+    padding-right: 0;
+    padding-left: 48%;
+}
+
+.ui-login-input label,
+.common-page .common-form .ui-input label
+{
+    font-size: 18px;
+
+    position: absolute;
+    top: 8px;
+    left: 7px;
+
+    color: var(--login-input-color);
+}
+
+.login-page .login-box .ui-login-input + .ui-login-input,
+.common-page .common-box .ui-input + .ui-input
+{
+    margin-top: 43px;
+}
+
+.login-page .login-box .login-button-box,
+.common-page .common-box .common-button-box
+{
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 42px;
+
+    text-align: center;
+}
+
+.login-page .login-box .login-other,
+.common-page .common-box .common-other
+{
+    padding-top: 25px;
+}
+
+.btn-login
+{
+    font-family: var(--font-family-title);
+    font-size: 16px;
+
+    width: 185px;
+    height: 50px;
+
+    cursor: pointer;
+
+    color: var(--login-btn-color);
+    border: 1px solid var(--login-btn-border-color);
+    border-radius: 4px;
+    background: var(--login-btn-bg);
+}
+
+.btn-login:focus
+{
+    outline: none;
+}
+
+.btn-login.btn-primary
+{
+    background: var(--login-btn-bg-primary);
+}
+
+.btn-login.btn-secondary
+{
+    border: 1px solid var(--login-btn-border-color-secondary);
+    background-color: var(--login-btn-bg-secondary);
+}
+
+.login-page .login-box .btn-login + .btn-login,
+.login-page .login-box .btn-normal.larger-size + .btn-normal.larger-size
+{
+    margin-left: 26px;
+}
+
+.login-page .login-copyright
+{
+    font-size: 18px;
+
+    position: absolute;
+    z-index: 1;
+    bottom: 90px;
+    left: 0;
+
+    width: 100%;
+
+    text-align: center;
+
+    color: var(--login-copyright-color);
+}

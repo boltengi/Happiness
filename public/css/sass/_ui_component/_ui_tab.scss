@@ -1,0 +1,314 @@
+/**********************************
+ ********** common tab style **************
+ **********************************/
+.tab-container .tab-content
+{
+    display: none;
+}
+
+.tab-container .tab-content.on
+{
+    display: block;
+}
+
+.tab.default-style .tab-container
+{
+    box-sizing: border-box;
+}
+
+/**********************************
+ ********** design tab style **************
+ **********************************/
+.tab.info-style
+{
+    display: block;
+}
+
+.tab.info-style .tab-links
+{
+    display: block;
+}
+
+.tab.info-style .tab-links .tab-link
+{
+    display: inline-block;
+
+    margin-right: 11px;
+}
+
+.tab.info-style .tab-links .tab-link a
+{
+    font-family: var(--font-family-title);
+    font-size: 14px;
+
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 230px;
+    height: 45px;
+    padding: 13px;
+
+    text-align: center;
+
+    color: var(--tab-default-link-color);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: var(--tab-default-link-bg);
+}
+
+.tab.info-style .tab-links .tab-link a:after
+{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 5px;
+
+    content: '';
+
+    background: var(--tab-default-link-border-color);
+}
+
+.tab.info-style .tab-links .tab-link.on a:after
+{
+    background: var(--tab-default-link-border-color-on);
+}
+
+.tab.info-style .tab-links .tab-link.on a
+{
+    color: var(--tab-default-link-color-on);
+}
+
+.tab.info-style .tab-container
+{
+    width: 1000px;
+
+    border-radius: 4px;
+}
+
+/**********************************
+ ********** data tab style **************
+ **********************************/
+.tab.data-style
+{
+    display: block;
+}
+
+.tab.data-style .tab-links
+{
+    display: block;
+
+    margin-left: 10px;
+}
+
+.tab.data-style .tab-links .tab-link
+{
+    display: inline-block;
+
+    margin-right: 11px;
+}
+
+.tab.data-style .tab-links .tab-link a
+{
+    font-family: var(--font-family-title);
+    font-size: 14px;
+
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 230px;
+    height: 34px;
+    padding: 6px 13px 8px;
+
+    text-align: center;
+
+    color: var(--tab-data-link-color);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: var(--tab-data-link-bg);
+}
+
+.tab.data-style .tab-links .tab-link a:after
+{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 5px;
+
+    content: '';
+
+    background: var(--tab-data-link-border-color);
+}
+
+.tab.data-style .tab-links .tab-link.on a:after
+{
+    background: var(--tab-data-link-border-color-on);
+}
+
+.tab.data-style .tab-links .tab-link.on a
+{
+    color: var(--tab-data-link-color-on);
+}
+
+.tab.data-style .tab-container .tab-content-table
+{
+    padding: 30px 13px 13px 14px;
+
+    border-radius: 8px;
+    background: var(--tab-data-content-bg);
+}
+.tab.data-style.wide-style .tab-container .tab-content-table
+{
+    padding-top: 5px;
+    padding-right: 0;
+    padding-left: 0;
+}
+/**********************************
+ ********** vertical tab style **************
+ **********************************/
+.tab.vertical-style
+{
+    display: flex;
+}
+
+.tab.vertical-style .tab-links
+{
+    display: block;
+
+    flex: initial;
+}
+
+.tab.vertical-style.table-filter-style .tab-links
+{
+    margin-top: 139px;
+}
+
+.tab.vertical-style .tab-links .tab-link
+{
+    margin-bottom: 8px;
+
+    box-shadow: var(--tab-vertical-link-shadow);
+}
+
+.tab.vertical-style .tab-links .tab-link a
+{
+    font-family: var(--font-family-title);
+    font-size: 14px;
+
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+
+    color: var(--tab-vertical-link-color);
+    border: 1px solid var(--tab-vertical-link-border-color);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background: var(--tab-vertical-link-bg);
+}
+
+.tab.vertical-style .tab-links .tab-link.on a
+{
+    color: var(--tab-vertical-link-color-on);
+    border-color: var(--tab-vertical-link-border-color-on);
+    background: var(--tab-vertical-link-bg-on);
+}
+
+.tab.vertical-style .tab-container
+{
+    position: relative;
+
+    background: var(--tab-vertical-content-bg);
+
+    flex: 1;
+}
+/**********************************
+ ********** detail tab style **************
+ **********************************/
+.tab.detail-style
+{
+    display: block;
+}
+
+.tab.detail-style .tab-links
+{
+    font-size: 0;
+
+    display: block;
+}
+
+.tab.detail-style .tab-links .tab-link
+{
+    position: relative;
+
+    display: inline-block;
+
+    box-shadow: var(--tab-detail-link-shadow);
+}
+
+.tab.detail-style .tab-links .tab-link a
+{
+    font-family: var(--font-family-title);
+    font-size: 20px;
+
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 160px;
+    height: 40px;
+    padding: 6px 10px;
+
+    text-align: center;
+
+    color: var(--tab-detail-link-color);
+    background: var(--tab-detail-link-bg);
+}
+.tab.detail-style .tab-links .tab-link:first-child a
+{
+    border-top-left-radius: 4px;
+}
+.tab.detail-style .tab-links .tab-link:last-child a
+{
+    border-top-right-radius: 4px;
+    box-shadow: none;
+}
+.tab.detail-style .tab-links .tab-link:nth-child(1)
+{
+    z-index: 5;
+}
+.tab.detail-style .tab-links .tab-link:nth-child(2)
+{
+    z-index: 4;
+}
+.tab.detail-style .tab-links .tab-link:nth-child(3)
+{
+    z-index: 3;
+}
+.tab.detail-style .tab-links .tab-link
+{
+    z-index: 10;
+}
+.tab.detail-style .tab-links .tab-link.on a
+{
+    color: var(--tab-detail-link-color-on);
+    background: var(--tab-detail-link-bg-on);
+}
+.tab.detail-style .tab-container
+{
+    position: relative;
+    z-index: 10;
+
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background: var(--tab-detail-content-bg);
+}

@@ -1,0 +1,154 @@
+<!-- modal-comp -->
+<div class="modal-comp" id="modalEdit" data-height="600px"  data-group="<%= JSON.stringify(requestBody) %>">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationGroup|Edit group") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationGroup|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <% if (ObjView.length == 0) { %>
+            <% } %>
+            <% for(let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <% const columnObj = {}
+              for (let i = 0; i < data.columnList.length ; i = i+2){
+                columnObj[data.columnList[i]] = data.columnList[i+1]
+              }
+            %>
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Parent group") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required>
+                      <select name="" id="editSensor_group">
+                        <% for (let j = 0; j < data.group_list.length; j += 2) { %>
+                          <% if(data.group_list[j+1] != data.group_name){ %>
+                            <option value="<%= data.group_list[j] %>" <% if (data.group_list[j+1] == requestBody.parent) { %>selected<% } %>><%= data.group_list[j+1] %></option>
+                            <% }%>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                 <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Group name") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.group_name %>"><input type="text" placeholder="" id="editGroup_name" value="<%= data.group_name %>" readonly></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Add user") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required data-multi="true" data-editUser>
+                      <select name="" id="editUsers">
+                          <option value=""><%= __("administrationGroup|Select one at least.") %></option>
+                        <% for (let j = 0; j < data.user_list.length; j += 2) { %>
+                          <option value="<%= data.user_list[j] %>"><%= data.user_list[j+1] %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationGroup|Description") %></dt>
+                  <dd>
+                    <div class="ui-textarea default-style" data-valid data-maxbyte data-rel="<%= columnObj.desc %>"><textarea name="" id="editDesc" cols="30" rows="10"><%= data.desc %></textarea></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationGroup|Maximum request length exceeded") %>'><%= __("administrationGroup|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationGroup|Close") %></button>
+            <button type="button" id="editBtn" class="btn btn-normal primary-style long-size"><%= __("administrationGroup|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //modal-comp -->
+
+<script>
+  logdata('/admin/group/groupedit', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var ObjView = <%- JSON.stringify(ObjView) %> || [];
+  var editRequestBody = <%- JSON.stringify(requestBody) %> || {};
+  var users = editRequestBody.users || [];
+  var selectedItem = [];
+  $.each(users, function(index, ele){
+    const ObjView = <%- JSON.stringify(ObjView) %> || [];
+    const user_list = ObjView[0].user_list;
+    let uid = '';
+    let text = '';
+    $.each(user_list, function(i, element, array){
+      if(i%2 !== 0) return;
+      if(element == ele) {
+        uid = element;
+        text = user_list[i+1];
+      }
+    });
+    selectedItem.push({originval:uid, dataval: text, textval: text});
+  });
+  $('[data-editUser]').data('selectedItem', selectedItem);
+  selectDropdown('.ui-select.default-style');
+  maxbyte('.ui-input[data-maxbyte]');
+  maxbyte('.ui-textarea[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+
+<script>
+	validation('#modalEdit [data-validation]');
+  var validationEdit = $('#modalEdit [data-validation]').data('validation');
+</script>
+
+<script>
+  var modalEdit = popupModal('#modalEdit');
+  modalEdit.open('#modalEdit');
+
+  $('#editBtn').on('click', function(e){
+
+    const $parent = $('#modalEdit .form-group-list').eq(0);
+    const gid = $('#modalEdit').data('group').gid;
+    const group_name = $parent.find('#editGroup_name').val();
+    const sensor_group = $parent.find('#editSensor_group').val();
+    const users = $.map($parent.find('[data-editUser]').find('.selected-item'), function(ele){
+      return $(ele).data('originval');
+    });
+    const desc = $parent.find('#editDesc').val();
+    const dataValue = {
+      "gid": gid,
+      "parent": sensor_group,
+      "group_name": group_name,
+      "user_list": users,
+      "desc": desc
+    }
+
+    requestUpdate(dataValue, validationEdit, $('#modalEdit .loading-parent'));
+  });
+</script>

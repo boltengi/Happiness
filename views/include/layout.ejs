@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <%- include ('../../views/include/head.ejs') %>
+  <title><%- defineContent('title') %></title>
+  <style>
+     /* admin Version info  manual tab hide */
+    #systemContent a[href="#adminSystemManual"]{display: none;}
+
+    /**
+    * @date 2021-07-23
+    * @desc hide non-threat elemtns
+    * @company BUS_Secure
+    */
+    /* BUS_Secure 인 경우 threat 관련된 내용 빼고 숨김 처리*/
+    <% if(company == 'BUS_Secure') { %>
+      .menu-event > ul > li:nth-child(1),
+      .menu-event > ul > li:nth-child(2),
+      .menu-asset,
+      .menu-vulnerability,
+      .menu-wireless,
+      .menu-notification
+      {
+          display: none;
+      }
+      .feedbar-content[data-asset],
+      .feedbar-content[data-vulnerability]
+      {
+          display: none;
+      }
+      /* dashboard */
+      #main.dash-main
+      {
+          padding-bottom: 0;
+      }
+      .dashboard-wrap .dashboard-wrap-top
+      {
+          grid-template-columns: 420px auto;
+          grid-row-gap: 11px;
+          grid-template-areas: 'dashboard-left dashboard-center'
+          'dashboard-right  dashboard-center';
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-left-box.left-style-shadow::before
+      {
+          height: 120%;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-left-box .dashboard-moniter:nth-child(1)
+      {
+          display: none;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-left-box .dashboard-moniter:last-child
+      {
+          margin-top: 0;
+      }
+      .dash-main .dashboard-wrap .dashboard-wrap-top .dashboard-center-box,
+      .dash-main #myNetworkMultiHighChart
+      {
+          width: 1185px;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box.right-style-shadow::before
+      {
+          width: -webkit-calc(100% - 10px);
+          margin-left: 10px;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .dashboard-moniter:nth-child(1)
+      {
+          display: none;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .dashboard-moniter:last-child
+      {
+          margin-top: 0;
+
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .16);
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .dashboard-moniter .dashboard-moniter-content-center
+      {
+          border-radius: 0 0 4px 4px;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .dashboard-moniter:last-child .tab .dashboard-moniter-content .dashboard-moniter-content-center
+      {
+          box-shadow: none;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .tab.detail-style .tab-links
+      {
+          width: 100%;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .tab.detail-style .tab-links .tab-link:nth-child(2)
+      {
+          display: none;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .tab.detail-style .tab-links .tab-link.on
+      {
+          display: block;
+
+          width: 100%;
+
+          box-shadow: none;
+      }
+      .dashboard-wrap .dashboard-wrap-top .dashboard-right-box .tab.detail-style .tab-links .tab-link.on a
+      {
+          box-sizing: border-box;
+          width: 100%;
+          padding: 6px 22px;
+
+          text-align: left;
+
+          color: #43425d;
+          background: #ececec;
+      }
+      .dashboard-wrap-bottom
+      {
+          display: none;
+      }
+      /* report */
+      .report-main .card-box[data-report='asset'],
+      .report-main .card-box[data-report='vulnerability']
+      {
+          display: none;
+      }
+      .report-main .card-box + .card-box
+      {
+          margin-top: 0;
+      }
+    <% } %>
+    /*************************************/
+  </style>
+</head>
+<!--
+* @date 2021-06-04
+* @desc common theme function
+* @company
+* -->
+<body class="theme-<%= getThemeClass(company) %>">
+<!-- // @date 2021-06-04 -->
+  <%- include ('../../views/include/util.ejs') %>
+  <div id="layout">
+    <!-- header -->
+    <%- include ('../../views/include/header.ejs') %>
+    <!-- //header -->
+  	<!-- wrapper -->
+    <div id="wrapper">
+      <!-- sidebar -->
+  		<%- include ('../../views/include/sidebar.ejs', {depth:{depth1:5, depth2:2}}) %>
+      <!-- //sidebar -->
+      <!-- main -->
+      <%- defineContent('body') %>
+  		<!-- //main -->
+    </div>
+  	<!-- //wrapper -->
+    <!-- feedbar -->
+    <%- include ('../../views/include/feedbar.ejs') %>
+    <!-- //feedbar -->
+  </div>
+  <%- defineContent('modal') %>
+
+  <%- include ('../../views/include/partial.ejs') %>
+
+  <script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded',()=>{
+    const menu = window.location.pathname.split('/');
+    menu.shift();
+    sidebar({menu});
+  });
+  /*************************************/
+  </script>
+  <%- script %>
+  <script>
+    function getGetQuery(){
+      return Qs.parse(location.search.replace('?',''));
+      const params = {}
+      location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value){
+        if(decodeURIComponent(key).endsWith('[]')) params[decodeURIComponent(key).replace('[]', '')] = JSON.parse(decodeURIComponent(value))
+        else params[decodeURIComponent(key)] = decodeURIComponent(value)
+      })
+      return params;
+    }
+    function getPostBody(){
+      return <% if( typeof initConditions != 'undefined' ) { %> JSON.stringify(initConditions) <% } else { %> <% null } %>;
+    }
+    function getCondition(){
+      return getGetQuery();
+      // return getPostBody();
+    }
+
+    function detectFilter(key, value ,customFilterCondition, showUndefinedCondition){
+      const thisObj = customFilterCondition.find(function(element){
+        return element.select.originval == key
+      });
+
+      if(!thisObj && showUndefinedCondition){ // query로 넘어온 조건이 해당 페이지 filter 조건에 없는 경우 query string 기본값 사용
+        return {
+          key: {originval: key, dataval: key},
+          value: {originval: value, dataval: value}
+        }
+      } else if(!thisObj && !showUndefinedCondition) { // query로 넘어온 조건이 해당 페이지 filter 조건에 없는 경우 console error 메세지 & 사용 안함
+        console.log(`this condition no exist for page filter`, {
+          key: key
+        })
+        return null
+      }
+
+      const keyDataval = thisObj.select.dataval;
+      let valueDataval = value;
+      if(thisObj.condition.type == 'select'){
+        valueDataval = thisObj.condition.options.find(function(element){
+          return element.originval == value;
+        }).dataval;
+      }
+      return {
+        key: {originval: key, dataval: keyDataval},
+        value: {originval: value, dataval: valueDataval}
+      }
+    }
+    function formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition){
+      const formatByType = {
+        sid: function(){ return value; },
+        sensor_id: function(){ return value; },
+        filter: function(initConditions, key, value, initFilterCondition){
+          let parsedValue = value; // get 인 경우
+          if(typeof value == 'string') parsedValue = JSON.parse(value); // body 인 경우
+
+          const stateValue = parsedValue.map(function(element){
+            const obj = {}
+            const key = Object.keys(element)[0];
+            const value = element[key];
+            return detectFilter(key, value, initFilterCondition, showUndefinedCondition);
+          }).filter(function(element){ return element != null; })
+          return initConditions[key] = stateValue;
+        },
+        time: function(initConditions, key, value, initFilterCondition){
+          if(value === null) return null;
+          let type = value[0].type;
+          let to = moment().format('YYYY.MM.DD') + ' 23:59:59';
+          let from = moment().format('YYYY.MM.DD') + ' 00:00:00';
+          switch(value[0].duration){
+            case null:
+              from = '';
+              to = ''
+              break;
+            case 1:
+              from = moment().format('YYYY.MM.DD') + ' 00:00:00';
+              break;
+            case 7:
+              from = moment().add(-7, 'days').format('YYYY.MM.DD') + ' 00:00:00';
+              break;
+            case 30:
+              from = moment().add(-30, 'days').format('YYYY.MM.DD') + ' 00:00:00';
+              break;
+            default:
+              from = moment().add(-value, 'days').format('YYYY.MM.DD') + ' 00:00:00';
+              break;
+          }
+          return {type: type, from: from, to: to};
+        },
+        ap_mac: function(initConditions, key, value, initFilterCondition){
+          return value;
+        },
+        ap_name: function(initConditions, key, value, initFilterCondition){
+          return value;
+        },
+        page: function(initConditions, key, value, initFilterCondition){ return value },
+        entries: function(initConditions, key, value, initFilterCondition){ return value },
+        default: function(initConditions, key, value, initFilterCondition){ return value }
+      }
+      return formatByType[key] ? formatByType[key](initConditions, key, value, initFilterCondition) :
+                                 formatByType['default'](initConditions, key, value, initFilterCondition);
+    }
+    function formatToState(initConditions, customFilterCondition, showUndefinedCondition){ // history state foramt
+      const formatConditions = {};
+      let initFilterCondition = customFilterCondition;
+      const standard = initConditions.standard;
+      let standardValue = '';
+      const selectedTab = initConditions.selectedTab;
+      if(standard) {
+        standardValue = initConditions[standard];
+
+        if(standard == 'selectedTab') {
+          formatConditions[standardValue] = {page:1, entries:10, time: null, filter: null};
+        } else if(standard == 'ap_mac') {
+          formatConditions[initConditions.sensor_id] = {}
+        }
+      }
+      Object.entries(initConditions).forEach(function([key, value]){
+        if(standard == 'selectedTab') {
+          initFilterCondition = customFilterCondition[standardValue.toLowerCase()];
+          if(key == 'filter' || key == 'time' || key == 'page' || key == 'entries') {
+            formatConditions[standardValue][key] = formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition);;
+          } else formatConditions[key] = formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition);;
+        } else if(standard == 'ap_mac') {
+          if(key == 'ap_mac' || key == 'ap_name') {
+            formatConditions[initConditions.sensor_id][key] = formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition);
+          } else formatConditions[key] = formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition);;
+        } else {
+          formatConditions[key] = formatTypeState(initConditions, key, value, initFilterCondition, showUndefinedCondition);;
+        }
+      });
+      return formatConditions;
+    }
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded',()=>{
+    /**
+    * @date 2021-05-17
+    * @desc fix reference bug - customFilterCondition
+    * @company
+    */
+    if(typeof customFilterCondition == 'undefined') return;
+    /*************************************/
+    const initConditions = getCondition();
+    if(initConditions && Object.keys(initConditions).length){
+      const historyState = formatToState(initConditions, customFilterCondition, false);
+      setState(historyState);
+    }
+  });
+  /*************************************/
+  </script>
+</body>
+</html>

@@ -1,0 +1,1792 @@
+<%- contentFor('title')%>
+<%= __("report|Report") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<style>
+  .btn + .ui-time{margin-top: 10px}
+  .tree-table-divide-wrap{padding-top:31px;}
+  .ui-time + .btn{margin-top: 10px}
+
+  .card-header .card-title.small{
+    font-size: 18px;
+    display: block;
+    text-align: center;
+    padding-bottom: 10px;
+  }
+  .card-header .card-title.small:before,
+  .card-header .card-title.small:after{display: none}
+  .card-header .card-title.inside-title{margin-top: 30px;}
+
+  .table.data-style { table-layout: auto; }
+
+  .row-registeredAssetsGraph, .row-vulnerability{
+    page-break-after: always;
+  }
+
+  /* report title component */
+  .report-title-wrapper{
+    padding-bottom: 50px;
+  }
+  .report-title-wrapper .reoport-title h1{
+    padding-top: 50px;
+    font-family: var(--font-family-title);
+    font-size: 30px;
+    line-height: 1.227391;
+    position: relative;
+    display: block;
+    vertical-align: top;
+    color: var(--card-header-color);
+    font-weight: bold;
+    text-align: center;
+  }
+  .report-title-wrapper .reoport-subtitle{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 0 25px 0;
+  }
+  /* report title component END*/
+
+  /* buttonWrapper */
+  .buttonWrapper{margin-top: 10px; display: flex; justify-content: space-between;}
+  .buttonWrapper .btn{width: 48%; margin: 0 !important;}
+  /* buttonWrapper END*/
+
+  /* tree-divide fix */
+  .tree-divide{
+    position: fixed;
+  }
+  .tree-table-divide-wrap .table-divide{
+    margin-left:350px
+  }
+  /* tree-divide fix END*/
+
+  /* Sensor Tree */
+  #treeZero{
+    margin-top: 4px;
+  }
+
+  #assetListGraph {
+    height: 230px !important;
+  }
+  #registeredAssetsGraph {
+    height: 370px !important;
+  }
+
+  /* 초기화면은 empty 를 숨긴다*/
+  .empty{display:none}
+
+  @media print {
+    /**************************************** for print setting ****************************************/
+    .tree-table-divide-wrap .table-divide{
+      margin-left:0px
+    }
+    @page {
+      size: landscape;
+    }
+    html, body {
+      height: 21cm;
+      width: 29.7cm;
+    }
+    * {
+       -webkit-print-color-adjust:exact;
+    }
+    .card-box {
+      min-height: 21cm;
+      border: 5px solid var(--main-bg);
+      page-break-after: always;
+      box-sizing: border-box;
+    }
+
+    /**************************************** for layout ****************************************/
+    #layout {
+      min-width: 0;
+    }
+    #header {
+      display: none;
+    }
+    #sidebar {
+      display: none;
+    }
+    #wrapper {
+      padding-top: 0; padding-left: 0;
+    }
+    #main {
+      width: 100%;
+      padding-bottom: 0;
+    }
+    .tree-table-divide-wrap {
+      padding-top: 0;
+    }
+    .tree-table-divide-wrap .tree-divide {
+      display: none;
+    }
+
+    /**************************************** for print design ****************************************/
+    .card-box + .card-box {
+      margin-top: 0;
+    }
+
+  }
+</style>
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by ligthhouse
+* @company
+* -->
+<script src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+<script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded',() => {
+    /* change graph color */
+    const color = [GRAPH_COLOR.PRIMARY, GRAPH_COLOR.SECONDARY, GRAPH_COLOR.POINT, GRAPH_COLOR.DELTA, GRAPH_COLOR.EPSILON, GRAPH_COLOR.ZETA];
+
+    Highcharts.setOptions({
+      colors: color,
+      plotOptions: {
+        bar: {
+          colorByPoint: true
+        }
+      }
+    })
+  });
+  /*************************************/
+</script>
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',() => {
+  const today = new Date();
+	const fromDate = moment(today).add(-6, 'days').format('YYYY.MM.DD');
+	const toDate = moment(today).format('YYYY.MM.DD');
+	$('#from-datepicker').val(fromDate + ' 00:00:00')
+	$('#to-datepicker').val(toDate + ' 23:59:59')
+
+
+	setTime('.ui-time');
+	dateTime('.ui-time', {
+		preventMaxDayCallback: function(type, self){
+			self[`$${type}Input`].attr('placeholder', `<%= __("report|Choose a period within days") %>  : ${self.maxday}`);
+		}
+	});
+
+  // print function
+  function content_print(){
+    var initBody = document.body.innerHTML;
+    window.onbeforeprint = function(){
+      document.body.innerHTML = document.getElementById('printSection').innerHTML;
+    }
+    window.onafterprint = function(){
+      document.body.innerHTML = initBody;
+      $('button[data-print]').on('click', function(){
+        content_print();
+      })
+    }
+    window.print();
+  }
+
+  $('button[data-print]').on('click', function(){
+    content_print();
+  })
+
+  function getPDF(){
+    let originTitle = ''
+    window.onbeforeprint = function(){
+      originTitle = $(document).attr('title');
+      const from = $('#from-datepicker').val();
+      const to = $('#to-datepicker').val();
+      $(document).attr('title', `IoTCare_${moment(from).format('YYYY-MM-DD')}~${moment(to).format('YYYY-MM-DD')}`);
+    }
+    window.onafterprint = function(){
+      $(document).attr('title', originTitle);
+    }
+
+    window.print();
+  }
+  $('button[data-print2]').on('click', function(){
+    getPDF();
+  })
+})
+/*************************************/
+</script>
+
+<!-- main -->
+<main id="main" class="report-main">
+
+  <!-- reportLayout -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner">
+        <!-- card -->
+        <div class="card" style="height:865px">
+          <!-- card-box -->
+          <div class="card-box">
+            <!-- ui-time -->
+            <div class="ui-time" id="uiTime0" data-maxday="31">
+              <div class="time-setting">
+                <!--
+                * @date 2021-04-19
+                * @desc mistranslation
+                * @company
+                * -->
+                <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("report|Quick select") %></span></button>
+                <!-- // @date 2021-04-19 -->
+                <div class="time-setting-content">
+                  <div class="time-setting-header">
+                    <h3 class="time-setting-title"><%= __("report|Quick select") %></h3>
+                    <button type="button" class="btn-time-setting-close"><span class="sr-only">close</span></button>
+                  </div>
+                  <ul>
+                    <!--
+                    * @date 2021-04-19
+                    * @desc mistranslation
+                    * @company
+                    * -->
+                    <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("report|Today") %></button></li>
+                    <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("report|Last 7day") %></button></li>
+                    <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("report|Last 30day") %></button></li>
+                    <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("report|This week") %></button></li>
+                    <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("report|This month") %></button></li>
+                    <!-- // @date 2021-04-19 -->
+                  </ul>
+                </div>
+              </div>
+              <div class="ui-datepicker datepicker-from">
+                <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="from-datepicker" value="" autocomplete="off"></div>
+              </div>
+              <span class="form-text">-</span>
+              <div class="ui-datepicker datepicker-to">
+                <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="to-datepicker" value="" autocomplete="off"></div>
+              </div>
+            </div>
+            <!-- //ui-time -->
+            <div class="buttonWrapper">
+              <button type="button" class="btn btn-normal primary-style long-size" data-create><%= __("report|Create report") %></button>
+              <button type="button" class="btn btn-normal point-style" data-print2><%= __("report|Print") %></button>
+            </div>
+
+            <!-- tree-comp -->
+            <div class="tree-comp" id="treeZero"></div>
+          </div>
+          <!-- //card-box -->
+        </div>
+        <!-- //card -->
+      </div>
+    </div>
+    <div id="printSection" class="table-divide">
+      <div id="listTable" class="divide-inner loading-parent">
+        <div class="html-container">
+          <!-- card -->
+          <div class="card">
+            <!-- card-box -->
+            <!-- report-title -->
+            <div class="report-title-wrapper">
+              <div class="reoport-title"><h1><%= __("report|IoTCare Operational Reports") %></h1></div>
+              <div class="reoport-subtitle">
+                <div class="report-period">
+                  <%= __("report|Date Range") %>: <span class="report-from"></span> - <span class="report-to"></span>
+                </div>
+                <div class="report-created">
+                  <%= __("report|Created") %>: <span class="report-created-year"></span> <%= __("report|at") %> <span class="report-created-time"></span>
+                </div>
+              </div>
+            </div>
+            <!-- //report-title -->
+            <div class="card-box" data-report="asset">
+              <!-- Asset 현황 -->
+              <div class="card-header">
+                <h2 class="card-title"><%= __("report|Asset status") %></h2>
+              </div>
+              <div class="card-header">
+                <h2 class="card-title small"><%= __("report|Asset list per types") %></h2>
+              </div>
+              <div class="row">
+                <div id="assetListGraph-wrapper" class="col-6 col-lg loading-parent">
+                  <div id="assetListGraph"></div>
+                  <!-- empty -->
+                  <div class="empty">
+                     <div class="empty-box">
+                         <div class="symbol symbol-empty">
+                             <span class="symbol-icon question-style"></span>
+                             <div class="symbol-figure empty-style"></div>
+                         </div>
+                         <p class="main-msg"><%= __("report|No data available") %></p>
+                         <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+                     </div>
+                  </div>
+                  <!-- //empty -->
+                </div>
+                <div class="col-6 col-lg">
+                  <div class="table-comp">
+                    <table class="table data-style">
+                      <caption>Asset list per types</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("report|Asset Type") %></th>
+                          <th scope="col"><%= __("report|Accrued quantity") %></th>
+                          <th scope="col"><%= __("report|No. of registrations") %></th>
+                        </tr>
+                      </thead>
+                      <tbody id="AssetlistPerTypesTable">
+                        <tr>
+                          <td id="AssetlistPerTypesTable-td" colspan="3" class="loading-parent" style="height: 200px;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="card-header">
+                <h2 class="card-title small inside-title"><%= __("report|Registered assets type trend") %></h2>
+              </div>
+              <div class="row row-registeredAssetsGraph">
+                <div id="registeredAssetsGraph-wrapper" class="col-12 col-lg registeredAssetsGraph">
+                  <div id="registeredAssetsGraph"></div>
+                  <!-- empty -->
+                  <div class="empty">
+                     <div class="empty-box">
+                         <div class="symbol symbol-empty">
+                             <span class="symbol-icon question-style"></span>
+                             <div class="symbol-figure empty-style"></div>
+                         </div>
+                         <p class="main-msg"><%= __("report|No data available") %></p>
+                         <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+                     </div>
+                  </div>
+                  <!-- //empty -->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-lg">
+                  <!-- table-comp -->
+                  <div class="table-comp">
+                    <table id="registeredAssetsTable" class="table data-style">
+                      <caption>table</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("report|Date") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="registeredAssetsTable-td" class="loading-parent" style="height: 200px;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-comp -->
+                </div>
+              </div>
+            </div>
+            <!-- //card-box -->
+            <!-- card-box -->
+            <div class="card-box" data-report="threat">
+              <div class="card-header">
+                <h2 class="card-title"><%= __("report|Threat detection status") %></h2>
+              </div>
+              <div class="card-header">
+                <h2 class="card-title small"><%= __("report|No. of assets by threat type trend") %></h2>
+              </div>
+              <div class="row">
+                <div id="threaTypeTrendGraph-wrapper" class="col-12 col-lg loading-parent">
+                  <div id="threaTypeTrendGraph" style="height:400px"></div>
+                  <!-- empty -->
+                  <div class="empty">
+                     <div class="empty-box">
+                         <div class="symbol symbol-empty">
+                             <span class="symbol-icon question-style"></span>
+                             <div class="symbol-figure empty-style"></div>
+                         </div>
+                         <p class="main-msg"><%= __("report|No data available") %></p>
+                         <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+                     </div>
+                  </div>
+                  <!-- //empty -->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-lg">
+                  <!-- table-comp -->
+                  <div class="table-comp">
+                    <table id="threatDetectionTable" class="table data-style">
+                      <caption>table</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("report|Category") %></th>
+                          <th scope="col"><%= __("report|Date") %></th>
+                          <th scope="col"><%= __("report|Sensor") %></th>
+                          <th scope="col"><%= __("report|Asset Type") %></th>
+                          <th scope="col"><%= __("report|Asset Name") %></th>
+                          <th scope="col"><%= __("report|Asset_IP") %></th>
+                          <th scope="col"><%= __("report|Processing") %></th>
+                          <th scope="col"><%= __("report|Count") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="threatDetectionTable-td" colspan="8" class="loading-parent" style="height: 200px;">
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-comp -->
+                </div>
+              </div>
+            </div>
+            <!-- //card-box -->
+            <!-- card-box -->
+            <div class="card-box" data-report="vulnerability">
+              <div class="card-header">
+                <h2 class="card-title"><%= __("report|Vulnerability detection status") %></h2>
+              </div>
+              <div class="card-header">
+                <h2 class="card-title small"><%= __("report|No. of vulnerability by severity trend") %></h2>
+              </div>
+              <div class="row">
+                <div id="vulnerabilitySeverityTrendGraph-wrapper" class="col-12 col-lg loading-parent">
+                  <div id="vulnerabilitySeverityTrendGraph" style="height:400px"></div>
+                  <!-- empty -->
+                    <div class="empty">
+                      <div class="empty-box">
+                        <div class="symbol symbol-empty">
+                            <span class="symbol-icon question-style"></span>
+                            <div class="symbol-figure empty-style"></div>
+                        </div>
+                        <p class="main-msg"><%= __("report|No data available") %></p>
+                        <p class="sub-msg"><%= __("report|There is no data to show you right now") %></p>
+                      </div>
+                    </div>
+                  <!-- //empty -->
+                </div>
+              </div>
+              <div class="row row-vulnerability">
+                <div class="col-12 col-lg">
+                  <!-- table-comp -->
+                  <div class="table-comp">
+                    <table id="noVulnerabilityTable" class="table data-style">
+                      <caption>table</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("report|Date") %></th>
+                          <th scope="col"><%= __("report|Critical") %></th>
+                          <th scope="col"><%= __("report|High") %></th>
+                          <th scope="col"><%= __("report|Medium") %></th>
+                          <th scope="col"><%= __("report|Low") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="noVulnerabilityTable-td" colspan="5" class="loading-parent" style="height: 200px;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-comp -->
+                </div>
+              </div>
+              <div class="card-header">
+                <h2 class="card-title small inside-title"><%= __("report|Vulnerability detection Top 10") %></h2>
+              </div>
+              <div class="row">
+                <div id="VulnerabilityTop10Graph-wrapper" class="col-12 col-lg loading-parent">
+                  <div id="VulnerabilityTop10Graph" style="height: 300px;"></div>
+                  <!-- empty -->
+                  <div class="empty">
+                      <div class="empty-box">
+                          <div class="symbol symbol-empty">
+                              <span class="symbol-icon question-style"></span>
+                              <div class="symbol-figure empty-style"></div>
+                          </div>
+                          <p class="main-msg"><%= __("report|No data available") %></p>
+                          <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+                      </div>
+                  </div>
+                  <!-- //empty -->
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-lg">
+                  <!-- table-comp -->
+                  <div class="table-comp">
+                    <table id="vulnerabilityDetection" class="table data-style">
+                      <caption>table</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("report|Date") %></th>
+                          <th scope="col"><%= __("report|Code") %></th>
+                          <th scope="col"><%= __("report|Severity") %></th>
+                          <th scope="col"><%= __("report|Type") %></th>
+                          <th scope="col"><%= __("report|Sensor name") %></th>
+                          <th scope="col"><%= __("report|Asset Name") %></th>
+                          <th scope="col"><%= __("report|Processing") %></th>
+                          <th scope="col"><%= __("report|Count") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="vulnerabilityDetection-td" colspan="8" class="loading-parent" style="height: 200px;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-comp -->
+                </div>
+              </div>
+            </div>
+            <!-- //card-box -->
+          <!-- //card -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- //reportLayout -->
+</main>
+<!-- //main -->
+
+<%- contentFor('modal')%>
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    const url = location.href.split("?")[0];
+    history.replaceState(state, null, url);
+  }
+  var maintainState = () => {
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+</script>
+
+<script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  // treelist
+  window.addEventListener("DOMContentLoaded", function(event) {
+    fetch('/report/report/treelist')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      const $tree = $('#treeZero').html(data);
+    });
+  });
+  /*************************************/
+
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+
+  var requestData = function(sensor_id, type, from, to, graphWrapperId="", tableId=""){
+    let isExistGraph = null;
+    let isExistTable = null;
+
+    if( $(`#${graphWrapperId}-wrapper`).length ) isExistGraph = true
+    else                                         isExistGraph = false
+
+    if( $(`#${tableId}-td`).length ) isExistTable = true
+    else                                isExistTable = false
+
+    if( isExistGraph )
+      var loading = openLoading($(`#${graphWrapperId}-wrapper`));
+    if( isExistTable )
+      var loading_table = openLoading($(`#${tableId}-td`));
+
+    const condition = {
+      from,
+      to,
+      sensor_id
+    }
+
+    return fetch(`/report/report/${type}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+        }
+      })
+      .then(function (response) {
+        if(isExistGraph && isExistTable) {
+          return {
+            data: response.json(),
+            loading: loading,
+            loading_table: loading_table
+          }
+        }else if(isExistGraph && isExistTable == false) {
+          return {
+            data: response.json(),
+            loading: loading,
+          }
+        }else if(isExistGraph == false && isExistTable){
+          return {
+            data: response.json(),
+            loading_table: loading_table
+          }
+        }else{
+          return {
+            data: response.json()
+          }
+       }
+
+      })
+      .then((data)=>{
+        if( isExistGraph || isExistTable ){
+          if(isExistGraph) data.loading.setLoaded(true);
+          if(isExistTable) data.loading_table.setLoaded(true);
+          return data.data
+        }else{
+          return data.data
+        }
+      })
+      .then(function (data) {
+        if ( isExistGraph && isExistTable ){
+          return {
+            isLoading: true,
+            loading_table: true,
+            data,
+          }
+        } else if(isExistGraph && isExistTable == false){
+          return {
+            isLoading: true,
+            data,
+          }
+        } else if(isExistGraph == false && isExistTable ){
+          return {
+            loading_table: true,
+            data,
+          }
+        } else {
+          return {
+            data,
+          }
+        }
+      })
+      .catch(function(error){console.error('Error:', error)});
+  }
+</script>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+var assetListGraph ,registeredAssetsGraph ,threaTypeTrendGraph ,vulnerabilitySeverityTrendGraph ,vulnerabilityTop10Graph;
+window.addEventListener("DOMContentLoaded", function(event) {
+  assetListGraph = Highcharts.chart('assetListGraph', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: null
+    },
+    xAxis: {
+        categories: [],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: null
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+      enabled:false,
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        showInLegend: false,
+        name: '',
+        data: []
+    }]
+  });
+  registeredAssetsGraph = Highcharts.chart('registeredAssetsGraph', {
+    credits: {
+      enabled: false
+    },
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: null
+    },
+    xAxis: {
+        categories: []
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: null
+        },
+        stackLabels: {
+            enabled: true,
+            style: {
+                fontWeight: 'bold',
+                color: ( // theme
+                    Highcharts.defaultOptions.title.style &&
+                    Highcharts.defaultOptions.title.style.color
+                ) || 'gray'
+            }
+        }
+    },
+    legend: {
+      layout: 'horizontal',
+      align: 'right',
+      verticalAlign: 'top',
+      itemMarginTop: 10,
+      itemMarginBottom: 10
+    },
+    tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+    },
+    plotOptions: {
+        column: {
+            stacking: 'normal',
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    series: [
+
+    ]
+  });
+  threaTypeTrendGraph = Highcharts.chart('threaTypeTrendGraph', {
+    credits: {enabled:false},
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: null
+    },
+    xAxis: {
+        categories: []
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: null
+        },
+        stackLabels: {
+            enabled: true,
+            style: {
+                fontWeight: 'bold',
+                color: ( // theme
+                    Highcharts.defaultOptions.title.style &&
+                    Highcharts.defaultOptions.title.style.color
+                ) || 'gray'
+            }
+        }
+    },
+    legend: {
+      layout: 'horizontal',
+      align: 'right',
+      verticalAlign: 'top',
+      itemMarginTop: 10,
+      itemMarginBottom: 10
+    },
+    tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+    },
+    plotOptions: {
+        column: {
+            stacking: 'normal',
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    series: []
+  });
+  vulnerabilitySeverityTrendGraph = Highcharts.chart('vulnerabilitySeverityTrendGraph', {
+    credits: {enabled:false},
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: null
+    },
+    xAxis: {
+        categories: []
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: null
+        },
+        stackLabels: {
+            enabled: true,
+            style: {
+                fontWeight: 'bold',
+                color: ( // theme
+                    Highcharts.defaultOptions.title.style &&
+                    Highcharts.defaultOptions.title.style.color
+                ) || 'gray'
+            }
+        }
+    },
+    legend: {
+      layout: 'horizontal',
+      align: 'right',
+      verticalAlign: 'top',
+      itemMarginTop: 10,
+      itemMarginBottom: 10
+    },
+    tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+    },
+    colors: [GRAPH_COLOR.CRITICAL,GRAPH_COLOR.HIGH,GRAPH_COLOR.MEDIUM,GRAPH_COLOR.LOW],
+    plotOptions: {
+        column: {
+            stacking: 'normal',
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    series: []
+  });
+  vulnerabilityTop10Graph = Highcharts.chart('VulnerabilityTop10Graph', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: null
+    },
+    xAxis: {
+        categories: [
+
+        ],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: null
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+      enabled:false,
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        showInLegend: false,
+        name: '',
+        data: [
+
+        ]
+    }]
+  });
+});
+/*************************************/
+</script>
+<script>
+  // Asset status
+  var assetListGraphAndTable = function(data){
+    const dataObjView = data.data.ObjView || [];
+    let ObjView;
+    if(dataObjView.length) ObjView = dataObjView;
+
+    const assetTypeTotalObj = ObjView[0].assetTypeTotal;
+
+    const tbody = $('#AssetlistPerTypesTable');
+    let assetTotal = 0;
+
+    // graph process
+    // get data
+    let categories = assetTypeTotalObj.map((data, index)=>{
+      return data.type;
+    })
+    let seriesData = assetTypeTotalObj.map((data, index)=>{
+      return data.totalCount;
+    })
+
+    // initialize data and update
+    assetListGraph.xAxis[0].update({categories:[]});
+    assetListGraph.series[0].update({data:[]});
+
+    // update data
+    assetListGraph.xAxis[0].update({categories:categories});
+    assetListGraph.series[0].update({data:seriesData});
+
+    // if graphData empty
+    if(assetTypeTotalObj.length == 0){
+      // 데이터가 없을때
+      $('#assetListGraph').hide();
+      $('#assetListGraph + .empty').show();
+    }else{
+      // 데이터가 있을때
+      $('#assetListGraph').show();
+      $('#assetListGraph + .empty').hide();
+    }
+    // graph process end
+
+    // table process
+    tbody.html('');
+    assetTypeTotalObj.forEach((item, i) => {
+      assetTotal += item.totalCount;
+      tbody.append(`
+      <tr>
+          <td>${item.type || '-'}</td>
+          <td class="numComma-format">${item.totalCount || '0'}</td>
+          <td class="numComma-format">${item.regCount || '0'}</td>
+      </tr>
+      `)
+    });
+    tbody.append(`
+    <tr>
+        <td><%= __("report|Total") %></td>
+        <td class="totalCount numComma-format" colspan="2">${assetTotal || '0'}</td>
+    </tr>
+    `)
+    // 로딩바 삭제
+    if(data.isLoading){
+      const $loadingParent = $('#assetListGraph-wrapper');
+      removeLoading($loadingParent);
+    }
+  }
+  var registeredAssetsGraphAndTable = function (data) {
+    const dataObjView = data.data.ObjView || [];
+    let ObjView;
+    if(dataObjView.length) ObjView = dataObjView;
+
+    const assetTypeDate = ObjView[0].assetTypeDate;
+    const assetTypeTotal = ObjView[0].assetTypeTotal;
+
+    const thead = $('#registeredAssetsTable thead');
+    const tbody = $('#registeredAssetsTable tbody');
+
+    // graph process
+    // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+    let categories_array_all = [];
+    let categories_array = [];
+    let indexDictionary = {};
+
+    // data
+    let categories = null;
+    let series = [];
+    let series_name = []; // 시리즈이름
+    let series_data = []; // 시리즈 이름별 이차원 배열
+
+    // get categories_array
+    assetTypeDate.forEach((data) => {
+      let date = data.date;
+      categories_array_all.push(date)
+      if(categories_array.indexOf(date) != -1){
+        return ;
+      }
+      categories_array.push(date)
+    })
+
+    // get categories
+    categories = categories_array;
+
+    // get dictionary
+    categories_array.map((data, i) => {
+      indexDictionary[data] = i
+    })
+
+    // get series_name
+    assetTypeDate.forEach((data) => {
+      let type = data.asset_type;
+      if(series_name.indexOf(type) != -1 || type === null || type === 'null'){
+        return ;
+      }
+      series_name.push(type)
+    })
+
+    // init series_data
+    series_data = Array.from(Array(series_name.length), () => Array(categories_array.length).fill(0))
+
+    // processing series_data
+    assetTypeDate.forEach((item, i) => {
+      if(item.asset_type != null){
+        series_name.forEach((data, i) => {
+          if(item.asset_type == series_name[i]){
+              series_data[i][indexDictionary[item.date]] = item.count;
+          }
+        });
+      }
+    });
+
+    // update series
+    series_name.forEach((item, i) => {
+      series[i] = {
+        name: item,
+        data: series_data[i]
+      }
+    });
+
+    // initialize data and update
+    registeredAssetsGraph.xAxis[0].update({categories:[]});
+    const seriesLength = registeredAssetsGraph.series.length;
+    for (var i = 0; i < seriesLength; i++){
+      registeredAssetsGraph.series[0].remove(true);
+    }
+
+    // update data
+    registeredAssetsGraph.xAxis[0].update({categories:categories});
+    series.forEach(function(serie) {
+     registeredAssetsGraph.addSeries(serie, false);
+    })
+    registeredAssetsGraph.redraw();
+    registeredAssetsGraph.hideLoading();
+
+    // if graphData empty
+    // get nulldata
+    const nullData_arry = assetTypeDate.filter((item)=>{
+      if(item.asset_type == null || item.asset_type == 'null') return item;
+    })
+    if(assetTypeDate.length == 0 || assetTypeDate.length == nullData_arry.length){
+      // 데이터가 없으면
+      $('#registeredAssetsGraph').hide()
+      $('#registeredAssetsGraph + .empty').show()
+    }else{
+      // 데이터가 있으면
+      $('#registeredAssetsGraph').show()
+      $('#registeredAssetsGraph + .empty').hide()
+    }
+    // if graphData empty END
+    // graph process END
+
+
+    // table process
+    const tableRowLenghtArry = [];
+    let tableRowLenght = 0;
+    assetTypeDate.forEach((item, i) => {
+      if(item.count>0) tableRowLenghtArry.push(item.date);
+    });
+    const _tableRowLenghtArry = [...new Set(tableRowLenghtArry)];
+    // 초기화
+    thead.html('');
+    tbody.html('');
+    if(assetTypeDate.length == 0 || assetTypeDate.length == nullData_arry.length){
+      thead.append(`
+      <tr>
+        <th scope="col" ><%= __("report|Date") %></th>
+      </tr>
+      `);
+    }else{
+      thead.append(`
+      <tr>
+        <th scope="col" ><%= __("report|Date") %></th>
+        <th scope="col">${series_name[0] || ""}</th>
+        <th scope="col">${series_name[1] || ""}</th>
+        <th scope="col">${series_name[2] || ""}</th>
+        <th scope="col">${series_name[3] || ""}</th>
+        <th scope="col">${series_name[4] || ""}</th>
+        <th scope="col">${series_name[5] || ""}</th>
+      </tr>
+      `);
+    }
+
+    if(assetTypeDate.length == 0 || assetTypeDate.length == nullData_arry.length){
+      // if graphData empty
+      tbody.append(
+      `
+      <tr>
+        <td>
+          <!-- empty -->
+          <div class="empty">
+              <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                      <span class="symbol-icon question-style"></span>
+                      <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("report|No data available") %></p>
+                  <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+              </div>
+          </div>
+          <!-- //empty -->
+        </td>
+      </tr>
+
+      `
+      )
+    }else{
+      categories_array.forEach((item, i) => {
+        tbody.append(`
+        <tr>
+          <td>${categories_array[i]}</td>
+          <td class="numComma-format">${ series_data[0] ? series_data[0][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[1] ? series_data[1][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[2] ? series_data[2][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[3] ? series_data[3][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[4] ? series_data[4][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[5] ? series_data[5][indexDictionary[item]] : ""}</td>
+        </tr>
+        `)
+      });
+    }
+
+    // 로딩바 삭제
+    if(data.isLoading){
+      const $loadingParent = $('#registeredAssetsGraph-wrapper');
+      removeLoading($loadingParent);
+    }
+  }
+  // Threat detection status
+  var threatTrendGraphAndTable = function(data){
+    const dataObjView = data.data.ObjView || [];
+    let ObjView;
+    if(dataObjView.length) ObjView = dataObjView;
+
+    const threatCategoryDate = ObjView[0].threatCategoryDate;
+    const threatList = ObjView[0].threatList;
+
+    const theatCategory = [
+      '',
+      '',
+      '',
+      'Spoofing',
+      'Zombie service',
+      "Backdoor",
+      "ICMP Redirect",
+      "Mining Nodes"
+    ]
+
+    // graph process
+    // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+    let categories_array_all = [];
+    let categories_array = [];
+    let indexDictionary = {};
+
+    // data
+    let categories = null;
+    let series = [];
+    let series_name = []; // 시리즈이름
+    let series_data = []; // 시리즈 이름별 이차원 배열
+
+    // get categories_array
+    threatCategoryDate.forEach((data) => {
+      let date = data.date;
+      categories_array_all.push(date)
+      if(categories_array.indexOf(date) != -1){
+        return ;
+      }
+      categories_array.push(date)
+    })
+
+    // get categories
+    categories = categories_array;
+
+    // get dictionary
+    categories_array.map((data, i) => {
+      indexDictionary[data] = i
+    })
+
+    // get series_name
+    let _series_name = [];
+    threatCategoryDate.forEach((item, i) => {
+      if(item.category > 0) return _series_name.push(theatCategory[item.category])
+    });
+    // 중복값 제거
+    series_name = [...new Set(_series_name)];
+
+    // series_name 이없으면
+    if(!series_name.length) series_name = ['','','','','',''];
+
+    // init series_data
+    series_data = Array.from(Array(series_name.length), () => Array(categories_array.length).fill(0))
+
+
+    // processing series_data
+    threatCategoryDate.forEach((item, i) => {
+      if(item.category != 0){
+        series_name.forEach((data, i) => {
+          if(theatCategory[item.category] == series_name[i]){
+              series_data[i][indexDictionary[item.date]] = item.count;
+          }
+        });
+      }
+    });
+    // update series
+    series_name.forEach((item, i) => {
+      series[i] = {
+        name: item,
+        data: series_data[i]
+      }
+    });
+
+    // initialize data and update
+    threaTypeTrendGraph.xAxis[0].update({categories:[]});
+    const seriesLength = threaTypeTrendGraph.series.length;
+    for (var i = 0; i < seriesLength; i++){
+      threaTypeTrendGraph.series[0].remove(true);
+    }
+
+    // update data
+    threaTypeTrendGraph.xAxis[0].update({categories:categories});
+    series.forEach(function(serie) {
+      threaTypeTrendGraph.addSeries(serie, false);
+    })
+    threaTypeTrendGraph.redraw();
+    threaTypeTrendGraph.hideLoading();
+
+    // if graphData empty
+   if(threatCategoryDate.length == 0){
+     $('#threaTypeTrendGraph').hide();
+     $('#threaTypeTrendGraph + .empty').show();
+   }else{
+     $('#threaTypeTrendGraph').show();
+     $('#threaTypeTrendGraph + .empty').hide();
+   }
+  // graph process END
+
+  // table process
+  // 초기화
+  $tbody = $('#threatDetectionTable tbody')
+  $thead = $('#threatDetectionTable thead');
+  $thead.html('');
+  $tbody.html('');
+
+  if(threatList.length){
+    $thead.append(`
+    <tr>
+      <th scope="col"><%= __("report|Category") %></th>
+      <th scope="col"><%= __("report|Date") %></th>
+      <th scope="col"><%= __("report|Sensor") %></th>
+      <th scope="col"><%= __("report|Asset Type") %></th>
+      <th scope="col"><%= __("report|Asset Name") %></th>
+      <th scope="col"><%= __("report|Asset_IP") %></th>
+      <th scope="col"><%= __("report|Processing") %></th>
+      <th scope="col"><%= __("report|Count") %></th>
+    </tr>
+    `)
+    threatList.forEach((item, i) => {
+      $tbody.append(`
+      <tr>
+        <td>${theatCategory[threatList[i].category] || '-'}</td>
+        <td>${threatList[i].date.slice(5) || '-'}</td>
+        <td>${threatList[i].sensor_name || '-'}</td>
+        <td>${threatList[i].asset_type || '-'}</td>
+        <td>${threatList[i].asset_name || '-'}</td>
+        <td>${threatList[i].asset_ip || '-'}</td>
+        <td>${threatList[i].action || '-'}</td>
+        <td class="numComma-format">${threatList[i].count || '-'}</td>
+      </tr>
+      `)
+    });
+  }else{
+    $thead.append(`
+    <tr>
+      <th scope="col"><%= __("report|Category") %></th>
+      <th scope="col"><%= __("report|Date") %></th>
+      <th scope="col"><%= __("report|Sensor") %></th>
+      <th scope="col"><%= __("report|Asset Type") %></th>
+      <th scope="col"><%= __("report|Asset Name") %></th>
+      <th scope="col"><%= __("report|Asset_IP") %></th>
+      <th scope="col"><%= __("report|Processing") %></th>
+      <th scope="col"><%= __("report|Count") %></th>
+    </tr>
+    `)
+    $tbody.append(`
+    <tr>
+      <td colspan="8">
+        <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                  <span class="symbol-icon question-style"></span>
+                  <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("report|No data available") %></p>
+              <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+            </div>
+          </div>
+        <!-- //empty -->
+      </td>
+    </tr>
+    `)
+  }
+
+  // 로딩바 삭제
+  if(data.isLoading){
+    const $loadingParent = $('#threaTypeTrendGraph-wrapper');
+    removeLoading($loadingParent);
+  }
+}
+  var noVulnerbilityGraphAndTable = function(data){
+    const dataObjView = data.data.ObjView || [];
+    let ObjView;
+    if(dataObjView.length) ObjView = dataObjView;
+
+    const vulnSeverityList = ObjView[0].vulnSeverityList;
+
+    const thead = $('#noVulnerabilityTable thead');
+    const tbody = $('#noVulnerabilityTable tbody');
+
+    // graph process
+    // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+    let categories_array_all = [];
+    let categories_array = [];
+    let indexDictionary = {};
+
+    // data
+    let categories = null;
+    let series = [];
+    let series_name = [
+      {severity:0, name:'<%= __("report|Low") %>'},
+      {severity:1, name:'<%= __("report|Medium") %>'},
+      {severity:2, name:'<%= __("report|High") %>'},
+      {severity:3, name:'<%= __("report|Critical") %>'},
+    ]; // 시리즈이름
+    let series_data = []; // 시리즈 이름별 이차원 배열
+
+    // get categories_array
+    vulnSeverityList.forEach((data) => {
+      let date = data.date;
+      categories_array_all.push(date)
+      if(categories_array.indexOf(date) != -1){
+        return ;
+      }
+      categories_array.push(date)
+    })
+
+    // get categories
+    categories = categories_array;
+
+    // get dictionary
+    categories_array.map((data, i) => {
+      indexDictionary[data] = i
+    })
+
+    // get series_name
+    vulnSeverityList.forEach((data) => {
+      let type = data.severity;
+      let typeObj = {};
+      switch(type){
+        case 0: typeObj = {severity:0, name:'<%= __("report|Low") %>'}; break;
+        case 1: typeObj = {severity:1, name:'<%= __("report|Medium") %>'}; break;
+        case 2: typeObj = {severity:2, name:'<%= __("report|High") %>'}; break;
+        case 3: typeObj = {severity:3, name:'<%= __("report|Critical") %>'}; break;
+      }
+
+      if(series_name[typeObj.severity.name]){
+        return ;
+      }
+
+      series_name[typeObj.severity] = typeObj;
+    })
+
+    // init series_data
+    series_data = Array.from(Array(series_name.length), () => Array(categories_array.length).fill(0))
+
+    // processing series_data
+    vulnSeverityList.forEach((item, i) => {
+      if(item.severity !== null){
+        series_name.forEach((data, i) => {
+          if(item.severity == series_name[i].severity){
+            series_data[i][indexDictionary[item.date]] = item.count;
+          }
+        });
+      }
+    });
+
+    // // update series
+    series_name.forEach((item, i) => {
+      series[(series_name.length - 1) - i] = {
+        name: item.name,
+        data: series_data[i],
+      }
+    });
+
+    // initialize data and update
+    vulnerabilitySeverityTrendGraph.xAxis[0].update({categories:[]});
+    const seriesLength = vulnerabilitySeverityTrendGraph.series.length;
+    for (var i = 0; i < seriesLength; i++){
+      vulnerabilitySeverityTrendGraph.series[0].remove(true);
+    }
+
+    // update data
+    vulnerabilitySeverityTrendGraph.xAxis[0].update({categories:categories});
+
+    // const seriesLength = vulnerabilitySeverityTrendGraph.series.length
+    series.forEach(function(serie) {
+      vulnerabilitySeverityTrendGraph.addSeries(serie, false);
+      // if (!seriesLength) vulnerabilitySeverityTrendGraph.addSeries(serie, false);
+      // else vulnerabilitySeverityTrendGraph.series[i].setDate(serie.data);
+    })
+
+    vulnerabilitySeverityTrendGraph.redraw();
+    vulnerabilitySeverityTrendGraph.hideLoading();
+
+    // if graphData empty
+    if(vulnSeverityList.length == 0){
+      // 데이터가 없을때
+      $('#vulnerabilitySeverityTrendGraph').hide();
+      $('#vulnerabilitySeverityTrendGraph + .empty').show();
+    }else{
+      // 데이터가 있을때
+      $('#vulnerabilitySeverityTrendGraph').show();
+      $('#vulnerabilitySeverityTrendGraph + .empty').hide();
+    }
+    // graph process END
+
+    // table process
+    const tableRowLenghtArry = [];
+    let tableRowLenght = 0;
+    vulnSeverityList.forEach((item, i) => {
+      tableRowLenghtArry.push(item.date);
+    });
+
+    const _tableRowLenghtArry = [...new Set(tableRowLenghtArry)];
+
+    thead.html('');
+    tbody.html('');
+
+    thead.append(`
+    <tr>
+      <th scope="col"><%= __("report|Date") %></th>
+      <th scope="col"><%= __("report|Critical") %></th>
+      <th scope="col"><%= __("report|High") %></th>
+      <th scope="col"><%= __("report|Medium") %></th>
+      <th scope="col"><%= __("report|Low") %></th>
+    </tr>
+    `);
+
+    if(vulnSeverityList.length){
+      _tableRowLenghtArry.forEach((item, i) => {
+        tbody.append(`
+        <tr>
+          <td>${_tableRowLenghtArry[i]}</td>
+          <td class="numComma-format">${ series_data[3] ? series_data[3][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[2] ? series_data[2][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[1] ? series_data[1][indexDictionary[item]] : ""}</td>
+          <td class="numComma-format">${ series_data[0] ? series_data[0][indexDictionary[item]] : ""}</td>
+        </tr>
+        `)
+      });
+    }else{
+      // if graphData empty
+      tbody.append(
+      `
+      <tr>
+        <td colspan="5">
+          <!-- empty -->
+            <div class="empty">
+              <div class="empty-box">
+                <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                </div>
+                <p class="main-msg"><%= __("report|No data available") %></p>
+                <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+              </div>
+            </div>
+          <!-- //empty -->
+        </td>
+      </tr>
+      `
+      )
+    }
+
+    // 로딩바 삭제
+    if(data.isLoading){
+      const $loadingParent = $('#vulnerabilitySeverityTrendGraph-wrapper');
+      removeLoading($loadingParent);
+    }
+  }
+  var vulnCodeListDataGraphAndTable = function(data){
+    const dataObjView = data.data.ObjView || [];
+    let ObjView;
+    if(dataObjView.length) ObjView = dataObjView;
+    const vulnCodeList = ObjView[0].vulnCodeList;
+
+    logdata('/report/report/vulnerabilityinfo', data);
+
+    const _category = vulnCodeList.map((item, i) => {
+      return item.vulnerability_code;
+    });
+    // 중복제거
+    const category = [...new Set(_category)];
+
+    // 시리즈별 합
+    const series = new Array(category.length).fill(0);
+    vulnCodeList.forEach((item, i) => {
+      category.forEach((data, i) => {
+        if(item.vulnerability_code == data){
+          series[i] = series[i] + item.count;
+        }
+      });
+    });
+
+    // initialize data and update
+    vulnerabilityTop10Graph.xAxis[0].update({categories:[]});
+    vulnerabilityTop10Graph.series[0].update({data:[]});
+
+    // update data
+    vulnerabilityTop10Graph.xAxis[0].update({categories:category});
+    vulnerabilityTop10Graph.series[0].update({data:series});
+    // graph process end
+
+    // table process
+    $thead = $('#vulnerabilityDetection thead')
+    $thead.html('')
+    $tbody = $('#vulnerabilityDetection tbody');
+    $tbody.html('')
+
+    // Severity array
+    const severityArray = [
+      "Low",
+      "Medium",
+      "High",
+      "Critical",
+    ]
+    // category array
+    const categoryArray = [
+      "ZeroDay",
+      "CVE",
+      "OneDay",
+      "Spoofing",
+      "Zombie service",
+      "Backdoor",
+      "ICMP Redirect",
+      "Mining Nodes",
+    ]
+
+    if(vulnCodeList.length){
+      $('#VulnerabilityTop10Graph').show()
+      $('#VulnerabilityTop10Graph + .empty').hide()
+
+      $thead.append(`
+      <tr>
+        <th scope="col"><%= __("report|Date") %></th>
+        <th scope="col"><%= __("report|Code") %></th>
+        <th scope="col"><%= __("report|Severity") %></th>
+        <th scope="col"><%= __("report|Type") %></th>
+        <th scope="col"><%= __("report|Sensor name") %></th>
+        <th scope="col"><%= __("report|Asset Name") %></th>
+        <th scope="col"><%= __("report|Processing") %></th>
+        <th scope="col"><%= __("report|Count") %></th>
+      </tr>
+      `)
+      vulnCodeList.forEach((item, i) => {
+        $tbody.append(`
+        <tr>
+          <td>${vulnCodeList[i].date || '-'}</td>
+          <td>${vulnCodeList[i].vulnerability_code || '-'}</td>
+          <td>${severityArray[vulnCodeList[i].severity] || '-'}</td>
+          <td>${categoryArray[vulnCodeList[i].category] || '-'}</td>
+          <td>${vulnCodeList[i].sensor_name || '-'}</td>
+          <td>${vulnCodeList[i].asset_name || '-'}</td>
+          <td>${vulnCodeList[i].action || '-'}</td>
+          <td class="numComma-format">${vulnCodeList[i].count || '0'}</td>
+        </tr>
+        `)
+      });
+    }else{
+      $('#VulnerabilityTop10Graph').hide()
+      $('#VulnerabilityTop10Graph + .empty').show()
+
+      $thead.append(`
+      <tr>
+        <th scope="col"><%= __("report|Date") %></th>
+        <th scope="col"><%= __("report|Code") %></th>
+        <th scope="col"><%= __("report|Severity") %></th>
+        <th scope="col"><%= __("report|Type") %></th>
+        <th scope="col"><%= __("report|Sensor name") %></th>
+        <th scope="col"><%= __("report|Asset Name") %></th>
+        <th scope="col"><%= __("report|Processing") %></th>
+        <th scope="col"><%= __("report|Count") %></th>
+      </tr>
+      `)
+      $tbody.append(`
+      <tr>
+        <td colspan="8">
+          <!-- empty -->
+            <div class="empty">
+              <div class="empty-box">
+                <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                </div>
+                <p class="main-msg"><%= __("report|No data available") %></p>
+                <p class="sub-msg"><%= __("report|There is no data to show you right now.") %></p>
+              </div>
+            </div>
+          <!-- //empty -->
+        </td>
+      </tr>
+      `)
+    }
+
+    // 로딩바 삭제
+    if(data.isLoading){
+      const $loadingParent = $('#VulnerabilityTop10Graph-wrapper');
+      removeLoading($loadingParent);
+    }
+
+  }
+</script>
+<script>
+  function createReport(sensor_id = []){
+    const fromDate = $('#from-datepicker').val();
+    const toDate = $('#to-datepicker').val();
+
+    // Asset status
+    const assetListData = requestData(sensor_id, 'assetinfo', fromDate, toDate, 'assetListGraph', 'AssetlistPerTypesTable');
+    assetListData.then(assetListGraphAndTable).then(numCommaFormat).then(emptyToHide)
+
+    const registeredAssetsData = requestData(sensor_id, 'assetinfo', fromDate, toDate, 'registeredAssetsGraph', 'registeredAssetsTable');
+    registeredAssetsData.then(registeredAssetsGraphAndTable).then(numCommaFormat).then(emptyToHide)
+
+    // Threat detection status
+    const threatTrendData = requestData(sensor_id, 'threatinfo', fromDate, toDate, 'threaTypeTrendGraph', 'threatDetectionTable');
+    threatTrendData.then(threatTrendGraphAndTable).then(numCommaFormat).then(emptyToHide)
+
+    const noVulnerbilityData = requestData(sensor_id, 'vulnerabilityinfo', fromDate, toDate, 'vulnerabilitySeverityTrendGraph', 'noVulnerabilityTable');
+    noVulnerbilityData.then(noVulnerbilityGraphAndTable).then(numCommaFormat).then(emptyToHide)
+
+    const vulnCodeListData = requestData(sensor_id, 'vulnerabilityinfo', fromDate, toDate, 'VulnerabilityTop10Graph', 'vulnerabilityDetection');
+    vulnCodeListData.then(vulnCodeListDataGraphAndTable).then(numCommaFormat).then(emptyToHide)
+  }
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener("DOMContentLoaded", function(event) {
+  $('[data-create]').on('click', function(){
+    const fromDate = $('#from-datepicker').val();
+    const toDate = $('#to-datepicker').val();
+
+    if(fromDate == '' || toDate == '' || moment(fromDate)._isValid == false || moment(toDate)._isValid == false ||
+      new Date(fromDate).getTime() > new Date(toDate).getTime()
+    ) {
+      return alertModalControl('open', 'alertError', '<%= __("report|Check again") %>', {
+        closeCallback: function(){
+          $('#from-datepicker').focus();
+        }
+      });
+    }
+
+    setReportInfo();
+
+    // checkedIds, checkedId
+    const checkedIds = treeCallbackData ? treeCallbackData.checkedIds : [];
+    let sensor_id = checkedIds.sensor_id || [];
+    const dataIDs = treeCallbackData ? treeCallbackData.dataIDs : [];
+
+    sensor_id = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sensor_id);
+
+    setState({initCheckedDataIDs: dataIDs, sensor_id: sensor_id});
+    createReport(sensor_id);
+  });
+});
+/*************************************/
+</script>
+
+<script>
+  var numCommaFormat = function (){
+    for (let i = 0; i < $('.numComma-format').length; i++) {
+       $('.numComma-format').eq(i).html(format.numComma($('.numComma-format').eq(i).text()));
+     }
+  }
+  // td아래의 empty클래스들만 보여줌
+  var emptyToHide = () => {
+    $('td .empty').show()
+  }
+  function setReportInfo(){
+    function setDateRange(){
+      const fromDate = moment($('#from-datepicker').val()).format('DD/MM/YYYY');
+      const toDate = moment($('#to-datepicker').val()).format('DD/MM/YYYY');
+      $('.report-from').html(fromDate);
+      $('.report-to').html(toDate);
+    }
+    function setCreated(){
+      const now = new Date();
+      const year = moment(now).format('DD/MM/YYYY');
+      const time = moment(now).format('HH:mm:ss');
+      $('.report-created-year').html(year);
+      $('.report-created-time').html(time);
+    }
+
+    setDateRange();
+    setCreated();
+  };
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener("DOMContentLoaded", function(event) {
+    setReportInfo();
+  })
+  /*************************************/
+
+</script>

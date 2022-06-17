@@ -1,0 +1,485 @@
+/**********************************
+ ********** empty **************
+ **********************************/
+.empty
+{
+    display: flex;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: auto auto;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    text-align: center;
+
+    background: var(--empty-bg);
+
+    align-items: center;
+    justify-content: center;
+}
+
+.empty .empty-box
+{
+    display: block;
+}
+
+.empty .symbol-empty
+{
+    display: inline-block;
+
+    width: 70px;
+    height: 84px;
+    margin: 0 auto;
+}
+
+.empty .main-msg
+{
+    font-family: var(--font-family-title);
+    font-size: 13px;
+
+    color: var(--empty-main-msg-color);
+}
+
+.empty .symbol-empty + .main-msg
+{
+    margin-top: 20px;
+}
+
+.empty .sub-msg
+{
+    font-size: 10px;
+
+    display: inline-block;
+
+    color: var(--empty-sub-msg-color);
+    border-bottom: 1px solid var(--empty-sub-msg-border-color);
+}
+
+.empty .main-msg + .sub-msg
+{
+    margin-top: 7px;
+}
+
+/**********************************
+ ********** pick **************
+ **********************************/
+.pick-parent
+{
+    position: relative;
+    z-index: 1;
+}
+
+.pick-container
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    cursor: not-allowed;
+}
+
+.pick-parent .pick
+{
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+}
+
+.pick
+{
+    display: flex;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: auto auto;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    text-align: center;
+
+    background: var(--pick-bg);
+
+    align-items: center;
+    // background: #fbfbfb;
+    justify-content: center;
+}
+
+.pick .pick-box
+{
+    display: block;
+}
+
+.pick .symbol-pick
+{
+    display: inline-block;
+
+    width: 70px;
+    height: 84px;
+    margin: 0 auto;
+}
+
+.pick .main-msg
+{
+    font-family: var(--font-family-title);
+    font-size: 13px;
+
+    color: var(--pick-main-msg-color);
+}
+
+.pick .symbol-pick + .main-msg
+{
+    margin-top: 20px;
+}
+
+.pick .sub-msg
+{
+    font-size: 10px;
+
+    display: inline-block;
+
+    color: var(--pick-sub-msg-color);
+    border-bottom: 1px solid  var(--pick-sub-msg-border-color);
+}
+
+.pick .main-msg + .sub-msg
+{
+    margin-top: 7px;
+}
+
+/**********************************
+ ********** symbol **************
+ **********************************/
+.symbol
+{
+    position: relative;
+
+    display: inline-block;
+
+    width: 70px;
+    height: 84px;
+}
+.symbol-empty:before
+{
+    position: absolute;
+    top: 5px;
+    left: 50%;
+
+    width: 70px;
+    height: 70px;
+    margin-left: -35px;
+
+    content: '';
+
+    border-radius: 50%;
+    background: var(--empty-symbol-circle-bg);
+}
+.symbol-pick:before
+{
+    position: absolute;
+    top: 5px;
+    left: 50%;
+
+    width: 70px;
+    height: 70px;
+    margin-left: -35px;
+
+    content: '';
+
+    border-radius: 50%;
+    background: var(--pick-symbol-circle-bg);
+}
+.symbol-icon
+{
+    width: 33px;
+    height: 33px;
+
+    border-radius: 50%;
+}
+.symbol-icon:before
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    content: '';
+
+    border-radius: 50%;
+    background: var(--symbol-icon-bg);
+}
+.symbol-icon:after
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    content: '';
+
+    border-radius: 50%;
+}
+.symbol .symbol-icon
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.symbol-icon.question-style:after
+{
+    background: url('../img/component/partial/symbol-icon-question.svg') center center;
+}
+.symbol-figure
+{
+    display: inline-block;
+
+    width: 50px;
+    height: 64px;
+}
+.symbol .symbol-figure
+{
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+}
+.symbol-figure.empty-style
+{
+    background: url('../img/component/partial/symbol-figure-empty.svg') center center;
+}
+.symbol-figure.pick-style
+{
+    background: url('../img/component/partial/symbol-figure-pick.svg') center center;
+}
+
+/**********************************
+ ********** loading **************
+ **********************************/
+.loading-parent
+{
+    position: relative;
+    z-index: 1;
+}
+
+.loading-container
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    cursor: wait;
+}
+
+.loading-parent .loading
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.loading
+{
+    z-index: 10;
+
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-box
+{
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 97px;
+    height: 97px;
+
+    animation-name: loading;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    animation-fill-mode: forwards;
+}
+
+.circle-box.large-size
+{
+    width: 130px;
+    height: 130px;
+}
+.circle-box .circle
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+
+    border: 6px solid var(--loading-circle-track-color);
+    border-radius: 50%;
+}
+
+.circle-box.large-size .circle
+{
+    border: 7px solid var(--loading-circle-track-color);
+}
+.circle-box .circle .circle-mask-full
+{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+
+    display: block;
+    clip: rect(0, 97px, 97px, 48.5px);
+
+    transform: rotate(-webkit-calc(180deg * (37.5 / 100)));
+}
+
+.circle-box.large-size .circle .circle-mask-full
+{
+    top: -7px;
+    right: -7px;
+    bottom: -7px;
+    left: -7px;
+
+    clip: rect(0, 130px, 130px, 65px);
+}
+
+.circle-box .circle .circle-mask-half
+{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+
+    display: block;
+    clip: rect(0, 97px, 97px, 48.5px);
+}
+
+.circle-box.large-size .circle .circle-mask-half
+{
+    top: -7px;
+    right: -7px;
+    bottom: -7px;
+    left: -7px;
+
+    clip: rect(0, 130px, 130px, 65px);
+}
+
+.circle-box .circle .fill
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    clip: rect(0, 48.5px, 97px, 0);
+
+    box-sizing: border-box;
+
+    transform: rotate(-webkit-calc(180deg * (37.5 / 100)));
+
+    border: 6px solid var(--loading-circle-border-color);
+    border-radius: 50%;
+}
+
+.circle-box.large-size .fill
+{
+    clip: rect(0, 65px, 130px, 0);
+
+    border: 7px solid var(--loading-circle-border-color);
+}
+
+.circle-box .circle .fill.fix
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    clip: rect(0, 48.5px, 97px, 0);
+
+    box-sizing: border-box;
+
+    transform: rotate(-webkit-calc(180deg * (37.5 / 100) * 2));
+
+    border: 6px solid var(--loading-circle-border-color);
+    border-radius: 50%;
+}
+
+.circle-box.large-size .fill.fix
+{
+    clip: rect(0, 65px, 130px, 0);
+}
+
+.circle-box .circle-line
+{
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+}
+.circle-box .circle-line.start-style
+{
+    transform: rotate(-webkit-calc(180deg * (0 / 100) * 2));
+}
+.circle-box .circle-line.end-style
+{
+    transform: rotate(-webkit-calc(180deg * (37.5 / 100) * 2));
+}
+.circle-box .circle-line:before
+{
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    display: block;
+
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+
+    content: '';
+
+    border-radius: 50%;
+    background: var(--loading-circle-border-color);
+}
+.circle-box.large-size .circle-line:before
+{
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+}
+/**********************************
+ ********** loading partail **************
+ **********************************/
+.partial-loading-bgbox
+{
+    height: 100%;
+}

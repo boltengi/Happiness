@@ -1,0 +1,322 @@
+<!-- modal-comp -->
+<div class="modal-comp longer-size" id="modalEdit" data-height="710px">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|Sensor edit") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <% if (ObjView.length == 0) { %>
+            <% } %>
+            <% for(let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <% const columnObj = {}
+              for (let i = 0; i < data.columnList.length ; i = i+2){
+                columnObj[data.columnList[i]] = data.columnList[i+1]
+              }
+            %>
+            <div class="modal-content-wrap">
+              <div class="container">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group-list no-spacing" data-sensor_id="<%= data.sensor_id %>">
+                      <div class="form-group">
+                          <dl>
+                            <dt class="is-essential"><%= __("administrationSensor|Sensor Type") %></dt>
+                            <dd>
+                              <div class="ui-select default-style">
+                                <select name="" id="editSensor_type">
+                                  <% if( data.sensor_type == 0) { %>
+                                    <option value="0"><%= __("administrationSensor|Sensor Device") %></option>
+                                  <% } else if( data.sensor_type == 1) { %>
+                                    <option value="1"><%= __("administrationSensor|Embedded Software") %></option>
+                                  <% } %>
+                                  <!-- <option value="0"><%= __("administrationSensor|Sensor Device") %></option> -->
+                                  <!-- <option value="1"><%= __("administrationSensor|Embedded Software") %></option> -->
+                                  <!-- <option value="2"><%= __("administrationSensor|Client Software") %></option> -->
+                                </select>
+                              </div>
+                            </dd>
+                          </dl>
+                        </div>
+                      <div class="form-group">
+                         <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Product IP") %></dt>
+                          <dd>
+                            <div class="ui-input default-style"><input type="text" placeholder="" id="editSensor_ip" value="<%= data.sensor_ip %>" readonly></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                         <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Sensor ID") %></dt>
+                          <dd>
+                            <div class="ui-input default-style"><input type="text" placeholder="" id="editSensor_id" value="<%= data.sensor_id %>" readonly></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Sensor name") %></dt>
+                          <dd>
+                            <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.sensor_name %>"><input type="text" placeholder="" id="editSensor_name" value="<%= data.sensor_name %>"></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt><%= __("administrationSensor|Serial number") %></dt>
+                          <dd>
+                            <div id="editSerial_number_box" class="ui-input default-style"><input type="text" placeholder="" id="editSerial_number" value="<%= data.serial_number %>" disabled></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential">
+                            <%= __("administrationSensor|Local time") %>
+                            <div class="form-group-right">
+                              <div class="ui-checkbox default-style small-size">
+                                <input type="checkbox" name="editSensor_cest" id="editSensor_cest"<% if(data.cest == true){ %> checked<% } %>>
+                                <label for="editSensor_cest"><%= __("administrationSensor|Daylight saving time") %></label>
+                              </div>
+                            </div>
+                          </dt>
+                          <dd>
+                            <div class="ui-select default-style ellipsis" data-valid data-required data-width="100%" data-direction="up" id="editLocal_time_setting_select">
+                              <select name="" id="editLocal_time_setting">
+                                <%- include ('./localTimeOption.ejs', {timeZoneType: 'iso', iso: data.iso}) %>
+                              </select>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Group") %></dt>
+                          <dd>
+                            <div class="ui-select default-style" data-valid data-required data-direction="up">
+                              <select name="" id="editSensor_group">
+                                <% for (let j = 0; j < data.groupList.length; j += 2) { %>
+                                  <% if (data.groupList[j] != 1 || (data.groupList[j] == 1 && data.groupList[j+1] == data.group_name)) { %>
+                                  <option value="<%= data.groupList[j] %>" <% if(data.groupList[j+1] == data.group_name){ %>selected<% }%>><%= data.groupList[j+1] %></option>
+                                  <% } %>
+                                <% } %>
+                              </select>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group-list no-spacing" data-sensor_id="<%= data.sensor_id %>">
+                      <div class="form-group">
+                        <dl>
+                          <dt>
+                            <%= __("administrationSensor|IP scanning range") %>
+                            <!-- tooltip -->
+                            <div class="ui-tooltip" data-tooltipevent="hover" data-direction="bottom-left" data-width="200px">
+                  						<div class="btn-tooltip">
+                  							<button type="button" class="btn btn-icon btn-question">
+                  	              <span class="icon icon-question icon-small"><span class="sr-only"><%= __("administrationSensor|note") %></span></span>
+                  	            </button>
+                              </div>
+                              <div class="tooltip-contentbox">
+                              	<div class="tooltip-content">
+                                  <h6 class="bullet-title alpha-style"><%= __("administrationSensor|IP range input syntax") %></h6>
+                  								<ul class="ul-list top-spacing">
+                  			            <li class="list-style"><%= __("administrationSensor|Single") %>: 192.168.10.1,192.168.10.2</li>
+                  			            <li class="list-style"><%= __("administrationSensor|Range") %>: 192.168.10.1-100</li>
+                  			            <li class="list-style"><%= __("administrationSensor|Multi") %>: 192.168.10.1,192.168.10.1-100</li>
+                  			          </ul>
+                              	</div>
+                              </div>
+                            </div>
+                            <!-- //tooltip -->
+                          </dt>
+                          <dd>
+                            <span class="form-info-title"><%= __("administrationSensor|Include") %></span> <div class="ui-input default-style"><input type="text" placeholder="" id="editInclude" value="<%= data.include %>"></div>
+                          </dd>
+                          <dd>
+                            <span class="form-info-title"><%= __("administrationSensor|Exclude") %></span> <div class="ui-input default-style"><input type="text" placeholder="" id="editExclude" value="<%= data.exclude %>"></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                         <dl>
+                          <dt><%= __("administrationSensor|Location") %></dt>
+                          <dd>
+                            <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.location %>"><input type="text" placeholder="" id="editSensor_location" value="<%= data.location %>"></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt><%= __("administrationSensor|Description") %></dt>
+                          <dd>
+                            <div class="ui-textarea default-style" data-valid data-maxbyte data-rel="<%= columnObj.desc %>"><textarea name="" id="editDesc" cols="30" rows="10"><%= data.desc %></textarea></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal point-style modal-btn-dataDelete float-left" id="deleteBtn"><%= __("administrationSensor|Delete data") %></button>
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+            <button type="button" class="btn btn-normal primary-style long-size" id="editBtn"><%= __("administrationSensor|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //modal-comp -->
+
+<script>
+  logdata('/admin/sensor/sensoredit', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  tooltip('.ui-tooltip');
+  maxbyte('.ui-input[data-maxbyte]');
+  maxbyte('.ui-textarea[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+<script>
+	validation('#modalEdit [data-validation]');
+  var validationEdit = $('#modalEdit [data-validation]').data('validation');
+</script>
+<script>
+  function applyCestTime(cestText,flag){
+    let hour = cestText.substr(5,2);
+    if(flag){
+      hour = Number(hour) + 1;
+    }else{
+      hour = Number(hour) - 1;
+    }
+    if(hour<10) hour = '0' + hour;
+    cestText = cestText.substr(0,5) + hour + cestText.substr(7);
+    return cestText;
+  }
+
+  (function(){
+    const cestFlag = <%= ObjView[0].cest %>;
+    if(!cestFlag) return;
+    const $selectBox = $('#editLocal_time_setting_select .select-box');
+    let selectBoxText = applyCestTime($selectBox.text(),cestFlag);
+    $selectBox.text(selectBoxText);
+  })();
+
+  $('#editSensor_cest').off('click.cest').on('click.cest', function(){
+    const $selectBox = $('#editLocal_time_setting_select .select-box');
+    let selectBoxText = applyCestTime($selectBox.text(), $(this).is(':checked'));
+    $selectBox.text(selectBoxText);
+  });
+
+  $('#editLocal_time_setting').off('change.cest').on('change.cest', function(){
+    $('#editSensor_cest').prop('checked', false);
+  });
+</script>
+<script>
+  var modalEdit = popupModal('#modalEdit');
+  modalEdit.open('#modalEdit');
+
+  $('#editBtn').on('click', function(e){
+
+    const $parent = $('#modalEdit .modal-content-wrap').eq(0);
+    const sensor_id = $parent.find('#editSensor_id').val();
+    const sensor_name = $parent.find('#editSensor_name').val();
+    const local_time_setting =  $parent.find('#editLocal_time_setting').val().split('=')[0];
+    const iso =  $parent.find('#editLocal_time_setting').find('option:selected').data('iso');
+    const cest = $parent.find('#editSensor_cest').is(":checked");
+    const include = $parent.find('#editInclude').val();
+    const exclude = $parent.find('#editExclude').val();
+    const group = $parent.find('#editSensor_group').val();
+    const location = $parent.find('#editSensor_location').val();
+    const desc = $parent.find('#editDesc').val();
+
+    const dataValue = {
+      "sensor_id": sensor_id,
+      "sensor_name": sensor_name,
+      "local_time_setting": local_time_setting.replace("UTC",""),
+      "iso": iso,
+      "cest": cest,
+      "include": include,
+      "exclude": exclude,
+      "gid": group,
+      "location": location,
+      "desc": desc
+    }
+
+    requestUpdate(dataValue, validationEdit, $('#modalEdit .loading-parent'));
+  });
+
+  // Data delete
+  $('#deleteBtn').on('click', function(e){
+    $('#modal-dataDelete').html('');
+
+    fetch(`/admin/sensor/user`,{
+      method: 'GET'
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-dataDelete').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+    })
+</script>
+
+<script>
+  (function(){
+    const sensor_type = $('#editSensor_type').val();
+
+    if(sensor_type == 1){
+      $('#editSensor_cest').prop("checked", false).attr("disabled", true);
+      $('#editInclude, #editExclude').val('').attr("disabled", true);
+      $('#editLocal_time_setting').attr("disabled", true);
+      $('#editLocal_time_setting + .select-dropbox .select-box').text('');
+      // Local time * 없에주기
+      $('#editSensor_cest').closest('.is-essential').removeClass('is-essential').addClass('no-essential')
+
+      // serial_number disabled
+      $('#editSerial_number').val('').attr("disabled", true);
+      // Serial number * 없에주기
+      $('#editSerial_number').parent().parent().siblings('.is-essential').removeClass('is-essential').addClass('no-essential')
+    }else{
+      // sensor_ip disabled
+      $('#editSensor_ip').val('').attr("disabled", true);
+      // Product IP * 없에주기
+      $('#editSensor_ip').parent().parent().siblings('.is-essential').removeClass('is-essential').addClass('no-essential')
+    }
+  })();
+</script>

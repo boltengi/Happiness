@@ -1,0 +1,123 @@
+<!-- card-box -->
+<article class="card-box">
+  <div class="card-header bottom-space">
+    <h2 class="card-title"><%= __("assetScan|Asset information") %></h2>
+    <div class="card-header-right">
+      <button type="button" id="btnBack" class="btn btn-link btn-back point-style"><%= __("assetScan|Back") %></button>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- card-content -->
+    <div class="card-content">
+      <% for (let i = 0; i < ObjView.length; i++) { %>
+      <% const data = ObjView[i] %>
+      <!-- table-comp -->
+      <div class="table-comp">
+        <table class="table info-style">
+          <caption>table</caption>
+          <colgroup>
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="row"><%= __("assetScan|Asset name") %></th>
+              <th scope="row"><%= __("assetScan|Sensor name") %></th>
+              <th scope="row"><%= __("assetScan|Last connected time") %></th>
+              <th scope="row"><%= __("assetScan|Status") %></th>
+              <th scope="row"><%= __("assetScan|Allow Deny") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= data.name %></td>
+              <td><%= data.sensor_name %></td>
+              <td><%= dateFormat(data.last_time) %></td>
+              <td>
+                <% if (data.status == 0) { %>
+                  <span class="status status-disconnected"></span> <span class="color-disconnected"><%= __("assetScan|Disconnected") %></span>
+                <% } else if (data.status == 1) { %>
+                  <span class="status status-connected"></span> <span class="color-connected"><%= __("assetScan|Connected") %></span>
+                <% } else { %>
+                  <span class="status status-default"></span> <span class="color-status"><%= __("assetScan|Unknown") %></span>
+                <% } %>
+              </td>
+              <td>
+                <!--
+                * @date 2021-05-06
+                * @desc fix bug about column name
+                * @company
+                * -->
+                <% if (data.allowed == 0) { %>
+                  <%= __("asset|Denied") %>
+                <% } else { %>
+                  <%= __("asset|Allowed") %>
+                <% } %>
+                <!-- // @date 2021-05-06 -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table info-style">
+          <caption>table</caption>
+          <colgroup>
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+            <col style="width: 20%; " />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="row"><%= __("assetScan|Asset IP") %></th>
+              <th scope="row"><%= __("assetScan|Asset MAC") %></th>
+              <th scope="row"><%= __("assetScan|Asset manufacture") %></th>
+              <th scope="row"><%= __("assetScan|Asset type") %></th>
+              <th scope="row"><%= __("assetScan|OS") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= data.ip %></td>
+              <td><%= data.mac %></td>
+              <td><%= data.manufacturer %></td>
+              <td><%= data.type %></td>
+              <td><%= data.os %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- //table-comp -->
+      <% } %>
+      <% if (ObjView.length == 0) { %>
+      <!-- empty -->
+      <div class="empty">
+        <div class="empty-box">
+          <div class="symbol symbol-empty">
+            <span class="symbol-icon question-style"></span>
+            <div class="symbol-figure empty-style"></div>
+          </div>
+          <p class="main-msg"><%= __("assetScan|No data available") %></p>
+          <p class="sub-msg"><%= __("assetScan|There is no data to show you right now.") %></p>
+        </div>
+      </div>
+      <!-- //empty -->
+      <% } %>
+    </div>
+    <!-- //card-content -->
+  </div>
+</article>
+<!-- //card-box -->
+
+<script>
+  $('#btnBack').off('click.historyBack').on('click.historyBack', function(){
+    history.go(-1);
+  });
+</script>
+
+<script>
+  logdata('/asset/scan/assetInformation', <%- JSON.stringify(locals) %>);
+</script>

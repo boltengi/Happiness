@@ -1,0 +1,186 @@
+<%- contentFor('title')%>
+<%= __("eventThreat|Threat") %> - <%= __("eventThreat|Event") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<!-- main -->
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-event"></span> <%= __("eventThreat|Event") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+
+  <div id="summary">
+    <!--
+    * @date 2021-05-31
+    * @desc front performance improvement - dummy rendering
+    * @company
+    * -->
+    <%- include('./threatSummary.ejs', {rendering: 'dummy'})%>
+    <!-- // @date 2021-05-31 -->
+  </div>
+
+  <div class="table-divide-wrap">
+    <div class="table-divide">
+      <div id="listTable" class="divide-inner loading-parent">
+        <div class="html-container">
+          <%- include('./threatList.ejs', {
+            ObjView : [],
+            pages : 1, current : 1,
+            time: {type: 'detection_time', from: '', to: ''},
+            rendering: 'dummy'
+          })%>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- //main -->
+
+<%- contentFor('modal')%>
+<div id="modal-processing" class="modal"></div>
+
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #listTable {
+    min-height: 750px;
+    background: #fff;
+    border-radius: 8px;
+  }
+</style>
+<script>
+  var customFilterCondition = [
+    {
+      select: { originval: 'category', dataval: '<%= __("eventThreat|Threat type") %>' },
+      condition: {
+        type: 'select',
+        options: [
+          { originval: 3, dataval: '<%= __("eventThreat|Spoofing") %>' },
+          { originval: 4, dataval: '<%= __("eventThreat|Zombie service") %>' },
+          { originval: 5, dataval: '<%= __("eventThreat|Backdoor") %>' },
+          { originval: 6, dataval: '<%= __("eventThreat|ICMP Redirect") %>' },
+          { originval: 7, dataval: '<%= __("eventThreat|Mining Nodes") %>' }
+        ]
+      }
+    },
+    {
+      select: { originval: 'sensor_name', dataval: '<%= __("eventThreat|Sensor name") %>' },
+      condition: { type: 'input' }
+    },
+    {
+      select: { originval: 'asset_name', dataval: '<%= __("eventThreat|Asset name") %>' },
+      condition: { type: 'input' }
+    },
+    {
+      select: { originval: 'severity', dataval: '<%= __("eventThreat|Severity") %>' },
+      condition: {
+        type: 'select',
+        options: [
+          { originval: 0, dataval: '<%= __("eventThreat|Low") %>' },
+          { originval: 1, dataval: '<%= __("eventThreat|Medium") %>' },
+          { originval: 2, dataval: '<%= __("eventThreat|High") %>' },
+          { originval: 3, dataval: '<%= __("eventThreat|Critical") %>' }
+        ]
+      }
+    },
+    {
+			select: {originval: 'action', dataval: '<%= __("eventThreat|Event processing") %>'},
+			condition: {
+				type: 'select',
+				options: [
+          {originval: true, dataval: '<%= __("eventThreat|Processed") %>'},
+          {originval: false, dataval: '<%= __("eventThreat|Pending process") %>'},
+          {originval: null, dataval: '<%= __("eventThreat|To be processed") %>'},
+				]
+			}
+		},
+    {
+      select: { originval: 'solution', dataval: '<%= __("eventThreat|Data") %>' },
+      condition: { type: 'input' }
+    },
+    {
+      select: { originval: 'response', dataval: '<%= __("eventThreat|Response") %>' },
+      condition: { type: 'input' }
+    },
+  ];
+</script>
+
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    const url = location.href.split("?")[0];
+    history.replaceState(state, null, url);
+  }
+  var maintainState = () => {
+    const {entries = 10, page = 1, filter = []} = history.state || {};
+    $('#listEntries').find(`option[value="${entries}"]`).prop('selected', true);
+    $('#pagination').find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == page}).addClass('active');
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const filterCustom = $list.find(`.filter-custom`).data('filterCustom')
+    /*************************************/
+    filterCustom && $.each(filter, function(index,element){
+      filterCustom.addItem(element)
+    });
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+</script>
+
+<script>
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+</script>
+
+<%- include('./threat.script.request.ejs')%>
+
+<script>
+  window.addEventListener("load", function(event) {
+    requestSummary();
+
+    const page = getState().page || 1;
+    const entries = getState().entries || 10;
+    const time = getState().time || null;
+    const stateFilter = getState().filter && getState().filter.length ? getState().filter : null;
+    const filters = stateFilter && stateFilter.map(function(element){
+      const filter = {};
+      filter[element.key.originval] = element.value.originval;
+      return filter;
+    });
+    requestList(page, entries, time, filters);
+  });
+</script>
+
+<script>
+  var refreshPage = (reset, refreshSetting = {}) => {
+    if(reset){
+      const initialState = {page: 1, time: null, filter: null};
+      setState({...initialState, ...refreshSetting});
+    }
+    window.location.reload(true);
+  }
+</script>

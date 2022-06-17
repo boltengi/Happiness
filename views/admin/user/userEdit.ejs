@@ -1,0 +1,187 @@
+<!-- modal-comp -->
+<div class="modal-comp" id="modalEdit" data-height="720px" data-user="<%= JSON.stringify(requestBody) %>">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationUser|General") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationUser|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <% if (ObjView.length == 0) { %>
+            <% } %>
+            <% for(let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <% const columnObj = {}
+              for (let i = 0; i < data.columnList.length ; i = i+2){
+                columnObj[data.columnList[i]] = data.columnList[i+1]
+              }
+            %>
+            <div class="form-group-list" data-uid="<%= data.uid %>">
+              <div class="form-group">
+                 <dl>
+                  <dt class="is-essential"><%= __("administrationUser|Company") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.company %>"><input type="text" placeholder="" id="editCompany" value="<%= data.company %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationUser|Maximum request length exceeded") %>'><%= __("administrationUser|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationUser|User name") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.name %>"><input type="text" placeholder="" id="editName" value="<%= data.user_name %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationUser|Maximum request length exceeded") %>'><%= __("administrationUser|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationUser|Email") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-emailtype data-maxbyte data-rel="<%= columnObj.email %>"><input type="email" placeholder="" id="editEmail" value="<%= data.user_email %>" readonly></div>
+                  </dd>
+                </dl>
+              </div>
+              <!--
+              * @date 2021-05-27
+              * @desc essential current password
+              * @company
+              * -->
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationUser|Current password") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.password %>"><input type="password" placeholder="" id="editCurrentPassword" autocomplete="new-password" value="<%= data.password %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationUser|Maximum request length exceeded") %>'><%= __("administrationUser|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div data-valid data-passwordconfirm>
+                <div class="form-group">
+                  <dl>
+                    <dt><%= __("administrationUser|New password") %></dt>
+                    <dd>
+                      <div class="ui-input default-style" data-valid data-password data-maxbyte data-rel="<%= columnObj.password %>"><input type="password" placeholder="" id="editNewPassword" autocomplete="new-password" value="<%= data.password %>"></div>
+                    </dd>
+                    <dd>
+                      <div class="form-info"><p class="warning-status" title='<%= __("administrationUser|Maximum request length exceeded") %>'><%= __("administrationUser|Maximum request length exceeded") %></p></div>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="form-group">
+                  <dl>
+                    <dt><%= __("administrationUser|Confirm password") %></dt>
+                    <dd>
+                      <div class="ui-input default-style" data-valid data-password data-maxbyte data-rel="<%= columnObj.password %>"><input type="password" placeholder="" id="editNewPassword2"></div>
+                    </dd>
+                    <dd>
+                      <div class="form-info"><p class="warning-status" title='<%= __("administrationUser|Maximum request length exceeded") %>'><%= __("administrationUser|Maximum request length exceeded") %></p></div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              <!-- // @date 2021-05-27 -->
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationUser|Role") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required>
+                      <select name="" id="editRole">
+                        <% if (local_role != 1) { %>
+                        <option value="0"<% if (data.role == 0) {%> selected<% } %>><%= __("administrationUser|Admin") %></option>
+                        <% } %>
+                        <option value="1"<% if (data.role == 1) {%> selected<% } %>><%= __("administrationUser|Manager") %></option>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationUser|Close") %></button>
+            <button type="button" id="editBtn" class="btn btn-normal primary-style long-size"><%= __("administrationUser|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //modal-comp -->
+<script>
+  logdata('/admin/user/useredit', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  maxbyte('.ui-input[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+  emailtype('.ui-input[data-emailtype]');
+  passwordconfirm('[data-passwordconfirm]');
+</script>
+
+<script>
+	validation('#modalEdit [data-validation]');
+  var validationEdit = $('#modalEdit [data-validation]').data('validation');
+</script>
+
+<script>
+  var modalEdit = popupModal('#modalEdit');
+  modalEdit.open('#modalEdit');
+
+  $('#editBtn').on('click', function(e){
+
+    const $parent = $('#modalEdit .form-group-list').eq(0);
+    const uid = $('#modalEdit').data('user').uid;
+    const company = $parent.find('#editCompany').val();
+    const name = $parent.find('#editName').val();
+    const email = $parent.find('#editEmail').val();
+    /**
+    * @date 2021-05-27
+    * @desc essential current password
+    * @company
+    */
+    const currentpassword = $parent.find('#editCurrentPassword').val();
+    const newpassword = $parent.find('#editNewPassword2').val();
+    /*************************************/
+
+    const role = $parent.find('#editRole').val();
+
+    const dataValue = {
+      "uid": uid,
+      "company": company,
+      "name": name,
+      "email": email,
+      /**
+      * @date 2021-05-27
+      * @desc essential current password
+      * @company
+      */
+      "password": currentpassword,
+      "newpassword": newpassword,
+      /*************************************/
+      "role": role
+    }
+
+    requestUpdate(dataValue, validationEdit, $('#modalEdit .loading-parent'));
+  });
+</script>

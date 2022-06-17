@@ -1,0 +1,342 @@
+<!-- search-area -->
+<div class="search-area">
+  <div class="search-right">
+    <!-- search-timefilter -->
+    <div class="search-timefilter">
+      <!-- timesearch-area -->
+      <div class="timesearch-area">
+        <div class="ui-radio default-style">
+          <input type="radio" name="ap_time_type" id="ap_detection_time" checked>
+          <label for="ap_detection_time"><%= __("wirelessRadar|Processed time") %></label>
+        </div>
+        <div class="ui-time">
+          <div class="time-setting">
+            <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("wirelessRadar|Quick select") %></span></button>
+            <div class="time-setting-content">
+              <div class="time-setting-header">
+                <h3 class="time-setting-title"><%= __("wirelessRadar|Quick select") %></h3>
+                <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("wirelessAP|close") %></span></button>
+              </div>
+              <ul>
+                <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("wirelessRadar|Today") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("wirelessRadar|Last 7day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("wirelessRadar|Last 30day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("wirelessRadar|This week") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("wirelessRadar|This month") %></button></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ui-datepicker datepicker-from">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="ap_from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+          </div>
+          <span class="form-text">-</span>
+          <div class="ui-datepicker datepicker-to">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="ap_to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+          </div>
+        </div>
+      </div>
+      <!-- //.timesearch-area -->
+      <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("wirelessRadar|search") %></span></span></button>
+
+      <!--
+      * @date 2021-04-15
+      * @desc add reset button
+      * @company
+      * -->
+      <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("wirelessRadar|reset") %></span></span></button>
+      <!-- // @date 2021-04-15 -->
+    </div>
+    <!-- //search-timefilter -->
+
+    <!-- filter-custom -->
+    <div class="filter-custom">
+      <div class="custom-result">
+        <!-- <div class="result-item">
+          <div class="result-title" data-result-key="asset_name">Asset name</div>
+          <div class="result-text" data-result-value="Norma">Norma</div>
+          <button type="button" class="btn btn-icon btn-result-delete"><span class="icon icon-custom-search-delete"><span class="sr-only">delete</span></span></button>
+        </div> -->
+      </div>
+      <div class="custom-search">
+        <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("wirelessRadar|Add filter") %></span></span></button>
+        <div class="custom-search-content">
+          <div class="custom-search-header">
+            <h3 class="custom-search-title"><%= __("wirelessRadar|Add filter") %></h3>
+            <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("wirelessRadar|close") %></span></button>
+          </div>
+          <div class="custom-search-box">
+            <div class="ui-search">
+              <div class="filter-select">
+              </div>
+              <div class="condition-box">
+              </div>
+            </div>
+          </div>
+          <div class="custom-search-footer">
+            <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("wirelessRadar|Add") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //filter-custom -->
+
+  </div>
+</div>
+<!-- //.search-area -->
+
+<div class="pack">
+  <!-- table-comp -->
+  <div class="table-comp table-check">
+    <div class="table-scroll default-style">
+      <div class="thead-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("wirelessRadar|APList") %></span></caption>
+          <colgroup>
+            <col style="width: 14%; " /> <!-- Processed time -->
+            <col style="width: 13%; " /> <!-- MAC -->
+            <col style="width: 20%; " /> <!-- ESSID -->
+            <col style="width: 11%; " /> <!-- Severity -->
+            <col style="width: 8%; " /> <!-- Privacy -->
+            <col style="width: 8%; " /> <!-- Auth -->
+            <col style="width: 8%; " /> <!-- Cipher -->
+            <col style="width: 9%; " /> <!-- CH -->
+            <col style="width: 9%; " /> <!-- S/N -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col"><%= __("wirelessRadar|Processed time") %></th> <!-- Processed time -->
+              <th scope="col"><%= __("wirelessRadar|MAC") %></th> <!-- MAC -->
+              <th scope="col"><%= __("wirelessRadar|ESSID") %></th> <!-- ESSID -->
+              <th scope="col"><%= __("wirelessRadar|Severity") %></th> <!-- Severity -->
+              <th scope="col"><%= __("wirelessRadar|Privacy") %></th> <!-- Privacy -->
+              <th scope="col"><%= __("wirelessRadar|Auth") %></th> <!-- Auth -->
+              <th scope="col"><%= __("wirelessRadar|Cipher") %></th> <!-- Cipher -->
+              <th scope="col"><%= __("wirelessRadar|CH") %></th> <!-- CH -->
+              <th scope="col"><%= __("wirelessRadar|S/N") %></th> <!-- S/N -->
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tbody-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("wirelessRadar|APList") %></span></caption>
+          <colgroup>
+            <col style="width: 14%; " /> <!-- Processed time -->
+            <col style="width: 13%; " /> <!-- MAC -->
+            <col style="width: 20%; " /> <!-- ESSID -->
+            <col style="width: 11%; " /> <!-- Severity -->
+            <col style="width: 8%; " /> <!-- Privacy -->
+            <col style="width: 8%; " /> <!-- Auth -->
+            <col style="width: 8%; " /> <!-- Cipher -->
+            <col style="width: 9%; " /> <!-- CH -->
+            <col style="width: 9%; " /> <!-- S/N -->
+          </colgroup>
+          <tbody>
+            <% for (let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <tr data-ap_id="<%= data.idx %>">
+              <td class="cell-center"><%= dateFormat(data.detection_time) %></td> <!-- Processed time -->
+              <td class="cell-center"><%= data.mac %></td> <!-- MAC -->
+              <td><%= data.essid %></td> <!-- ESSID -->
+              <td class="cell-center">
+                <% if ( data.severity == 0 ){ %> <span class="severity severity-safe"><%= __("wirelessRadar|Safe") %></span>
+                <% } else if ( data.severity == 1 ){ %> <span class="severity severity-normal"><%= __("wirelessRadar|Normal") %></span>
+                <% } else if ( data.severity == 2 ){ %> <span class="severity severity-danger"><%= __("wirelessRadar|Danger") %></span>
+                <% } %>
+              </td> <!-- Severity -->
+              <td class="cell-center"><%= data.privacy %></td> <!-- Privacy -->
+              <td class="cell-center"><%= data.auth %></td> <!-- Auth -->
+              <td class="cell-center"><%= data.cipher %></td> <!-- Cipher -->
+              <td class="cell-center"><%= data.ch %></td> <!-- CH -->
+              <td class="cell-center"><%= data.power %></td> <!-- S/N -->
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+        <!-- // @date 2021-05-31 -->
+        <!-- empty -->
+        <div class="empty">
+          <div class="empty-box">
+            <div class="symbol symbol-empty">
+              <span class="symbol-icon question-style"></span>
+              <div class="symbol-figure empty-style"></div>
+            </div>
+            <p class="main-msg"><%= __("wirelessRadar|No data available") %></p>
+            <p class="sub-msg"><%= __("wirelessRadar|There is no data to show you right now.") %></p>
+          </div>
+        </div>
+        <!-- //empty -->
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <!-- //table-comp -->
+</div>
+<div class="table-bottom">
+  <div class="table-bottom-right">
+    <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current, paginationID: 'apPagination'}) %>
+    <div class="ui-select default-style" data-direction="up">
+      <select name="" id="apListEntries">
+        <option value="10" selected><%= __("wirelessRadar|Show 10 entries") %></option>
+        <option value="20"><%= __("wirelessRadar|Show 20 entries") %></option>
+        <option value="30"><%= __("wirelessRadar|Show 30 entries") %></option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/wireless/radarDetection/apList/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  setTime('.ui-time');
+  dateTime('.ui-time');
+  filterCustom('#wirelessRadarAP .filter-custom', {data:customFilterCondition.ap});
+  selectDropdown('#wirelessRadarAP .ui-select.default-style');
+  formWidth();
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  var getTime = () => {
+    const time = {
+      type: 'detection_time',
+      from: $('#ap_from-datepicker').val(),
+      to: $('#ap_to-datepicker').val()
+    }
+    return time;
+  }
+  var getFilter = () => {
+    const $customResult = $('#wirelessRadarAP .custom-result');
+    const $resultItem = $('#wirelessRadarAP .result-item');
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    const $customResult = $('#wirelessRadarAP .custom-result');
+    const $resultItem = $('#wirelessRadarAP .result-item');
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+
+<script>
+  // entries 변경
+  $('#apListEntries').off('change.entries').on('change.entries', function(){
+
+    const sensor_id = getState().sensor_id;
+    const selectedTab = getState().selectedTab || 'AP';
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({AP: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+  });
+
+  // page 변경
+  $('#apPagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+
+    const sensor_id = getState().sensor_id;
+    const selectedTab = getState().selectedTab || 'AP';
+    const tabObj = getState()[selectedTab] || {};
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = tabObj.entries || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({AP: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+  });
+
+  $('#wirelessRadarAP [data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const sensor_id = getState().sensor_id;
+    const selectedTab = getState().selectedTab || 'AP';
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({AP: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('#wirelessRadarAP [data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const sensor_id = getState().sensor_id;
+    const selectedTab = getState().selectedTab || 'AP';
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({AP: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

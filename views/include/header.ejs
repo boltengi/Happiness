@@ -1,0 +1,77 @@
+<header id="header">
+	<div class="header-logo">
+		<h1 class="logo"><a href="/dashboard/dashboard"><span class="sr-only"><%= __(`common|ProgramName${company}`) %></span></a></h1>
+	</div>
+	<div class="header-gnb">
+		<div class="header-language header-dropdown">
+			<span class="selected-language btn-dropdown"><%= __("header|english") %></span>
+			<div class="header-dropdown-content">
+				<ul class="language-list">
+					<li data-lang="kr"><a href="/kr"><%= __("header|korean") %></a></li>
+					<li data-lang="fr"><a href="/fr"><%= __("header|french") %></a></li>
+					<li data-lang="cn"><a href="/cn"><%= __("header|chinese") %></a></li>
+					<li data-lang="es"><a href="/es"><%= __("header|spanish") %></a></li>
+					<li data-lang="de"><a href="/de"><%= __("header|german") %></a></li>
+					<li data-lang="en"><a href="/en"><%= __("header|english") %></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="header-user header-dropdown">
+			<span class="user-name btn-dropdown"><span id="user-name"></span></span>
+			<div class="header-dropdown-content">
+				<ul class="user-box">
+					<li><a href="/admin/system"><span class="icon icon-user-info"></span><%= __("header|Version info") %></a></li>
+					<li><a href="/admin/user/logout"><span class="icon icon-user-logout"></span><%= __("header|Logout") %></a></li>
+				</ul>
+			</div>
+		</div>
+		<button type="button" data-btn="feedbar" id="alarm-feedbar" class="header-btn-layout"><span class="sr-only"><%= __("header|layout") %></span></button>
+	</div>
+</header>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',()=>{
+	function applyUser(){
+		fetch('/header/header/user').then(response=>response.json())
+		.then(data=>{
+			const userName = data.user_name;
+			$('#user-name').html(userName);
+			/**
+	    * @date 2021-05-27
+	    * @desc essential current password
+	    * @company
+	    */
+			const uid = data.user_uid;
+			$('#user-name').data('uid', uid);
+			/*************************************/
+		});
+	}
+	function applyLangauge(){
+		const locale = <%- JSON.stringify(locale) %>;
+		let language = '';
+		let languageText = '';
+		switch(locale){
+			case 'kr': language = 'korean'; languageText = '<%= __("header|korean") %>'; break;
+			case 'fr': language = 'french'; languageText = '<%= __("header|french") %>'; break;
+			case 'cn': language = 'chinese'; languageText = '<%= __("header|chinese") %>'; break;
+			case 'es': language = 'spanish'; languageText = '<%= __("header|spanish") %>'; break;
+			case 'de': language = 'german'; languageText = '<%= __("header|german") %>'; break;
+			case 'en': language = 'english'; languageText = '<%= __("header|english") %>'; break;
+			default: language = 'english'; languageText = '<%= __("header|english") %>';
+		}
+		$('.selected-language').addClass(`is-${language}`).html(languageText);
+		$(`.language-list li`).removeClass('on')
+		$(`.language-list li[data-lang="${locale}"]`).addClass('on');
+
+	}
+
+		applyUser();
+		applyLangauge();
+});
+/*************************************/
+</script>

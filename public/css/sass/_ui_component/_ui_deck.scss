@@ -1,0 +1,129 @@
+.deck
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    height: 352px;
+    margin-bottom: 35px;
+
+    border-radius: 8px;
+    background: var(--deck-bg);
+    box-shadow: var(--card-shadow);
+
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.deck .deck-header
+{
+    padding-top: 40px;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+
+.deck .deck-header:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+
+.deck .deck-header .deck-title
+{
+    font-family: var(--font-family-title);
+    font-size: 20px;
+    line-height: 1.35;
+
+    display: inline-block;
+
+    color: var(--card-header-color);
+}
+
+.deck-header-right
+{
+    position: relative;
+
+    float: right;
+}
+
+.deck-total-text
+{
+    font-family: var(--font-family-title);
+    font-size: 22px;
+
+    position: relative;
+    top: -2px;
+
+    display: inline-block;
+
+    color: var(--card-header-right-color);
+}
+
+.deck-term-text
+{
+    font-size: 12px;
+
+    color: var(--card-header-term-color);
+}
+.deck-header-right .deck-term-text
+{
+    position: absolute;
+    top: -24px;
+    right: 0;
+
+    white-space: nowrap;
+}
+.deck-body
+{
+    box-sizing: border-box;
+    height: 100%;
+    padding-top: 28px;
+    padding-right: 35px;
+    padding-bottom: 40px;
+    padding-left: 35px;
+}
+
+/**********************************
+ ********** deck content **************
+ **********************************/
+.deck-bar-wrap
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    height: 100%;
+    padding-right: 25px;
+    padding-bottom: 30px;
+    padding-left: 25px;
+
+    justify-content: space-around;
+}
+
+.deck-bar-wrap .bar-graph-box
+{
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.deck-bar-wrap .bar-graph-box:last-child
+{
+    margin-bottom: 0;
+}
+
+.deck-bar-wrap.lots-type
+{
+    padding-bottom: 0;
+}
+
+.deck-bar-wrap.lots-type .bar-graph-box
+{
+    margin-top: 0;
+    margin-bottom: 12px;
+}

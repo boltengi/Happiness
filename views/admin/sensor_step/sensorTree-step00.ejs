@@ -1,0 +1,66 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <div class="card-box">
+    <!-- tree-comp -->
+    <div class="tree-comp">
+      <div class="tree-header">
+        <h2 class="tree-title"><%= __("administrationSensor|Sensor Tree") %></h2>
+      </div>
+      <div class="tree-search">
+        <div class="ui-search">
+          <div class="ui-input default-style"><input type="text" placeholder="<%= __("administrationSensor|Search") %>"></div>
+          <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("administrationSensor|Search") %></span></span></button>
+        </div>
+      </div>
+      <div class="tree">
+        <button type="button" class="btn btn-tree-all"><%= __("administrationSensor|Open all") %></button>
+        <!-- tree-empty -->
+        <div class="tree-empty">
+          <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                <span class="symbol-icon question-style"></span>
+                <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+              <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+            </div>
+          </div>
+          <!-- //empty -->
+        </div>
+        <!-- //tree-empty -->
+      </div>
+    </div>
+    <!-- //tree-comp -->
+  </div>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+<script>
+  var treeData = <%- tree_groups %> || [];
+  console.log('treeData', treeData)
+</script>
+
+<script>
+  tree('.tree-comp', {
+    data: treeData, checkCallback: function(data){
+      // checkedIds, checkedId
+      const checkedIds = data.checkedIds;
+
+      const page = 1;
+      const entries = 10;
+      const sid = checkedIds.sid;
+      const dataIDs = data.dataIDs;
+
+      requestList(page, entries, sid);
+    }
+  });
+
+  var page = 1;
+  var entries = 10;
+  var sid = null;
+
+  requestList(page, entries, sid);
+</script>

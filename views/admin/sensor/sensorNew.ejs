@@ -1,0 +1,329 @@
+<% const columnObj = {}
+  for (let i = 0; i < columnList.length ; i = i+2){
+    columnObj[columnList[i]] = columnList[i+1]
+  }
+%>
+
+<div class="modal-comp longer-size" id="modalNew" data-height="710px">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|New Sensor") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <div class="modal-content-wrap">
+              <div class="container">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group-list no-spacing">
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Sensor Type") %></dt>
+                          <dd>
+                            <div class="ui-select default-style" data-valid data-required>
+                              <select name="" id="newSensor_type">
+                                <% if(requestBody.is_Sensor_type_Fix) { %>
+                                  <% if(requestBody.sensor_type == 0 || requestBody.sensor_type == 2) { %>
+                                    <option value="0"><%= __("administrationSensor|Sensor Device") %></option>
+                                     <!-- <option value="2"><%= __("administrationSensor|Client Software") %></option> -->
+                                  <% } else if(requestBody.sensor_type == 1){ %>
+                                    <option value="1"><%= __("administrationSensor|Embedded Software") %></option>
+                                  <% } %>
+                                <% } else { %>
+                                  <option value="0"><%= __("administrationSensor|Sensor Device") %></option>
+                                  <option value="1"><%= __("administrationSensor|Embedded Software") %></option>
+                                  <!-- <option value="2"><%= __("administrationSensor|Client Software") %></option> -->
+                                <% } %>
+                              </select>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                         <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Product IP") %></dt>
+                          <dd>
+                            <% if(requestBody.sensor_type == 1) { %>
+                              <div id="newSensor_ip_box" class="ui-input default-style" data-required data-maxbyte data-rel="<%= columnObj.sensor_ip %>"><input type="text" placeholder="" id="newSensor_ip" <% if(requestBody.status == -1) { %> value="<%= requestBody.sensor_ip %>" disabled<% } %>></div>
+                            <% } else { %>
+                              <div id="newSensor_ip_box" class="ui-input default-style" data-required data-maxbyte data-rel="<%= columnObj.sensor_ip %>"><input type="text" placeholder="" id="newSensor_ip" <% if(requestBody.status == -1) { %> value="<%= requestBody.sensor_ip %>" disabled<% } %>></div>
+                            <% } %>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                         <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Sensor ID") %></dt>
+                          <dd>
+                            <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.sensor_id %>"><input type="text" placeholder="" id="newSensor_id" <% if(requestBody.status == -1) { %> value="<%= requestBody.sensor_id %>" disabled<% } %>></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Sensor name") %></dt>
+                          <dd>
+                            <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.sensor_name %>"><input type="text" placeholder="" id="newSensor_name"></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt><%= __("administrationSensor|Serial number") %></dt>
+                          <dd>
+                            <div id="newSerial_number_box" class="ui-input default-style" data-rel="<%= columnObj.serial_number %>"><input type="text" placeholder="" id="newSerial_number" <% if(requestBody.status == -1) { %> value="<%= requestBody.serial_number %>" disabled<% } %> disabled></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential">
+                            <%= __("administrationSensor|Local time") %>
+                            <div class="form-group-right">
+                              <div class="ui-checkbox default-style small-size">
+                              	<input type="checkbox" name="newSensor_cest" id="newSensor_cest">
+                              	<label for="newSensor_cest"><%= __("administrationSensor|Daylight saving time") %></label>
+                              </div>
+                            </div>
+                          </dt>
+                          <dd>
+                            <div class="ui-select default-style ellipsis" data-valid data-required data-width="100%" data-direction="up">
+                              <select name="" id="newLocal_time_setting">
+                                <%- include ('./localTimeOption.ejs', {timeZoneType: 'localutc', localutc: localutc}) %>
+                              </select>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt class="is-essential"><%= __("administrationSensor|Group") %></dt>
+                          <dd>
+                            <div class="ui-select default-style" data-valid data-required data-width="100%" data-direction="up">
+                              <select name="" id="newSensor_group">
+                                <% for (let j = 0; j < groupList.length; j +=2) { %>
+                                  <% if (groupList[j] != 1) { %>
+                                  <option value="<%= groupList[j] %>"<% if(requestBody.gid == groupList[j]){ %>selected<% } %>><%= groupList[j+1] %></option>
+                                  <% } %>
+                                <% } %>
+                              </select>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group-list no-spacing">
+                      <div class="form-group">
+                        <dl>
+                          <dt>
+                            <%= __("administrationSensor|IP scanning range") %>
+                            <!-- tooltip -->
+                            <div class="ui-tooltip" data-tooltipevent="hover" data-direction="bottom-left" data-width="200px">
+                  						<div class="btn-tooltip">
+                  							<button type="button" class="btn btn-icon btn-question">
+                  	              <span class="icon icon-question icon-small"><span class="sr-only"><%= __("administrationSensor|note") %></span></span>
+                  	            </button>
+                              </div>
+                              <div class="tooltip-contentbox">
+                              	<div class="tooltip-content">
+                                  <h6 class="bullet-title alpha-style"><%= __("administrationSensor|IP range input syntax") %></h6>
+                  								<ul class="ul-list top-spacing">
+                  			            <li class="list-style"><%= __("administrationSensor|Single") %>: 192.168.10.1,192.168.10.2</li>
+                  			            <li class="list-style"><%= __("administrationSensor|Range") %>: 192.168.10.1-100</li>
+                  			            <li class="list-style"><%= __("administrationSensor|Multi") %>: 192.168.10.1,192.168.10.1-100</li>
+                  			          </ul>
+                              	</div>
+                              </div>
+                            </div>
+                            <!-- //tooltip -->
+                          </dt>
+                          <dd>
+                            <span class="form-info-title"><%= __("administrationSensor|Include") %></span> <div class="ui-input default-style"><input type="text" placeholder="" id="newInclude"></div>
+                          </dd>
+                          <dd>
+                            <span class="form-info-title"><%= __("administrationSensor|Exclude") %></span> <div class="ui-input default-style"><input type="text" placeholder="" id="newExclude"></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt><%= __("administrationSensor|Location") %></dt>
+                          <dd>
+                            <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.location %>">
+                              <input type="text" placeholder="" id="newSensor_location">
+                            </div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="form-group">
+                        <dl>
+                          <dt><%= __("administrationSensor|Description") %></dt>
+                          <dd>
+                            <div class="ui-textarea default-style" data-valid data-maxbyte data-rel="<%= columnObj.desc %>"><textarea name="" id="newDesc" cols="30" rows="10"></textarea></div>
+                          </dd>
+                          <dd>
+                            <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" id="newCloseBtn" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+            <button type="button" id="newSendBtn" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  logdata('/admin/sensor/newsensor', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  var modalNew = popupModal('#modalNew');
+  modalNew.open('#modalNew');
+</script>
+<script>
+  formWidth();
+  selectDropdown('.ui-select.default-style');
+  tooltip('.ui-tooltip');
+  maxbyte('.ui-input[data-maxbyte]');
+  maxbyte('.ui-textarea[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+
+<script>
+	validation('#modalNew [data-validation]');
+  var validationNew = $('#modalNew [data-validation]').data('validation');
+</script>
+
+<script>
+
+  var localTimeClone = $('#newLocal_time_setting + .select-dropbox .select-box').text();
+
+  // Sensor Type onchange
+  $('#newSensor_type').on('change', function(e){
+    const sensor_type = $(this).val();
+    if(sensor_type == 1){
+      // Daylight saving time 체크헤제, disabled
+      $('#newSensor_cest').prop("checked", false).attr("disabled", true);
+      $('#newInclude, #newExclude').val('').attr("disabled", true);
+      localTimeClone = $('#newLocal_time_setting + .select-dropbox .select-box').text();
+      $('#newLocal_time_setting').attr("disabled", true);
+      $('#newLocal_time_setting + .select-dropbox .select-box').text('');
+      // Local time * 없에주기
+      $('#newSensor_cest').closest('.is-essential').removeClass('is-essential').addClass('no-essential')
+
+      // sensor_ip abled
+      $('#newSensor_ip').attr("disabled", false);
+      // Product IP * 붙여주기
+      $('#newSensor_ip').parent().parent().siblings('.no-essential').removeClass('no-essential').addClass('is-essential')
+      // Maximum request length exceeded 보여주기
+      $('#newSensor_ip').parent().parent().next().show();
+      // validation update
+      validationNew.addValidItem($('#newSensor_ip_box'), 1);
+      // 만약 status 가 -1 이면 Product IP disabled
+      if( <%= requestBody.status %> == -1){
+        $('#newSensor_ip').attr("disabled", true);
+      }
+    }else{
+      $('#newSensor_cest').prop("checked", false).attr("disabled", false);
+      $('#newInclude, #newExclude').val('').attr("disabled", false);
+      $('#newLocal_time_setting').attr("disabled", false);
+      $('#newLocal_time_setting + .select-dropbox .select-box').text(localTimeClone);
+      // Local time * 붙여주기
+      $('#newSensor_cest').closest('.no-essential').removeClass('no-essential').addClass('is-essential')
+      // sensor_ip disabled
+      $('#newSensor_ip').val('').attr("disabled", true);
+
+      // Product IP * 없에주기
+      $('#newSensor_ip').parent().parent().siblings('.is-essential').removeClass('is-essential').addClass('no-essential')
+      // Maximum request length exceeded 숨기기
+      $('#newSensor_ip').parent().parent().next().hide();
+      // validation update
+      validationNew.removeValidItem($('#newSensor_ip_box'));
+    }
+  })
+  // const sensor_type = $('#newSensor_type').val();
+  // console.log('sensor_type ', sensor_type)
+
+  // init
+  $('#newSensor_type').val(<%= requestBody.sensor_type %>).prop('selected', true).change();
+
+  $('#newSendBtn').on('click', function(e){
+
+    const $parent = $('#modalNew .modal-content-wrap').eq(0);
+    const sensor_type = parseInt($parent.find('#newSensor_type').val());
+    const sensor_ip = $parent.find('#newSensor_ip').val();
+    const sensor_id = $parent.find('#newSensor_id').val();
+    const sensor_name = $parent.find('#newSensor_name').val();
+    const iso =  $parent.find('#newLocal_time_setting').find('option:selected').data('iso');
+    const cest = $parent.find('#newSensor_cest').is(":checked");
+    const include = $parent.find('#newInclude').val();
+    const exclude = $parent.find('#newExclude').val();
+    const gid =  $parent.find('#newSensor_group').val()
+    const location = $parent.find('#newSensor_location').val();
+    const desc = $parent.find('#newDesc').val();
+
+    // sensor type == 1  => embedded software => ''값
+    let local_time_setting = '';
+
+    if($('#newSensor_type').val() == 1){
+       local_time_setting =  '';
+    }else{
+       local_time_setting =  $parent.find('#newLocal_time_setting').val().split('=')[0];
+    }
+
+    const dataValue = {
+      "sensor_type": sensor_type,
+      "sensor_ip": sensor_ip,
+      "sensor_id": sensor_id,
+      "sensor_name": sensor_name,
+      "local_time_setting": local_time_setting.replace("UTC",""),
+      "iso": iso,
+      "cest": cest,
+      "include": include,
+      "exclude": exclude,
+      "gid": gid,
+      "location": location,
+      "desc": desc,
+      "status": <%= requestBody.status %>
+    }
+
+    requestCreate(dataValue, validationNew, $('#modalNew .loading-parent'));
+  });
+</script>

@@ -1,0 +1,390 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationGroup|Group") %></h2>
+      <div class="card-header-right">
+
+        <!--
+        * @date 2021-04-15
+        * @desc add reset button
+        * @company
+        * -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("administrationGroup|search") %></span></span></button>
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("administrationGroup|reset") %></span></span></button>
+        <!-- // @date 2021-04-15 -->
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <div class="filter-custom">
+          <div class="custom-result">
+          </div>
+          <div class="custom-search">
+            <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("administrationGroup|Add filter") %></span></span></button>
+            <div class="custom-search-content">
+              <div class="custom-search-header">
+                <h3 class="custom-search-title"><%= __("administrationGroup|Add filter") %></h3>
+                <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("administrationGroup|close") %></span></button>
+              </div>
+              <div class="custom-search-box">
+                <div class="ui-search">
+                  <div class="filter-select">
+                  </div>
+                  <div class="condition-box">
+                  </div>
+                </div>
+              </div>
+              <div class="custom-search-footer">
+                <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("administrationGroup|Add") %></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp table-check table-accordion">
+          <div class="table-scroll default-style">
+            <div class="thead-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("administrationGroup|GroupList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 23%; " /><!-- Parent group -->
+                  <col style="width: 22%; " /><!-- Group name -->
+                  <col style="width: 22%; " /><!-- Users -->
+                  <col style="width: 24%; " /><!-- Description -->
+                  <col style="width: 6%; " /><!-- Edit -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col" class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="checkbox1" id="checkbox0_1">
+                        <label for="checkbox0_1"><span class="sr-only"><%= __("administrationGroup|select") %></span></label>
+                      </div>
+                    </th>
+                    <th scope="col"><%= __("administrationGroup|Parent group") %></th>
+                    <th scope="col"><%= __("administrationGroup|Group name") %></th>
+                    <th scope="col"><%= __("administrationGroup|Users") %></th>
+                    <th scope="col"><%= __("administrationGroup|Description") %></th>
+                    <th scope="col"><%= __("administrationGroup|Edit") %></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("administrationGroup|SensorList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 23%; " /><!-- Parent group -->
+                  <col style="width: 22%; " /><!-- Group name -->
+                  <col style="width: 22%; " /><!-- Users -->
+                  <col style="width: 24%; " /><!-- Description -->
+                  <col style="width: 6%; " /><!-- Edit -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <tr data-gid="<%= data.idx %>">
+                    <td class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="group<%= i %>-check" id="group<%= i %>-check">
+                        <label for="group<%= i %>-check"><span class="sr-only"><%= __("administrationGroup|select") %></span></label>
+                      </div>
+                    </td>
+                    <td data-parent="<%= data.parent %>"><%= data.parent %></td>
+                    <td><%= data.group_name %></td>
+                    <td>
+                      <div class="ui-select default-style" data-width="90%" data-userlist="">
+                        <select name="" id="">
+                          <% for (let j = 0; j < data.userList.length; j += 2) { %>
+                          <option value="<%= data.userList[j] %>"><%= data.userList[j+1] %></option>
+                          <% } %>
+                          <!--
+                          * @date 2021-04-29
+                          * @desc fix bug show undefined if userlist no exist
+                          * @company
+                          * -->
+                          <% if(!data.userList.length) {%>
+                            <option value=""></option>
+                          <% } %>
+                          <!-- // @date 2021-04-29 -->
+                        </select>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="ellipsis"><%= data.desc %></span>
+                    </td>
+                    <td class="cell-center">
+                      <button type="button" data-btn="edit" class="btn btn-icon btn-edit">
+                        <span class="icon icon-edit"><span class="sr-only"><%= __("administrationGroup|edit") %></span></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <!--
+              * @date 2021-05-31
+              * @desc front performance improvement - dummy rendering
+              * @company
+              * -->
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- // @date 2021-05-31 -->
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("administrationGroup|No data available") %></p>
+                  <p class="sub-msg"><%= __("administrationGroup|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="btn-table-box">
+          <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationGroup|Delete") %></button>
+          <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationGroup|New group") %></button>
+        </div>
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("administrationGroup|Show 10 entries") %></option>
+              <option value="20"><%= __("administrationGroup|Show 20 entries") %></option>
+              <option value="30"><%= __("administrationGroup|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/group/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  maintainState();
+</script>
+<script>
+  var getPage = () => {
+    const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+    return page;
+  }
+  var getEntries = () => {
+    const entries = $('#listEntries option:selected').val() || 10;
+    return entries
+  }
+  var getSID = () => {
+    let sid = $.map($('#tree').find('.tree-item.sensor-type.checked'), function(e){
+      return $(e).data('sid');
+    });
+
+    sid = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sid);
+
+    return sid
+  }
+  var getGID = () => {
+    let gid = $.map($('#tree').find('.tree-item.tree-type.checked'), function(e){
+      return Number($(e).data('id').replace('tree-g-',''));
+    });
+
+    return gid
+  }
+  var getTime = () => {
+    const time = {
+      type: 'detection_time',
+      from: $('#from-datepicker').val(),
+      to: $('#to-datepicker').val()
+    }
+    return time;
+  }
+  var getFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+<script>
+	filterCustom('.filter-custom', {data: customFilterCondition});
+  tableCheck('.table-check');
+  selectDropdown('.ui-select');
+  formWidth();
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+    const sid = getSID();
+    const gid = getGID();
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+    requestList(page, entries, sid, gid, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sid = getSID();
+    const gid = getGID();
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page});
+    requestList(page, entries, sid, gid, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sid = getSID();
+    const gid = getGID();
+
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, filter: stateFilter});
+
+    requestList(page, entries, sid, gid, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sid = getSID();
+    const gid = getGID();
+
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, filter: filters});
+
+    requestList(page, entries, sid, gid, stateFilter);
+  });
+  /*************************************/
+</script>
+
+<script>
+  // new sensor
+  $('[data-btn="new"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+    const dataValue = {}
+    requestNewPopup(dataValue);
+  });
+</script>
+
+<script>
+  // edit 수정
+  $('[data-btn="edit"]').off('click.edit').on('click.edit', function(){
+    const gid = $(this).closest('tr').data('gid');
+    const users = $.map($(this).closest('tr').find('[data-userlist] select option'), function(elemenet){
+      return $(elemenet).val();
+    });
+    const parent = $(this).closest('tr').find('[data-parent]').data('parent');
+
+    const dataValue = {
+      gid: gid,
+      users: users,
+      parent: parent
+    }
+
+    requestEditPopup(dataValue, gid);
+  });
+</script>
+<script>
+  $('[data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    const tableCheckedId = $.map($('#listTable').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('gid');
+    });
+    requestDelete(tableCheckedId);
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

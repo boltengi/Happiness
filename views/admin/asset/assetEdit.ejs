@@ -1,0 +1,313 @@
+<div class="modal-comp" id="modalEdit" data-height="730px" data-asset_id="<%= JSON.stringify(requestBody) %>">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationAsset|Edit asset") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationAsset|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <!-- modal-tab-content -->
+          <div class="modal-tab-content on">
+            <% for(let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <% const columnObj = {}
+              for (let i = 0; i < data.columnList.length ; i = i+2){
+                columnObj[data.columnList[i]] = data.columnList[i+1]
+              }
+            %>
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Sensor group") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-val data-required id="editSensor_group-ui">
+                      <select name="" id="editSensor_group">
+
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Sensor name") %></dt>
+                  <dd>
+                    <div id="editWrapSensor_id" class="form-ui-wrap">
+                      <div class="ui-select default-style" data-valid data-required id="editSensor_id-ui">
+                      </div>
+                    </div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Sensor does not exist in this group") %>'><%= __("administrationSensor|Sensor does not exist in this group") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Name") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.name %>"><input type="text" id="editAsset_name" placeholder="" value="<%= data.asset_name %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|IP") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.ip %>"><input type="text" id="editAsset_ip" placeholder="" value="<%= data.asset_ip %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|MAC") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.mac %>"><input type="text" id="editAsset_mac" placeholder="" value="<%= data.asset_mac %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Type") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-direction="up">
+                      <select name="" id="editAsset_type">
+                        <% const assetType = [
+                          'Unknown',
+                          'CCTV',
+                          'AP Station',
+                          'NAS',
+                          'Printer',
+                          'Speaker',
+                          'Mobile',
+                          'Wireless Router',
+                          'Tablet',
+                          'Laptop',
+                          'Wireless Phone',
+                          'Pocket WiFi',
+                          'Desktop' ,
+                          'Industrial Camera' ,
+                          'UHD STREAM GENERATOR' ,
+                          'Wireless Sensor' ,
+                          'VPNRouter' ,
+                          'BlackBox' ,
+                          'Wireless Receiver' ,
+                          'USB' ,
+                          'Switch',
+                          'Smart Watch' ,
+                          'Smart TV' ,
+                          'Healthcare Monitor Sensor' ,
+                          'PoS Panel PC' ,
+                          'PoS' ,
+                          'Outdoor Wireless Router' ,
+                          'NVR',
+                          'Media Player' ,
+                          'Extender' ,
+                          'Electonic Control' ,
+                          'ADSL Router' ,
+                          'Access Control' ,
+                          'DVR' ,
+                          '4G LTE router',
+                          'Gateway'
+                        ]
+                        %>
+                        <% for (let j = 0; j < assetType.length ;j++){ %>
+                        <% const assetTypeData = assetType[j] %>
+                          <option value="<%= assetTypeData %>" <% if(data.asset_type == assetTypeData){ %>selected<% } %>><%= assetTypeData %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Manufacturer") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.manufacturer %>"><input type="text" id="editAsset_manufacturer" placeholder="" value="<%= data.asset_manufacturer %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt><%= __("administrationAsset|Model") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.model %>"><input type="text" id="editAsset_model" placeholder="" value="<%= data.asset_model %>"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Allow Deny") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-direction="up">
+                      <select name="" id="editAsset_allowed">
+                        <option value="1" <% if (data.asset_allowed == 1) { %> selected<% } %>><%= __("administrationAsset|Allow") %></option>
+                        <option value="0" <% if (data.asset_allowed == 0) { %> selected<% } %>><%= __("administrationAsset|Deny") %></option>
+                      </select>
+                    </div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationAsset|In order to use this function,") %> <%= __("administrationAsset|please activate 'Assets blocking policies(Unauthorized)'") %>'><%= __("administrationAsset|In order to use this function,") %><br /> <%= __("administrationAsset|please activate 'Assets blocking policies(Unauthorized)'") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+            <% } %>
+          </div>
+          <!-- //modal-tab-content -->
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationAsset|Close") %></button>
+            <button type="button" id="editSendBtn" class="btn btn-normal primary-style long-size"><%= __("administrationAsset|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  logdata('/admin/asset/assetedit', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var modalEdit = popupModal('#modalEdit');
+  modalEdit.open('#modalEdit');
+</script>
+<script>
+  maxbyte('.ui-input[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+<script>
+	validation('#modalEdit [data-validation]');
+  var validationEdit = $('#modalEdit [data-validation]').data('validation');
+</script>
+<% if(ObjView.length != 0) { %>
+<script>
+  var editRequestBody = <%- JSON.stringify(requestBody) %> || {};
+  var editTree_groups = editRequestBody.tree_groups;
+  var treeObj = $.tree.createGroupSensorObj(editTree_groups);
+  var selectOne = 'editSensor_group';
+  var selectTwoWrap = 'editWrapSensor_id';
+  var selectTwo = 'editSensor_id';
+  var initGid = '<%= ObjView[0].gid %>' || Object.keys(treeObj)[1];
+  var initSid = '<%= ObjView[0].sid %>' || '';
+
+  function selectSensorUI(tree_grous, selectOne, selectTwoWrap, selectTwo, initGid = 1, initSid){
+    const $sensor_group =  $('#' + selectOne).html('');
+    const $wrapSensor_id =  $('#' + selectTwoWrap).html('');
+
+    Object.entries(treeObj).forEach(([k,v], i) =>{
+      if(k == 1) return;
+      if(v.gid == initGid) linkedSelect(v.gid);
+      $sensor_group.append(`<option value="${v.gid}" ${v.gid == initGid ? ` selected` : null}>${v.text}</option>`);
+    });
+    selectDropdown(`#${selectOne}-ui .ui-select.default-style`);
+
+    function linkedSelect(gid){
+      $wrapSensor_id.html(`<div class="ui-select default-style" data-valid data-required id="${selectTwo}-ui" data-width="100%"><select name="" id="${selectTwo}"></select></div>`);
+      const $sensor_id = $('#' + selectTwo);
+      const $form_info = $sensor_id.closest('dd').next('dd').find('.form-info');
+      if(Object.entries(treeObj[gid].children).length){
+        Object.entries(treeObj[gid].children).forEach(([k,v]) =>{
+          $sensor_id.append(`<option value="${v.sensor_id}" ${v.sid == initSid ? ` selected` : null} data-sid="${v.sid}">${v.text}</option>`);
+        });
+        $form_info.removeClass('on');
+      }else{
+        $sensor_id.append(`<option value=""><%= __("administrationAsset|Sensor does not exist in this group.") %></option>`);
+        $form_info.addClass('on');
+      }
+
+      selectDropdown(`#${selectTwo}-ui.ui-select.default-style`);
+      formWidth();
+      required(`#${selectTwo}-ui.ui-select[data-required]`);
+      validationEdit.addValidItem($(`#${selectTwo}-ui`),1);
+    }
+    $sensor_group.on('change', function(){
+      const gid = $(this).val();
+      linkedSelect(gid);
+    });
+  }
+  selectSensorUI(editTree_groups, selectOne, selectTwoWrap, selectTwo, initGid, initSid);
+
+  (function(){
+    var editRequestBody = <%- JSON.stringify(requestBody) %> || {};
+    var editTree_groups = editRequestBody.tree_groups;
+
+    function changeAllowDeny(){
+      const sid = $('#editSensor_id').find('option:selected').data('sid');
+      const {unauthorised_block} = editTree_groups.find(ele=>ele.sid == sid) || {};
+      
+      $('#editAsset_allowed').attr('disabled', !unauthorised_block);
+      if(unauthorised_block == 0){
+        $('#editAsset_allowed').closest('dd').next('dd').find('.form-info').addClass('is-info');
+      }else{
+        $('#editAsset_allowed').closest('dd').next('dd').find('.form-info').removeClass('is-info');
+      }
+    }
+    changeAllowDeny();
+    $('#editSensor_group-ui').on('change', 'select', function(){
+      changeAllowDeny();
+    })
+    $('#editWrapSensor_id').on('change', 'select', function(){
+      changeAllowDeny();
+    });
+  })();
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+</script>
+
+<script>
+  $('#editSendBtn').on('click', function(e){
+
+    const $parent = $('#modalEdit .form-group-list').eq(0);
+    const asset_id = $('#modalEdit').data('asset_id').aid;
+    const gid = $parent.find('#editSensor_group').val();
+    const sensor_id = $parent.find('#editSensor_id').val();;
+    const asset_name = $parent.find('#editAsset_name').val();
+    const asset_ip = $parent.find('#editAsset_ip').val();
+    const asset_mac = $parent.find('#editAsset_mac').val();
+    const asset_type = $parent.find('#editAsset_type').val();
+    const asset_manufacturer = $parent.find('#editAsset_manufacturer').val();
+    const asset_model = $parent.find('#editAsset_model').val();
+    const asset_allowed = $parent.find('#editAsset_allowed').val();
+
+    const dataValue = {
+      "aid": asset_id,
+      "gid": gid,
+      "sensor_id": sensor_id,
+      "asset_name": asset_name,
+      "asset_ip": asset_ip,
+      "asset_mac": asset_mac,
+      "asset_type": asset_type,
+      "asset_manufacturer": asset_manufacturer,
+      "asset_model": asset_model,
+      "asset_allowed": asset_allowed,
+    }
+
+    requestUpdate(dataValue, validationEdit, $('#modalEdit .loading-parent'));
+  });
+</script>
+
+<% } %>

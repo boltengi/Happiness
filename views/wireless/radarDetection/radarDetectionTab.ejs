@@ -1,0 +1,130 @@
+<div class="trunk-wrap">
+  <div class="trunk-divide">
+    <!-- card -->
+    <div class="card">
+      <!-- card-box -->
+      <article class="card-box">
+        <div class="card-header">
+          <h2 class="card-title"><%= __("wirelessRadar|Wireless reconnaissance") %></h2>
+        </div>
+
+        <div id="graph">
+          <%- include('./radarDetectionGraph.ejs', {rendering: 'dummy'})%>
+        </div>
+
+      </article>
+      <!-- //card-box -->
+    </div>
+    <!-- //card -->
+  </div>
+  <div class="trunk-divide">
+    <div class="tab data-style pick-parent" id="radarTab">
+      <div class="tab-links">
+        <div class="tab-link">
+          <a href="#wirelessRadarAP"><%= __("wirelessRadar|AP") %></a>
+        </div>
+        <div class="tab-link">
+          <a href="#wirelessRadarStationary"><%= __("wirelessRadar|Stationary") %></a>
+        </div>
+        <div class="tab-link">
+          <a href="#wirelessRadarBluetooth"><%= __("wirelessRadar|Bluetooth") %></a>
+        </div>
+      </div>
+      <div class="tab-container">
+        <div id="wirelessRadarAP" class="tab-content on loading-parent">
+          <div class="tab-content-table">
+            <div class="html-container">
+              <%- include('./apList.ejs', {
+                ObjView : [],
+                pages : 1, current : 1,
+                time: {type: 'detection_time', from: '', to: ''},
+                rendering: 'dummy'
+              })%>
+            </div>
+          </div>
+        </div>
+        <div id="wirelessRadarStationary" class="tab-content loading-parent">
+          <div class="tab-content-table">
+            <div class="html-container">
+              <%- include('./stationaryList.ejs', {
+                ObjView : [],
+                pages : 1, current : 1,
+                time: {type: 'detection_time', from: '', to: ''},
+                rendering: 'dummy'
+              })%>
+            </div>
+          </div>
+        </div>
+        <div id="wirelessRadarBluetooth" class="tab-content loading-parent">
+          <div class="tab-content-table">
+            <div class="html-container">
+              <%- include('./bluetoothList.ejs', {
+                ObjView : [],
+                pages : 1, current : 1,
+                time: {type: 'detection_time', from: '', to: ''},
+                rendering: 'dummy'
+              })%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  maintainState();
+</script>
+
+<script>
+  tab('.tab');
+  tooltip('.ui-tooltip');
+</script>
+<script>
+  var selectedTab = getState().selectedTab || 'AP';
+  var tabObj = getState()[selectedTab] || {};
+  var page = tabObj.page || 1;
+  var entries = tabObj.entries || 10;
+  var sensor_id = getState().sensor_id || null;
+  var time = tabObj.time || null;
+  var stateFilter = tabObj.filter && tabObj.filter.length ? tabObj.filter : null;
+  var filters = stateFilter && stateFilter.map(function(element){
+    const filter = {};
+    filter[element.key.originval] = element.value.originval;
+    return filter;
+  });
+
+  requestGraph();
+  if (sensor_id) {
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+    removePick($('#radarTab'));
+  } else {
+    const selectedTab = getState().selectedTab || 'AP';
+    $(`#wirelessRadar${selectedTab} .html-container`).append($('#tableTemplate .template-container .tab-content-table').clone().html())
+    addPick($('#radarTab'),{mainMsg: "<%= __("wirelessRadar|Please select 'Sensor' in sensor tree") %>", subMsg: "<%= __("wirelessRadar|There is no data to show you right now.") %>"});
+  }
+</script>
+<script>
+  $('#radarTab .tab-link').off('click.radarTab').on('click.radarTab', function(e){
+    e.preventDefault();
+    const selectedTab = $(this).find('a').attr('href').replace('#wirelessRadar','');
+
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+    const sensor_id = getState().sensor_id || null;
+
+    const time = tabObj.time || null;
+    const stateFilter = tabObj.filter && tabObj.filter.length ? tabObj.filter : null;
+    const filters = stateFilter && stateFilter.map(function(element){
+      const filter = {};
+      filter[element.key.originval] = element.value.originval;
+      return filter;
+    });
+
+    setState({[selectedTab]: {page: page, entries: entries, time: time, filter: stateFilter}, selectedTab: selectedTab});
+    requestList(page, entries, sensor_id, selectedTab, time, filters);
+  });
+</script>
+<% } %>

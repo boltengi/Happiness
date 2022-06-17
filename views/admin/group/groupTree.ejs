@@ -1,0 +1,100 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <div class="card-box">
+    <!-- tree-comp -->
+    <div class="tree-comp">
+      <div class="tree-header">
+        <h2 class="tree-title"><%= __("administrationGroup|Sensor Tree") %></h2>
+      </div>
+      <div class="tree-search">
+        <div class="ui-search">
+          <div class="ui-input default-style"><input type="text" placeholder="<%= __("administrationGroup|Search") %>"></div>
+          <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("administrationGroup|Search") %></span></span></button>
+        </div>
+      </div>
+      <div class="tree">
+        <button type="button" class="btn btn-tree-all"><%= __("administrationGroup|Open all") %></button>
+        <!-- tree-empty -->
+        <div class="tree-empty">
+          <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                <span class="symbol-icon question-style"></span>
+                <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("administrationGroup|No data available") %></p>
+              <p class="sub-msg"><%= __("administrationGroup|There is no data to show you right now.") %></p>
+            </div>
+          </div>
+          <!-- //empty -->
+        </div>
+        <!-- //tree-empty -->
+      </div>
+    </div>
+    <!-- //tree-comp -->
+  </div>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/group/treelist', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var getTypeCheckedSensorKey = (parent, tree_type, sensor_type, sensor_key) => {
+    const checkedTreetypeInputLength = $(`${parent} .tree-item${tree_type} input[type="checkbox"]:checked`).length;
+    const checkedSensortypeInputLength = $(`${parent} .tree-item${sensor_type} input[type="checkbox"]:checked`).length;
+
+    if(checkedTreetypeInputLength > 0 && checkedSensortypeInputLength == 0) {
+      return sensor_key = [-1];
+    }
+
+    return sensor_key;
+  };
+</script>
+<script>
+  var treeData = <%- tree_groups %> || [];
+
+  var initCheckedDataIDs = getState().initCheckedDataIDs;
+  var initCheckedItems = getState().sid && getState().sid.map(element=>({type: 'sid', value: element}));
+
+  tree('.tree-comp', {data: treeData, checkCallback: function(data){
+    // checkedIds, checkedId
+    const checkedIds = data.checkedIds;
+
+    const page = 1;
+    let sid = checkedIds.sid;
+    const stateFilter = getState().filter && getState().filter.length ? getState().filter : null;
+    const filters = stateFilter && stateFilter.map(function(element){
+      const filter = {};
+      filter[element.key.originval] = element.value.originval;
+      return filter;
+    });
+
+    sid = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sid);
+
+    const dataIDs = data.dataIDs;
+    const gid = dataIDs.filter(item=>item.indexOf('g') > -1).map(item=>Number(item.replace('tree-g-','')));
+    setState({initCheckedDataIDs: dataIDs, sid: sid, gid: gid, page: page});
+    requestList(page, entries, sid, gid, filters);
+  },
+  initCheckedItems: initCheckedItems,
+  initCheckedDataIDs: initCheckedDataIDs
+  });
+
+  var page = getState().page || 1;
+  var entries = getState().entries || 10;
+  var sid = getState().sid || null;
+  var gid = getState().gid || null;
+  var stateFilter = getState().filter && getState().filter.length ? getState().filter : null;
+  var filters = stateFilter && stateFilter.map(function(element){
+    const filter = {};
+    filter[element.key.originval] = element.value.originval;
+    return filter;
+  });
+  requestList(page, entries, sid, gid, filters);
+</script>
+<% } %>

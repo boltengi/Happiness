@@ -1,0 +1,422 @@
+<script>
+  const requestTab = () => {
+    return fetch(`/admin/sensor/sensorTab`)
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      const $tab = $('#tab').html(data);
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestTree = () => {
+    fetch('/admin/sensor/treelist')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      const $tree = $('#tree').html(data);
+    });
+  }
+
+  const requestList = (page, entries, sensorType, sid, time = {}, filter = null) => {
+
+    function validFromToTimeReg(time){
+      let valid = { isValid : true, from : true, to : true };
+
+      if (!time) return valid;
+
+      if(time.from !== '' && !moment(time.from)._isValid) valid.from = false;
+      if(time.to !== '' && !moment(time.to)._isValid) valid.to = false;
+      if(!valid.from || !valid.to) valid.isValid = null;
+
+      if(time.from === '' && time.to === '') {} // for admin regtime
+      else if(time.from !== '' && time.to !== '') {}
+      else {
+        valid.isValid = false;
+        if (!time.from) valid.from = false;
+        if (!time.to) valid.to = false;
+      }
+
+      if( new Date(time.from).getTime() > new Date(time.to).getTime() ){
+        valid.from = false;
+        valid.to = false;
+        valid.isValid = null;
+      }
+
+      return valid;
+    }
+    function checkFromToTimeReg(validTime){
+      if(validTime.isValid === true) return true;
+      if(!validTime.isValid){
+        alertModalControl('open', 'alertError', '<%= __("administrationSensor|Check again") %>', {
+          closeCallback: function(){
+            const sensorTabType = getState().selectedTab || 'deviceType';
+            $(`#${sensorTabType.toLowerCase()}_from-datepicker`).focus();
+          }
+        });
+        return validTime.isValid;
+      }
+    }
+    function checkRangeTimeReg(time){
+      const isvalidFromToTime = validFromToTimeReg(time);
+      const checkTime = checkFromToTimeReg(isvalidFromToTime);
+      return checkTime
+    }
+    if(!checkRangeTimeReg(time)) time = null;
+
+    const selectedTab = getState().selectedTab || 'deviceType';
+    const loading = openLoading($(`#${selectedTab}List`), {size:'large', template: $(`#${selectedTab}List` + ' .search-area').length ? undefined: 'tableList', title: '<%= __("administrationSensor|Sensor") %>', time: 'regtime'});
+
+     // table
+    const condition = {
+      entries: entries,
+      sensor_type: sensorType,
+      sid: sid,
+    };
+
+    if (time) condition.time = time;
+    if (filter) condition.filter = filter;
+
+    return fetch(`/admin/sensor/${page}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response.text(),
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(function(data){
+      switch (sensorType) {
+        case 0:
+          $('#deviceTypeList .tab-content-table').html(data);
+          break;
+        case 1:
+          $('#embeddedTypeList .tab-content-table').html(data);
+          break;
+        case 2:
+          $('#clientTypeList .tab-content-table').html(data);
+          break;
+        default:
+          $('#deviceTypeList .tab-content-table').html(data);
+      }
+      return {isLoading: true};
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        const $loadingParent = $(`#${selectedTab}List`);
+        removeLoading($loadingParent);
+        $(`#${selectedTab}List`).find('.timesearch-area .ui-radio input').prop('checked', true);
+      }
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestDetail = (sensor_id, obj) => {
+    return fetch(`/admin/sensor/sensordetail/${sensor_id}`)
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      obj.btnEle.closest('tr').next('.accordion-content').find('.accordion-content-box').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestNewPopup = (dataValue) => {
+    const {status, sensor_id} = dataValue;
+    fetch(`/admin/sensor/newsensor`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      $('#modalNew').data('status',{status:status, sensor_id: sensor_id});
+      $('#modal-new').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestEditPopup = (dataValue, sensor_id) => {
+    $('#modal-edit').html('');
+
+    fetch(`/admin/sensor/sensoredit/${sensor_id}`,{
+      method: 'POST'
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-edit').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestCreate = (dataValue, validationInstance, $loadingParent) => {
+    const {sensor_type} = dataValue;
+    validationInstance.checkValidation();
+    if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Check again") %>', {
+      closeCallback: function(){
+        const $unValidNode = validationInstance.getUnValidItems();
+        if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+      }
+    });
+
+    const loading = openLoading($loadingParent);
+
+    fetch(`/admin/sensor/sensorcreate`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then((data)=>{
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if (data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationSensor|Completed!") %>', {
+        completeCallback: function(){
+          const selectedTab = sensor_type == 0 ? 'deviceType' : sensor_type == 1 ? 'embeddedType' : 'clientType';
+          const page = 1;  // last pagination is Unknown - $(`#${selectedTab}List`).find('.pagination').find('li:last-child').data('page')
+          const entries = (getState()[selectedTab] && getState()[selectedTab].entries) || 10;
+          refreshPage(true, {selectedTab: selectedTab, [selectedTab]: {time: null, filter: null, page: page, entries: entries}});
+        }
+      });
+    })
+    .then((data)=>{
+      return data.data.text()
+    })
+    .then((data)=>{
+      if(data == 'Duplicate sensors') return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Duplicated!") %>', {
+        closeCallback: function(){
+          $('#newSensor_id').focus();
+        }
+      })
+      else alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestUpdate = (dataValue, validationInstance, $loadingParent) => {
+
+    if(validationInstance){
+      validationInstance.checkValidation();
+      if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Check again") %>', {
+        closeCallback: function(){
+          const $unValidNode = validationInstance.getUnValidItems();
+          if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+        }
+      });
+    }
+
+    let loading;
+    if ($loadingParent) loading = openLoading($loadingParent);
+    else loading = {};
+
+    dataValue.sensor_id = [dataValue.sensor_id];
+
+    fetch(`/admin/sensor/sensorupdate/`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      if($loadingParent) data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        if($loadingParent) removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if(!$loadingParent) return;
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationSensor|Completed!") %>', {
+        completeCallback: function(){
+          refreshPage();
+        }
+      });
+    })
+    .then((data)=>{
+      if(!data) return;
+      return data.data.text();
+    })
+    .then((data)=>{
+      if(!data) return
+      alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestDelete = (tableCheckedId) => {
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select one more.") %>');
+    else {
+      alertModalControl('open', 'alertConfirm', '<%= __("administrationSensor|Are you sure you want to delete records?") %>', {
+        confirmCallback: function(){
+          const dataValue = {
+            sensor_id: tableCheckedId
+          }
+
+          fetch(`/admin/sensor/sensordelete`, {
+            method: 'POST',
+            body: JSON.stringify(dataValue),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(function(response){
+            /**
+            * @date 2021-04-16
+            * @desc go to 1 page if delete user, group, sensor, asset
+            * @company
+            */
+            if(response.status == 200){ refreshPage(true); }
+            /*************************************/
+            if(response.status == 500){ alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>'); }
+          })
+          .catch(function(errors){console.error('Error:', errors)});
+        }
+      });
+    }
+  }
+
+  const requestSettingPopup = (dataValue, detected_id) => {
+
+    const { sid, sensorType: sensor_type } = dataValue;
+
+    if (!sid.length) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select one more.") %>');
+
+    if (detected_id.length) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select sensor that not registred.") %>');
+
+    if(sensorType.length) sensorType = sensorType[0].sensor_type;
+
+    fetch(`/admin/sensor/sensorsetting`,{
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-setting').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestBlockPopup = (dataValue, sensor_id) => {
+
+    fetch(`/admin/sensor/sensorblock/${sensor_id}`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-blocklist').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestSetting = (dataValue, $loadingParent) => {
+
+    const { sensor_id } = dataValue;
+
+    if (!sensor_id.length) return alertModalControl('open', 'alertError', 'Select one more.');
+
+    const loading = openLoading();
+
+    fetch(`/admin/sensor/sensorupdate`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', 'Completed!', {
+        completeCallback: function(){
+          refreshPage();
+        }
+      });
+      if(data.data.status == 500){ alertModalControl('open', 'alertError', 'error!'); }
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+</script>

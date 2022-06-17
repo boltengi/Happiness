@@ -1,0 +1,100 @@
+<div class="alert-comp confirm-style" id="alertConfirm">
+	<div class="alert-box">
+		<div class="alert-wrap">
+			<!-- Alert Header -->
+			<div class="alert-header">
+				<h4 class="alert-title"><%= __("alertModal|Message") %></h4>
+				<button type="button" class="alert-btn-close"><span class="sr-only"><%= __("alertModal|close") %></span></button>
+			</div>
+			<!-- Alert container -->
+			<div class="alert-container">
+				<div class="alert-content">
+					<span class="alert-icon confirm-style"></span>
+					<p class="alert-msg"></p>
+				</div>
+      </div>
+			<!-- Alert footer -->
+      <div class="alert-footer">
+				<div class="btn-alert-box">
+					<button type="button" class="btn btn-normal secondary-style small-size alert-btn-close" data-modalBtn="close"><%= __("alertModal|Cancel") %></button>
+					<button type="button" class="btn btn-normal primary-style small-size alert-btn-close" data-modalBtn="confirm"><%= __("alertModal|OK") %></button>
+				</div>
+      </div>
+		</div>
+	</div>
+</div>
+<div class="alert-comp complete-style" id="alertComplete">
+	<div class="alert-box">
+		<div class="alert-wrap">
+			<!-- Alert Header -->
+			<div class="alert-header">
+				<h4 class="alert-title"><%= __("alertModal|Message") %></h4>
+				<button type="button" class="alert-btn-close" data-modalBtn="complete"><span class="sr-only">close</span></button>
+			</div>
+			<!-- Alert container -->
+			<div class="alert-container">
+				<div class="alert-content">
+					<span class="alert-icon complete-style"></span>
+					<p class="alert-msg"></p>
+				</div>
+      </div>
+			<!-- Alert footer -->
+      <div class="alert-footer">
+				<div class="btn-alert-box">
+					<button type="button" class="btn btn-normal primary-style small-size alert-btn-close" data-modalBtn="complete"><%= __("alertModal|OK") %></button>
+				</div>
+      </div>
+		</div>
+	</div>
+</div>
+<div class="alert-comp error-style" id="alertError">
+	<div class="alert-box">
+		<div class="alert-wrap">
+			<!-- Alert Header -->
+			<div class="alert-header">
+				<h4 class="alert-title"><%= __("alertModal|Message") %></h4>
+				<button type="button" class="alert-btn-close"><span class="sr-only">close</span></button>
+			</div>
+			<!-- Alert container -->
+			<div class="alert-container">
+				<div class="alert-content">
+					<span class="alert-icon error-style"></span>
+					<p class="alert-msg"></p>
+				</div>
+      </div>
+			<!-- Alert footer -->
+      <div class="alert-footer">
+				<div class="btn-alert-box">
+					<button type="button" class="btn btn-normal point-style small-size alert-btn-close" data-modalBtn="close"><%= __("alertModal|OK") %></button>
+				</div>
+      </div>
+		</div>
+	</div>
+</div>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+var alertModals = {}
+window.addEventListener('DOMContentLoaded',()=>{
+  alertModals.alertConfirm = alertModal('#alertConfirm');
+  alertModals.alertComplete = alertModal('#alertComplete');
+  alertModals.alertError = alertModal('#alertError');
+});
+/*************************************/
+</script>
+<script>
+  function alertModalControl(action, id, mgs, callbackObj = {}){
+    $('#' + id).find('.alert-msg').html(mgs);
+    alertModals[id][action]();
+		$('#' + id).find('[data-modalBtn="confirm"]').off('click.confirm');
+		$('#' + id).find('[data-modalBtn="complete"]').off('click.complete');
+		$('#' + id).find('[data-modalBtn="close"]').off('click.close');
+		if(callbackObj.confirmCallback) $('#' + id).find('[data-modalBtn="confirm"]').off('click.confirm').on('click.confirm',callbackObj.confirmCallback);
+		if(callbackObj.completeCallback) $('#' + id).find('[data-modalBtn="complete"]').off('click.complete').on('click.complete',callbackObj.completeCallback);
+		if(callbackObj.closeCallback) $('#' + id).find('[data-modalBtn="close"]').off('click.close').on('click.close',callbackObj.closeCallback);
+  }
+</script>

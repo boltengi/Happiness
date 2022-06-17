@@ -1,0 +1,424 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("notificationNoti|Email alarm") %></h2>
+      <div class="card-header-right">
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("notificationNoti|search") %></span></span></button>
+
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("notificationNoti|reset") %></span></span></button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <!-- filter-custom -->
+        <div class="filter-custom" id="filter-custom">
+          <div class="custom-result"></div>
+          <div class="custom-search">
+            <button type="button" class="btn btn-icon btn-custom-search"><span
+                class="icon icon-custom-search"><span class="sr-only"><%= __("notificationNoti|add filter") %></span></span></button>
+            <div class="custom-search-content">
+              <div class="custom-search-header">
+                <h3 class="custom-search-title"><%= __("notificationNoti|Add filter") %></h3>
+                <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("notificationNoti|close") %></span></button>
+              </div>
+              <div class="custom-search-box">
+                <div class="ui-search">
+                  <div class="filter-select"></div>
+                  <div class="condition-box">
+
+                  </div>
+                </div>
+              </div>
+              <div class="custom-search-footer">
+                <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("notificationNoti|Add") %></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- //filter-custom -->
+      </div>
+
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp">
+          <div class="table-scroll default-style">
+						<div class="thead-scroll">
+							<table class="table default-style">
+								<caption><span class="sr-only"><%= __("notificationNoti|NotificationList") %></span></caption>
+								<colgroup>
+									<col style="width: 15%" /><!-- User email -->
+									<col style="width: 20%" /><!-- Select alarm type -->
+									<col style="width: 65%" /><!-- Selected alarm -->
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col"><%= __("notificationNoti|User email") %></th>
+										<th scope="col"><%= __("notificationNoti|Select alarm type") %></th>
+										<th scope="col"><%= __("notificationNoti|Selected alarm") %></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("notificationNoti|NotificationList") %></span></caption>
+                <colgroup>
+									<col style="width: 15%" /><!-- User email -->
+									<col style="width: 20%" /><!-- Select alarm type -->
+									<col style="width: 65%" /><!-- Selected alarm -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <tr data-uid="<%= data.uid %>" data-email="<%= data.email %>">
+										<td><%= data.email %></td>
+										<td class="cell-center">
+                      <div class="ui-select default-style"
+                        id="choiceselect<%= i %>"
+												data-multi="checkbox" data-selectmulticontainer="#selectMultiContainer<%= i %>"
+                        data-selectbtntext="<%= __("notificationNoti|Save changes") %>"
+												data-width="200px"
+                      >
+                        <select name="" id="">
+													<option value="@all" data-all="true"><%= __("notificationNoti|All") %></option>
+                          <option value="@null" data-null="true"><%= __("notificationNoti|Select option") %></option>
+                          <option value="0"><%= __("notificationNoti|Login") %></option>
+                          <option value="1"><%= __("notificationNoti|Logout") %></option>
+                          <!-- <option value="2"><%= __("notificationNoti|Create user") %></option> -->
+                          <option value="3"><%= __("notificationNoti|Update user") %></option>
+                          <!-- <option value="4"><%= __("notificationNoti|Delete user") %></option> -->
+                          <option value="5"><%= __("notificationNoti|Event asset") %></option>
+                          <option value="6"><%= __("notificationNoti|Event vulnerability") %></option>
+                          <option value="7"><%= __("notificationNoti|Event threat") %></option>
+                        </select>
+                      </div>
+                    </td>
+										<td data-alarm>
+                      <div id="selectMultiContainer<%= i %>"></div>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("notificationNoti|No data available") %></p>
+                  <p class="sub-msg"><%= __("notificationNoti|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("notificationNoti|Show 10 entries") %></option>
+              <option value="20"><%= __("notificationNoti|Show 20 entries") %></option>
+              <option value="30"><%= __("notificationNoti|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/audit/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  (function(){
+    const uid = $('#header #user-name').data('uid');
+    $('#listTable tbody tr').each(function(){
+      const $this = $(this);
+      if(uid == $this.data('uid')) return;
+      const $select = $this.find('select');
+      $select.attr('disabled', true);
+      $select.find('option').attr('disabled', true);
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    const ObjView = <%- JSON.stringify(ObjView) %>;
+    const notificationInfos = {};
+    ObjView.forEach((item)=>{notificationInfos[item.uid] = item.notification});
+
+    const notiDefaultSettings = [
+      { originval: 0, dataval: '<%= __("notificationNoti|Login") %>' },
+      { originval: 1, dataval: '<%= __("notificationNoti|Logout") %>' },
+      // { originval: 2, dataval: '<%= __("notificationNoti|Create user") %>' },
+      { originval: 3, dataval: '<%= __("notificationNoti|Update user") %>' },
+      // { originval: 4, dataval: '<%= __("notificationNoti|Delete user") %>' },
+      {originval: '5', dataval: '<%= __("notificationNoti|Event asset") %>'},
+      {originval: '6', dataval: '<%= __("notificationNoti|Event vulnerability") %>'},
+      {originval: '7', dataval: '<%= __("notificationNoti|Event threat") %>'},
+    ];
+
+    $('#listTable tbody tr').each(function(){
+      const $uiSelect = $(this).find('.ui-select');
+      const uid = $(this).data('uid');
+
+      const notiSetting = [];
+      const notificationInfo = notificationInfos[uid];
+
+      $(this).data('notification', notificationInfo);
+
+      if(!notificationInfo) return;
+
+      notificationInfo.forEach((value, index)=>{
+        const notiDefaultSetting = notiDefaultSettings.find(item=>item.originval == index);
+        if(!notiDefaultSetting) return;
+        if(Number(value)) notiSetting.push(notiDefaultSetting);
+      });
+      $uiSelect.data('selectedItem', notiSetting);
+    })
+  })();
+</script>
+<script>
+  maintainState();
+</script>
+
+<script>
+  var getPage = () => {
+    const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+    return page;
+  }
+  var getEntries = () => {
+    const entries = $('#listEntries option:selected').val() || 10;
+    return entries
+  }
+  var getTime = () => {
+    const time = {
+      type: 'time',
+      from: $.trim($('#from-datepicker').val()),
+      to: $.trim($('#to-datepicker').val())
+    }
+    return time;
+  }
+  var getFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+
+<script>
+  setTime('.ui-time');
+  dateTime('.ui-time');
+	filterCustom('.filter-custom', {data: customFilterCondition});
+  selectDropdown('.ui-select');
+  formWidth();
+  tooltip('.ui-tooltip');
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+    requestList(page, entries, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+
+    setState({page: page});
+    requestList(page, entries, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, filter: stateFilter});
+
+    requestList(page, entries, filters);
+  });
+
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, filter: filters});
+
+    requestList(page, entries, stateFilter);
+  });
+  /*************************************/
+</script>
+<script>
+  $('#listTable tbody tr .ui-select').each(function(){
+    const $select = $(this);
+    $select.find('.select-content').on('click', 'button', function(e){
+      const $tr = $select.closest('tr');
+      const $alarm = $tr.find('[data-alarm]');
+
+      const uid = $tr.data('uid');
+      const email = $tr.data('email');
+
+      // 값이 1인 설정은 server에서 강제로 설정한 것
+      // notification[2] : create user
+      // notification[4] : delete user
+      // server 설정 변경시 반드시 변경되어야함
+      const notification = [0,0,1,0,1,0,0,0];
+
+      /* exaplain value of notification
+      const notiDefaultSettings = [
+        { originval: 0, dataval: 'Login' },
+        { originval: 1, dataval: 'Logout' },
+        { originval: 2, dataval: 'Create user' },
+        { originval: 3, dataval: 'Update user' },
+        { originval: 4, dataval: 'Delete user' },
+        { originval: 5, dataval: 'Event asset' },
+        { originval: 6, dataval: 'Event vulnerability' },
+        { originval: 6, dataval: 'Event threat' },
+      ];
+      */
+
+      $alarm.find('.selected-item').each(function(){
+        const value = Number($(this).data('originval'));
+
+        if(value == 2) return;
+        if(value == 4) return;
+
+        notification[value] = 1;
+      });
+
+      const dataValue = {
+        uid: uid,
+        email: email,
+        notification: notification
+      }
+      requestUpdate(dataValue);
+    });
+  });
+
+  $('#listTable tbody tr [data-alarm]').each(function(){
+    const $dataAlarm = $(this);
+    $dataAlarm.find('.select-multi-container').on('click', 'button', function(e){
+      const $tr = $dataAlarm.closest('tr');
+      const $alarm = $tr.find('[data-alarm]');
+      const $selectedItem = $(this).closest('.selected-item');
+      const originval = $selectedItem.data('originval')
+
+      const uid = $tr.data('uid');
+      const email = $tr.data('email');
+
+      // 값이 1인 설정은 server에서 강제로 설정한 것
+      // notification[2] : create user
+      // notification[4] : delete user
+      // server 설정 변경시 반드시 변경되어야함
+      const notification = [0,0,1,0,1,0,0,0];
+
+      /* exaplain value of notification
+      const notiDefaultSettings = [
+        { originval: 0, dataval: 'Login' },
+        { originval: 1, dataval: 'Logout' },
+        { originval: 2, dataval: 'Create user' },
+        { originval: 3, dataval: 'Update user' },
+        { originval: 4, dataval: 'Delete user' },
+        { originval: 5, dataval: 'Event asset' },
+        { originval: 6, dataval: 'Event vulnerability' },
+        { originval: 6, dataval: 'Event threat' },
+      ];
+      */
+
+      $alarm.find('.selected-item').each(function(){
+        const value = Number($(this).data('originval'));
+
+        if(value == 2) return;
+        if(value == 4) return;
+
+        notification[value] = 1;
+      });
+
+      notification[originval] = 0;
+
+      const dataValue = {
+        uid: uid,
+        email: email,
+        notification: notification
+      }
+
+      requestUpdate(dataValue);
+    });
+  });
+</script>
+
+<% } %>

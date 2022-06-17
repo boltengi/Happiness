@@ -1,0 +1,214 @@
+<script>
+    /* common */
+  var requestTree = () => {
+    fetch('/asset/detection/treelist')
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (data) {
+      const $tree = $('#tree').html(data);
+    });
+  }
+
+  var requestSummary = () => {
+    fetch('/asset/detection/summary')
+      .then(function (response) {
+        return response.text()
+      })
+      .then(function (data) {
+        const $summary = $('#summary').html(data);
+      });
+  }
+
+  var requestStatus = function(type){
+    const loading = openLoading($(`#${type}-graph`));
+
+    return fetch(`/asset/detection/status/${type}`)
+    .then(function(response){
+      return {
+        data: response.json(),
+        loading: loading
+      };
+    })
+  }
+
+  /* default page */
+  var requestList = (page, entries, sensor_id, time, filter) => {
+
+    function validFromToTime(time){
+      let valid = { isValid : true, from : true, to : true };
+
+      if (!time) return valid;
+
+      if(time.from !== '' && !moment(time.from)._isValid) valid.from = false;
+      if(time.to !== '' && !moment(time.to)._isValid) valid.to = false;
+      if(!valid.from || !valid.to) valid.isValid = null;
+
+      // if(time.from === '' && time.to === '') {} // for admin regtime
+      if(time.from !== '' && time.to !== '') {}
+      else {
+        valid.isValid = false;
+        if (!time.from) valid.from = false;
+        if (!time.to) valid.to = false;
+      }
+
+      if( new Date(time.from).getTime() > new Date(time.to).getTime() ){
+        valid.from = false;
+        valid.to = false;
+        valid.isValid = null;
+      }
+
+      return valid;
+    }
+    function checkFromToTime(validTime){
+      if(validTime.isValid === true) return true;
+      if(!validTime.isValid){
+        alertModalControl('open', 'alertError', '<%= __("asset|Check again") %>', {
+          closeCallback: function(){
+            $('#from-datepicker').focus();
+          }
+        });
+        return validTime.isValid;
+      }
+    }
+    function checkRangeTime(time){
+      const isvalidFromToTime = validFromToTime(time);
+      return checkFromToTime(isvalidFromToTime);
+    }
+
+    if(!checkRangeTime(time)) time = null;
+
+    const loading = openLoading($(`#listTable`), {size:'large', template: $('#listTable' + ' .search-area').length ? undefined: 'cardTableList', title: '<%= __("asset|Detection list") %>'});
+
+    // // table
+    const condition = {
+      entries: entries,
+      sensor_id: sensor_id
+    };
+
+    if (time) condition.time = time;
+    if (filter) condition.filter = filter;
+
+    return fetch(`/asset/detection/${page}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(function (response) {
+        return {
+          data: response.text(),
+          loading: loading
+        };
+      })
+      .then((data)=>{
+        data.loading.setLoaded(true);
+        return data.data
+      })
+      .then(function (data) {
+        const $listTable = $('#listTable .html-container').html(data);
+        return {isLoading: true}
+      })
+      .then(function (data) {
+        if(data.isLoading){
+          const $loadingParent = $('#listTable');
+          removeLoading($loadingParent);
+        }
+      })
+      .catch(function (error) { console.error('Error:', error) });
+  }
+
+  /* detail page */
+  var requestInformation = function(asset_id){
+    const sensor_id = getQueryString().sensor_id || '';
+    const condition = {
+      sensor_id: sensor_id
+    }
+    // information
+    return fetch(`/asset/detection/assetInformation/${asset_id}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(condition),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (data) {
+      const $summary = $('#informationDetail').html(data);
+    });
+  }
+
+  var requestTrendsTemplate = () => {
+    return fetch(`/asset/detection/assetTrends`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(function(response){
+      return response.text();
+    })
+    .then(function (data) {
+      $('#trends').html(data);
+    });
+  }
+
+  var requestTrends = (asset_id, time = 7) => {
+    const sensor_id = getQueryString().sensor_id || '';
+
+    // trends
+    const condition = {
+      time: time,
+      asset_id: asset_id,
+      sensor_id: sensor_id
+    }
+    return fetch(`/asset/detection/assetTrends/${asset_id}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(condition),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(function(response){
+      return response.json();
+    })
+    .then(function (data) {
+      drawGraphTrends(data);
+    });
+  }
+
+  var requestVulnerability = (asset_id, page, entries, time) => {
+    const sensor_id = getQueryString().sensor_id || '';
+    // vulnerability
+    const condition = {
+      time: time,
+      entries: entries,
+      page: page,
+      sensor_id: sensor_id
+    }
+    return fetch(`/asset/detection/assetVulnerability/${asset_id}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(condition),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (data) {
+      const $summary = $('#vulnerabilityList').html(data);
+    });
+  }
+</script>

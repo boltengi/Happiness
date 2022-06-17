@@ -1,0 +1,337 @@
+<!-- deck-wrap -->
+<div class="deck-wrap">
+  <div class="deck-bar-devide-wrap">
+    <div class="deck-bar-devide" data-asset>
+      <article class="deck loading-parent" id="asset-graph">
+				<div class="deck-header">
+					<h1 class="deck-title"><%= __("eventAsset|Status of asset") %></h1>
+					<div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventAsset|Full period") %>)</span>
+						<span class="deck-total-text" data-total><span class="num">0</span></span>
+					</div>
+				</div>
+				<div class="deck-body">
+          <!-- chart -->
+          <div class="chart-box">
+            <div class="chart">
+							<div id="myDoughnutHighChart"></div>
+            </div>
+            <div class="chart-legend-list">
+              <ul>
+                <li>
+                  <div class="chart-legend" data-connection>
+                    <span class="legend-title">
+                      <span class="icon-graph-legend legend-alpha"></span>
+                      <%= __("eventAsset|Connected") %>
+                    </span>
+                    <div class="legend-values">
+                      <span class="legend-value" data-percent><span class="num">0</span>%</span>
+                      <span class="legend-value" data-ea><span class="num">0</span></span>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="chart-legend" data-disconnection>
+                    <span class="legend-title">
+                      <span class="icon-graph-legend legend-gamma"></span>
+                      <%= __("eventAsset|Disconnected") %>
+                    </span>
+                    <div class="legend-values">
+                      <span class="legend-value" data-percent><span class="num">0</span>%</span>
+                      <span class="legend-value" data-ea><span class="num">0</span></span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- //chart -->
+				</div>
+			</article>
+    </div>
+    <div class="deck-bar-devide" data-sensor>
+      <article class="deck loading-parent" id="sensor-graph">
+				<div class="deck-header">
+					<h1 class="deck-title"><%= __("eventAsset|Status of sensor") %></h1>
+					<div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventAsset|Full period") %>)</span>
+						<span class="deck-total-text" data-total><span class="num">0</span></span>
+					</div>
+				</div>
+				<div class="deck-body">
+          <div class="deck-bar-wrap">
+            <div class="bar-graph-box" data-connection>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventAsset|Connected") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph alpha-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-disconnection>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventAsset|Disconnected") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+          </div>
+				</div>
+			</article>
+    </div>
+    <div class="deck-bar-devide" data-event>
+      <article class="deck loading-parent" id="event-graph">
+				<div class="deck-header">
+					<h1 class="deck-title"><%= __("eventAsset|Event processing status") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventAsset|Week") %>)</span>
+						<span class="deck-total-text" data-total><span class="num">0</span></span>
+					</div>
+				</div>
+				<div class="deck-body">
+          <div class="deck-bar-wrap">
+            <div class="bar-graph-box" data-complete>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventAsset|Processed") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph alpha-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-incomplete>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventAsset|Pending process") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-unconfirmed>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventAsset|To be processed") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph gamma-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+          </div>
+				</div>
+			</article>
+    </div>
+  </div>
+</div>
+<!-- //deck-wrap -->
+<style>
+  #myDoughnutHighChart {
+    width: 200px;
+    height: 200px;
+  }
+</style>
+
+<% if(typeof rendering == 'undefined') { %>
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+<script>
+  var setStatusAsset = function(data){
+
+    logdata('/event/asset/status/asset', data);
+
+    const ObjView = data.ObjView;
+
+    const $asset = $('[data-asset]');
+    let total = 0;
+    let connection = 0;
+    let disconnection = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status == 1) connection = count;
+      if (element.status == 0) disconnection = count;
+    });
+
+    $asset.find('[data-total]').find('.num').html(format.numComma(total));
+    $asset.find('[data-connection]').find('[data-percent]').find('.num').html(Math.round(connection/total*100));
+    $asset.find('[data-connection]').find('[data-ea]').find('.num').html(format.numComma(connection));
+    $asset.find('[data-disconnection]').find('[data-percent]').find('.num').html(Math.round(disconnection/total*100));
+    $asset.find('[data-disconnection]').find('[data-ea]').find('.num').html(format.numComma(disconnection));
+
+    const graphData = [
+      { name: '<%= __("eventAsset|Connected") %>', y: 0 },
+      { name: '<%= __("eventAsset|Disconnected") %>', y: 0 }
+    ];
+    ObjView.map(function(element, index){
+      const count = Number(element.count);
+      if (element.status == 0) return graphData[1] = { name: '<%= __("eventAsset|Disconnected") %>', y: count };
+      if (element.status == 1) return graphData[0] = { name: '<%= __("eventAsset|Connected") %>', y: count };
+    });
+
+    // Create the chart
+		Highcharts.chart('myDoughnutHighChart', {
+      credits: {
+        enabled: false
+      },
+	    chart: {
+				type: 'pie',
+				margin: [0, 0, 0, 0],
+				spacingTop: 0,
+				spacingBottom: 0,
+				spacingLeft: 0,
+				spacingRight: 0
+	    },
+			title: {
+				text: undefined
+			},
+	    plotOptions: {
+        pie: {
+					allowPointSelect: true,
+      		cursor: 'pointer',
+          shadow: false,
+          center: ['50%', '50%'],
+					colors: [GRAPH_COLOR.PRIMARY, GRAPH_COLOR.SECONDARY]
+        }
+	    },
+      tooltip: {
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        pointFormat: '<span>- {point.name} : {point.y}</span>',
+        padding: 4
+      },
+	    series: [{
+        data: graphData,
+        size: '170px',
+				innerSize: '50%',
+				states: {
+					hover: false
+				},
+				borderWidth: 0,
+        dataLabels: {
+          formatter: function () {
+            return this.y > 5 ? this.point.name : null;
+          },
+          color: '#ffffff',
+          distance: -30,
+					borderWidth: null
+        }
+	    }]
+		});
+    return { isLoading: true };
+  }
+  var setStatusSensor = function(data){
+
+    logdata('/event/asset/status/sensor', data);
+
+    const ObjView = data.ObjView;
+
+    const $sensor = $('[data-sensor]');
+    let total = 0;
+    let connection = 0;
+    let disconnection = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status == 1) connection = count;
+      if (element.status == 0) disconnection = count;
+    });
+
+    $sensor.find('[data-total]').find('.num').html(format.numComma(total));
+    $sensor.find('[data-connection]').find('.num').html(format.numComma(connection));
+    $sensor.find('[data-connection]').find('.bar-graph-bar').css({width: connection/total*100 + '%'});
+    $sensor.find('[data-disconnection]').find('.num').html(format.numComma(disconnection));
+    $sensor.find('[data-disconnection]').find('.bar-graph-bar').css({width: disconnection/total*100 + '%'});
+
+    return { isLoading: true };
+  }
+  var setStatusEvent = function(data){
+
+    logdata('/event/asset/status/event', data);
+
+    const ObjView = data.ObjView;
+
+    const $event = $('[data-event]');
+    let total = 0;
+    let complete = 0;
+    let incomplete = 0;
+    let unconfirmed = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status === true) complete = count;
+      if (element.status === false) incomplete = count;
+      if (element.status === null) unconfirmed = count;
+    });
+
+    $event.find('[data-total]').find('.num').html(format.numComma(total));
+    $event.find('[data-complete]').find('.num').html(format.numComma(complete));
+    $event.find('[data-complete]').find('.bar-graph-bar').css({width: complete/total*100 + '%'});
+    $event.find('[data-incomplete]').find('.num').html(format.numComma(incomplete));
+    $event.find('[data-incomplete]').find('.bar-graph-bar').css({width: incomplete/total*100 + '%'});
+    $event.find('[data-unconfirmed]').find('.num').html(format.numComma(unconfirmed));
+    $event.find('[data-unconfirmed]').find('.bar-graph-bar').css({width: unconfirmed/total*100 + '%'});
+
+    return { isLoading: true };
+
+  }
+</script>
+<script>
+  (function(){
+    var assetData = requestStatus('asset');
+    assetData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusAsset)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#asset-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+
+    var sensorData = requestStatus('sensor');
+    sensorData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusSensor)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#sensor-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+
+    var eventData = requestStatus('event');
+    eventData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusEvent)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#event-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+  })();
+</script>
+<% } %>

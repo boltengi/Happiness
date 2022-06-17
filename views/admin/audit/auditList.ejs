@@ -1,0 +1,325 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationAudit|Audit log") %></h2>
+      <div class="card-header-right">
+        <!-- timesearch-area -->
+        <div class="timesearch-area">
+          <div class="ui-radio default-style">
+            <input type="radio" name="time_type" id="reg_time" checked>
+            <label for="reg_time"><%= __("administrationAudit|Time") %></label>
+          </div>
+          <div class="ui-time">
+            <div class="time-setting">
+              <button type="button" class="btn btn-icon btn-time-setting tt">
+                <span class="sr-only"><%= __("administrationAudit|Quick select") %></span>
+              </button>
+              <div class="time-setting-content">
+                <div class="time-setting-header">
+                  <h3 class="time-setting-title"><%= __("administrationAudit|Quick select") %></h3>
+                  <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("administrationAudit|close") %></span></button>
+                </div>
+                <ul>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("administrationAudit|Today") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("administrationAudit|Last 7day") %></button>
+                  </li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("administrationAudit|Last 30day") %></button>
+                  </li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("administrationAudit|This week") %></button>
+                  </li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("administrationAudit|This month") %></button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="ui-datepicker datepicker-from">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+            </div>
+            <span class="form-text">-</span>
+            <div class="ui-datepicker datepicker-to">
+              <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+            </div>
+          </div>
+        </div>
+        <!-- //.timesearch-area -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("administrationAudit|search") %></span></span></button>
+
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("administrationAudit|reset") %></span></span></button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <!-- filter-custom -->
+        <div class="filter-custom" id="filter-custom">
+          <div class="custom-result"></div>
+          <div class="custom-search">
+            <button type="button" class="btn btn-icon btn-custom-search"><span
+                class="icon icon-custom-search"><span class="sr-only"><%= __("administrationAudit|add filter") %></span></span></button>
+            <div class="custom-search-content">
+              <div class="custom-search-header">
+                <h3 class="custom-search-title"><%= __("administrationAudit|Add filter") %></h3>
+                <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("administrationAudit|close") %></span></button>
+              </div>
+              <div class="custom-search-box">
+                <div class="ui-search">
+                  <div class="filter-select"></div>
+                  <div class="condition-box">
+
+                  </div>
+                </div>
+              </div>
+              <div class="custom-search-footer">
+                <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("administrationAudit|Add") %></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- //filter-custom -->
+      </div>
+
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp">
+          <div class="table-scroll default-style">
+						<div class="thead-scroll">
+							<table class="table default-style">
+								<caption><span class="sr-only"><%= __("administrationAudit|AuditList") %></span></caption>
+								<colgroup>
+                  <col style="width: 10%" /><!-- Time -->
+									<col style="width: 22%" /><!-- User ID -->
+									<col style="width: 10%" /><!-- Client IP -->
+									<col style="width: 14%" /><!-- Action -->
+									<col style="width: 31%" /><!-- Detailed Activities -->
+									<col style="width: 10%" /><!-- Result -->
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col"><%= __("administrationAudit|Time") %></th>
+										<th scope="col"><%= __("administrationAudit|User ID") %></th>
+										<th scope="col"><%= __("administrationAudit|Client IP") %></th>
+										<th scope="col"><%= __("administrationAudit|Action") %></th>
+										<th scope="col"><%= __("administrationAudit|Detailed Activities") %></th>
+										<th scope="col"><%= __("administrationAudit|Result") %></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("administrationAudit|AuditList") %></span></caption>
+                <colgroup>
+                  <col style="width: 10%" /><!-- Time -->
+									<col style="width: 22%" /><!-- User ID -->
+									<col style="width: 10%" /><!-- Client IP -->
+									<col style="width: 14%" /><!-- Action -->
+									<col style="width: 31%" /><!-- Detailed Activities -->
+									<col style="width: 10%" /><!-- Result -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <tr>
+										<td class="cell-center"><%= dateFormat(data.time) %></td>
+										<td class="ellipsis">
+                      <%= data.email %>
+                    </td>
+										<td class="cell-center"><%= data.ip %></td>
+										<td class="cell-center ellipsis">
+            					<%= data.action %>
+                    </td>
+										<td><%= data.note %></td>
+										<td class="cell-center">
+                      <% if (!data.result) { %>
+                        <span class="warning-color"><%= __("administrationAudit|Fail") %></span>
+                      <% } else { %>
+                        <span class="success-color"><%= __("administrationAudit|Success") %></span>
+                      <% } %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("administrationAudit|No data available") %></p>
+                  <p class="sub-msg"><%= __("administrationAudit|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("administrationAudit|Show 10 entries") %></option>
+              <option value="20"><%= __("administrationAudit|Show 20 entries") %></option>
+              <option value="30"><%= __("administrationAudit|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/audit/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  var getPage = () => {
+    const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+    return page;
+  }
+  var getEntries = () => {
+    const entries = $('#listEntries option:selected').val() || 10;
+    return entries
+  }
+  var getTime = () => {
+    const time = {
+      type: 'time',
+      from: $.trim($('#from-datepicker').val()),
+      to: $.trim($('#to-datepicker').val())
+    }
+    return time;
+  }
+  var getFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#listTable');
+    const $customResult = $list.find('.custom-result');
+    const $resultItem = $customResult.find('.result-item');
+    /*************************************/
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+
+<script>
+  setTime('.ui-time');
+  dateTime('.ui-time');
+	filterCustom('.filter-custom', {data: customFilterCondition});
+  selectDropdown('.ui-select');
+  formWidth();
+  tooltip('.ui-tooltip');
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+    requestList(page, entries, time, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page});
+    requestList(page, entries, time, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, time: time, filter: stateFilter});
+
+    requestList(page, entries, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, time: time, filter: filters});
+
+    requestList(page, entries, time, stateFilter);
+  });
+  /*************************************/
+</script>
+
+<% } %>

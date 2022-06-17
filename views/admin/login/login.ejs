@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <%- include('../../include/head') %>
+  <title><%= __("login|Login") %> - <%= __(`common|ProgramName${company}`) %></title>
+</head>
+<!--
+* @date 2021-06-04
+* @desc common theme function
+* @company
+* -->
+<body class="theme-<%= getThemeClass(company) %>">
+<!-- // @date 2021-06-04 -->
+  <div id="layout" class="login-page">
+    <header class="login-header">
+      <h1 class="login-logo"><%= __(`common|ProgramName${company}`) %></h1>
+    </header>
+    <div class="login-box">
+      <p class="login-welcome"><%= __("login|Welcome back Please login to your account") %></p>
+      <div class="login-form">
+        <div class="ui-login-input">
+          <input type="text" id="userID" autofocus>
+          <label for="userID"><%= __("login|Username") %></label>
+        </div>
+        <div class="ui-login-input">
+          <input type="password" id="userPassword">
+          <label for="userPassword"><%= __("login|Password") %></label>
+        </div>
+      </div>
+      <div class="login-button-box">
+        <button id="btnLogin" type="button" class="btn btn-login btn-primary"><%= __("login|Login") %></button>
+      </div>
+      <!--
+      * @date 2021-06-10
+      * @desc add link for forget password
+      * @company
+      * -->
+      <div class="login-other">
+        <a href="/admin/user/userForgotPassword" class="link link-text reverse-color small-fontSize"><%= __("login|Forgot your password?") %></a>
+      </div>
+      <!-- // @date 2021-06-10 -->
+    </div>
+    <p class="login-copyright"><%= __("login|COPYRIGHT") %> <%= __(`common|Company${company}`) %> <%= __("login|ALL RIGHTS RESERVED.") %></p>
+  </div>
+  <%- include('../../include/alertModal') %>
+  <script>
+    var requestLogin = function(){
+      const id = $('#userID').val();
+      const pw = $('#userPassword').val();
+
+      if (!id) return alertModalControl('open', 'alertError', '<%= __("login|Please enter an Email") %>', {closeCallback: function(){
+        $('#userID').focus();
+      }});
+      if (!pw) return alertModalControl('open', 'alertError', '<%= __("login|Please enter a Password") %>', {closeCallback: function(){
+        $('#userPassword').focus();
+      }});
+
+      const dataVale = { email: id, password: pw };
+
+      fetch('/admin/user/login',{
+        method: 'POST',
+        body: JSON.stringify(dataVale),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        
+        if(response.redirected == true) return location.href = '/dashboard/dashboard';
+        else {
+          if(response.statusText == 'User login fail') return alertModalControl('open', 'alertError', 'User login fail');
+          else if(response.statusText == 'Insert group fail') return alertModalControl('open', 'alertError', 'Insert group fail');
+          else return alertModalControl('open', 'alertError', '<%= __("login|Error!") %>');
+        }
+      })
+      .catch(function(errors){console.error('Error:', errors)});
+    }
+
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded', () => {
+    $('#btnLogin').on('click.login', requestLogin);
+    $(document).on('keyup.login', function(e){
+      if(e.keyCode == 13) return requestLogin();
+    });
+  });
+  /*************************************/
+  </script>
+</body>
+</html>

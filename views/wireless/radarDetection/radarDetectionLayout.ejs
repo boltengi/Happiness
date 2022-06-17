@@ -1,0 +1,229 @@
+<%- contentFor('title')%>
+<%= __("wirelessRadar|Radar detection") %> - <%= __("wirelessRadar|Wireless") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-wireless"></span> <%= __("wirelessRadar|Wireless") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner">
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <%- include('./radarDetectionTree.ejs', {rendering: 'dummy'})%>
+        <!-- // @date 2021-05-31 -->
+      </div>
+    </div>
+    <div class="table-divide">
+      <div id="tab" class="divide-inner">
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <%- include('./radarDetectionTab.ejs', {rendering: 'dummy'})%>
+        <!-- // @date 2021-05-31 -->
+      </div>
+    </div>
+  </div>
+</main>
+<!-- //main -->
+
+<%- contentFor('modal')%>
+<div id="modal-bluetooth" class="modal"></div>
+
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #wirelessRadarAP,
+  #wirelessRadarStationary,
+  #wirelessRadarBluetooth {
+    min-height: 796px;
+    background: #fff;
+    border-radius: 8px;
+  }
+</style>
+
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script defer src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+<script>
+  var customFilterCondition = {
+    ap: [
+      {
+        select: {originval: 'mac', dataval: '<%= __("wirelessRadar|MAC") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'essid', dataval: '<%= __("wirelessRadar|ESSID") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'severity', dataval: '<%= __("wirelessRadar|Severity") %>'},
+        condition: {
+          type: 'select',
+          options: [
+            {originval: 0, dataval: '<%= __("wirelessRadar|Safe") %>'},
+            {originval: 1, dataval: '<%= __("wirelessRadar|Normal") %>'},
+            {originval: 2, dataval: '<%= __("wirelessRadar|Danger") %>'},
+          ]
+        }
+      },
+      {
+        select: {originval: 'privacy', dataval: '<%= __("wirelessRadar|Privacy") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'auth', dataval: '<%= __("wirelessRadar|Auth") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'cipher', dataval: '<%= __("wirelessRadar|Cipher") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'ch', dataval: '<%= __("wirelessRadar|CH") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'power', dataval: '<%= __("wirelessRadar|S/N") %>'},
+        condition: {type: 'input'}
+      },
+    ],
+    stationary: [
+      {
+        select: {originval: 'mac', dataval: '<%= __("wirelessRadar|MAC") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'ap_mac', dataval: '<%= __("wirelessRadar|AP MAC") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'power', dataval: '<%= __("wirelessRadar|S/N") %>'},
+        condition: {type: 'input'}
+      },
+    ],
+    bluetooth:  [
+      {
+        select: {originval: 'asset_mac', dataval: '<%= __("wirelessRadar|Asset MAC") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'mode', dataval: '<%= __("wirelessRadar|Mode") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'address_type', dataval: '<%= __("wirelessRadar|Address type") %>'},
+        condition: {type: 'input'}
+      },
+      {
+        select: {originval: 'rssi', dataval: '<%= __("wirelessRadar|RSSI") %>'},
+        condition: {type: 'input'}
+      },
+      /**
+      * @date 2021-06-04
+      * @desc show severity of bluetooth
+      * @company
+      * -->
+      */
+      {
+        select: {originval: 'severity', dataval: '<%= __("wirelessRadar|Severity") %>'},
+        condition: {
+          type: 'select',
+          options: [
+            {originval: "LOW", dataval: '<%= __("wirelessRadar|LOW") %>'},
+            {originval: "MID", dataval: '<%= __("wirelessRadar|MID") %>'},
+            {originval: "HIGH", dataval: '<%= __("wirelessRadar|HIGH") %>'},
+          ]
+        }
+      },
+      /*************************************/
+      {
+        select: {originval: 'oui', dataval: '<%= __("wirelessRadar|OUI") %>'},
+        condition: {type: 'input'}
+      },
+    ],
+  };
+</script>
+
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    const url = location.href.split("?")[0];
+    history.replaceState(state, null, url);
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+  var maintainState = () => {
+    const selectedTab = getState().selectedTab || 'AP';
+    $('#radarTab').find(`.tab-link`).removeClass('on').find(`a[href="#wirelessRadar${selectedTab}"]`).closest(`.tab-link`).addClass('on');
+    $('#radarTab').find(`.tab-content`).removeClass('on').filter(`[id="wirelessRadar${selectedTab}"]`).addClass('on');
+
+    const tabObj = getState()[selectedTab] || {};
+    const entries = tabObj.entries || 10;
+    const page = tabObj.page || 1;
+    $(`#${selectedTab.toLowerCase()}ListEntries`).find(`option[value="${entries}"]`).prop('selected', true);
+    $(`#${selectedTab.toLowerCase()}Pagination`).find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == page}).addClass('active');
+
+    const filter = tabObj.filter || [];
+    const filterCustom = $(`#wirelessRadar${selectedTab} .filter-custom`).data('filterCustom')
+    filterCustom && $.each(filter, function(index,element){
+      filterCustom.addItem(element)
+    });
+  }
+</script>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',() => {
+  maintainState();
+});
+/*************************************/
+</script>
+
+<script>
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+</script>
+
+<%- include('./radar.script.request.ejs')%>
+
+<script>
+  window.addEventListener("load", function (event) {
+    requestTree();
+  });
+</script>

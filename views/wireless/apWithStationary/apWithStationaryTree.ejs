@@ -1,0 +1,66 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <div class="card-box">
+    <!-- tree-comp -->
+    <div class="tree-comp no-multi" data-single="true">
+      <div class="tree-header">
+        <h2 class="tree-title"><%= __("wirelessAP|Sensor Tree") %></h2>
+      </div>
+      <div class="tree-search">
+        <div class="ui-search">
+          <div class="ui-input default-style"><input type="text" placeholder="<%= __("wirelessAP|Search") %>"></div>
+          <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("wirelessAP|Search") %></span></span></button>
+        </div>
+      </div>
+      <div class="tree high-size">
+        <button type="button" class="btn btn-tree-all"><%= __("wirelessAP|Open all") %></button>
+        <!-- tree-empty -->
+        <div class="tree-empty">
+          <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                <span class="symbol-icon question-style"></span>
+                <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("wirelessAP|No data available") %></p>
+              <p class="sub-msg"><%= __("wirelessAP|There is no data to show you right now") %></p>
+            </div>
+          </div>
+          <!-- //empty -->
+        </div>
+        <!-- //tree-empty -->
+      </div>
+    </div>
+    <!-- //tree-comp -->
+  </div>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/wireless/apWithStationary/treelist', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var treeData = <%- tree_groups %> || [];
+</script>
+<script>
+  var selectedItem = getState().sensor_id && { type:'sensor_id', value: getState().sensor_id };
+  tree('.tree-comp', {
+    data: treeData, selectedItem: selectedItem, selectCallback: function (data) {
+
+      const checkedId = data.checkedId;
+      const sensor_id = checkedId.sensor_id;
+
+      const page = 1;
+
+      setState({sensor_id: sensor_id, page: page});
+      requestContent();
+    }
+  });
+
+  requestContent();
+</script>
+<% } %>

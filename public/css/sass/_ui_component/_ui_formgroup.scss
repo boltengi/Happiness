@@ -1,0 +1,270 @@
+/**********************************
+ ********** form group (in modal) **************
+ **********************************/
+.form-group-list
+{
+    padding: 23px 50px 0 45px;
+}
+
+.form-group-list.no-spacing
+{
+    padding: 0;
+}
+
+.form-group-list .form-ui-wrap
+{
+    width: 100%;
+}
+
+.form-group
+{
+    position: relative;
+
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    box-sizing: border-box;
+
+    flex-wrap: nowrap;
+}
+
+.form-group.spacing-bottom
+{
+    margin-bottom: 8px;
+}
+
+.form-group:last-child dl dd
+{
+    padding-bottom: 0;
+}
+
+.form-group:last-child dl dd .form-info
+{
+    margin-top: 0;
+}
+
+.form-group > dl
+{
+    width: 100%;
+}
+
+.form-group > dl + dl
+{
+    margin-left: 10px;
+}
+
+.form-group > dl > dt
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    position: relative;
+
+    display: block;
+
+    padding-top: 9px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+
+    color: var(--form-group-title-color);
+}
+
+.form-group dt.is-essential:before
+{
+    position: absolute;
+    top: 9px;
+    left: 0;
+
+    content: '*';
+}
+
+.form-group > dl > dt .ui-tooltip
+{
+    margin-left: 6px;
+}
+
+.form-group > dl > dt .form-group-right
+{
+    float: right;
+}
+
+.form-group > dl > dt:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+
+.form-group > dl > dd
+{
+    position: relative;
+
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    width: 100%;
+    padding-bottom: 8px;
+
+    align-items: center;
+}
+
+.form-group > dl > dd.is-essential
+{
+    padding-left: 10px;
+}
+
+.form-group dd + dd
+{
+    margin-top: 2px;
+}
+
+.form-group dd .ui-datepicker,
+.form-group dd .ui-input,
+.form-group dd .ui-select,
+.form-group dd .ui-file
+{
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+
+    flex: 1;
+}
+
+.form-group dd * + .ui-input,
+.form-group dd * + .ui-select
+{
+    margin-left: 10px;
+}
+
+.form-group .form-info-title
+{
+    font-size: 11px;
+
+    display: inline-block;
+
+    min-width: 90px;
+
+    color: var(--form-info-title-color);
+}
+
+.form-group dd + dd .form-info-title,
+.form-group dd + dd .ui-input
+{
+    margin-top: -8px;
+}
+
+.form-group .form-info-title:before
+{
+    padding-right: 3px;
+    padding-left: 11px;
+
+    content: '-';
+}
+
+.form-group .form-info-title:after
+{
+    padding-right: 16px;
+    padding-left: 16px;
+
+    content: ':';
+}
+
+.form-group dd .form-info-title + *
+{
+    margin-left: 0;
+}
+
+.form-group dd .ui-edit
+{
+    width: 100%;
+}
+
+.form-group dd .ui-radio,
+.form-group dd .ui-checkbox
+{
+    margin-right: 20px;
+}
+
+.form-group .form-info
+{
+    font-size: 10px;
+
+    display: inline-block;
+
+    width: 100%;
+    margin-top: -8px;
+    margin-bottom: -8px;
+    padding-top: 2px;
+
+    text-align: right;
+}
+
+.form-group .form-info.left-textAlign
+{
+    text-align: left;
+}
+
+.form-group .form-info.on
+{
+    display: block;
+}
+
+.form-info .warning-status
+{
+    display: inline-block;
+
+    box-sizing: border-box;
+    padding-right: 12px;
+
+    text-align: right;
+
+    color: var(--form-info-warning-color);
+}
+
+.form-info.dark-color .warning-status
+{
+    color: var(--form-info-dark-color-warning-color);
+}
+
+.form-group .form-info.on .warning-status
+{
+    color: var(--form-info-warning-color-on);
+}
+
+.form-group .form-info.is-info .warning-status
+{
+    color: var(--form-info-warning-color-info);
+}
+
+.form-info .warning-status:before
+{
+    display: inline-block;
+
+    width: 13px;
+    height: 13px;
+    margin-right: 6px;
+
+    content: '';
+    vertical-align: top;
+
+    background: var(--form-info-warning-color);
+
+    mask: url('../img/component/form/form-icon-warning.svg') center center no-repeat;
+}
+.form-info.dark-color .warning-status:before
+{
+    background: var(--form-info-dark-color-warning-color);
+}
+
+.form-info.on .warning-status:before
+{
+    background: var(--form-info-warning-color-on);
+}
+
+.form-info.is-info .warning-status:before
+{
+    background: var(--form-info-warning-color-info);
+}

@@ -1,0 +1,269 @@
+<!-- common -->
+<%- contentFor('title')%>
+<%= __("administrationSensor|Sensor") %> - <%= __("administrationSensor|Administration") %> - <%= __("common|ProgramName") %>
+
+<%- contentFor('sidebar')%>
+{depth:{depth1:5, depth2:0}}
+<!-- //common -->
+
+<%- contentFor('body')%>
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-administration"></span> <%= __("administrationSensor|Administration") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner"></div>
+    </div>
+    <div class="table-divide">
+      <div id="tab" class="divide-inner">
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- contentFor('modal')%>
+<div id="modal-new" class="modal"></div>
+<div id="modal-edit" class="modal"></div>
+<div id="modal-setting" class="modal"></div>
+<div id="modal-blocklist" class="modal"></div>
+<div id="modal-diagnosis" class="modal"></div>
+
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #administrationSensorNew,
+  #deviceTypeList,
+  #embeddedTypeList,
+  #clientTypeList {
+    min-height: 690px;
+    background: #fff;
+    border-radius: 8px;
+  }
+</style>
+
+<script>
+  // // history.state 가 없으면
+  // if(!history.state)
+  //   // history.state 빈객체로 초기화
+  //   history.replaceState({currentTab:'device'}, null)
+  // # 과 TypeList 제거하는 정규표현식
+  const re = /#|TypeList/gi;
+  // 현재탭 전역변수
+  let currentTab = null
+  // sensorType 딕셔너
+  const sensorTypeDictionary = {
+    device: 0,
+    embedded: 1,
+    client: 2,
+  }
+  let entries = 10
+  let page = 1
+</script>
+
+<script>
+  $(function(){
+    // tree 불러와야함
+    // ?gid=[GID] => ???
+    fetch('/admin/sensor_test/treelist')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(html){
+      $('#tree').html(html)
+    })
+  })
+</script>
+
+<script>
+  // // # iotcare timeout 감지 코드
+  // function requestTab(promise){
+  //   console.log('happend', promise)
+  //   return new Promise((resolve, reject)=>{
+  //     let didTimeout = false;
+  //     const timer = setTimeout(function(){
+  //       if(!didTimeout) reject(new Error('timeout'));
+  //     }, 5000);
+  //     promise
+  //     .finally(()=>{
+  //       didTimeout = true;
+  //       clearTimeout(timer);
+  //     })
+  //     .then(()=>{
+  //       if(!didTimeout) resolve();
+  //     })
+  //     .catch(()=>{})
+  //   })
+  // }
+  //
+  // requestTab(fetch('/admin/sensor_test/sensorTab'))
+  // .then(function(response){
+  //   return response.text()
+  // })
+  // .then(function(html){
+  //   $('#tab').html(html)
+  // })
+  // .catch(()=>{
+  //   // timeout 으로 실패시 실행할 코드
+  // })
+
+  // const requestTab  = () => {
+  //   fetch('/admin/sensor_test/sensorTab')
+  //   .then(function(response){
+  //     if(response.ok) {
+  //       return response.text()
+  //     }
+  //     throw new Error('Network response was not ok.');
+  //   })
+  //   .then(function(html){
+  //     $('#tab').html(html)
+  //   })
+  //   .catch(function(error) {
+  //     console.log('There has been a problem with your fetch operation: ', error.message);
+  //   });
+  // }
+
+  const requestTab  = () => {
+    fetch('/admin/sensor_test/sensorTab')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(html){
+      $('#tab').html(html)
+    })
+  }
+
+  const requestList = (sensor_type=0, entries=10, page=1) => {
+    const condition = {
+      entries,
+      sensor_type
+    }
+
+    fetch(`/admin/sensor_test/${page}`, {
+      method:'POST',
+      body:JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return {data: response.text()}
+    })
+    .then((data) => data.data)
+    .then((data) => {
+      $(`#${currentTab}TypeList .tab-content-table`).html(data);
+    })
+    .catch((error) => console.log('Error:', error))
+  }
+</script>
+
+<script>
+  const getHistory = () => {
+    return history.state[currentTab] || {}
+  }
+
+  const maintainHistory = (obj) => {
+    // 매개변수 obj로 entries 와 page 조정
+    const {entries=10, current} = obj
+    // 센서탭별  entries 수정
+    $(`#${currentTab}typeListEntries option`).attr('selected', false)
+    $(`#${currentTab}typeListEntries`).find(`option[value="${entries}"]`).attr('selected', true);
+  }
+
+  // 서버에서온 current, entries 정보를 histoy 객체에 저장
+  const setHistory = (obj) => {
+    const state = $.extend({}, history.state, obj)
+    history.replaceState(state, null)
+  }
+
+  // 히스토리 객체에서
+  // current(page), entries 정보를 전역변수에 저장
+  const getHistoryInfo = () => {
+    if(history.state != null){
+      if(Object.keys(history.state).includes(currentTab)){
+        entries = history.state[currentTab].entries
+        page = history.state[currentTab].current
+      }
+    }
+  }
+
+  // init historyState
+  // history.state 없으면 빈객체로 초기화
+  // history.state에 device(embedded, clinet) 키값이 없으면
+  const initHistory = () => {
+    if(history.state == null){
+      setHistory({})
+    }
+    if(!Object.keys(history.state).includes(currentTab)){
+      setHistory({
+        [currentTab]: {
+           current: 1,
+           entries: 10
+        },
+        currentTab
+      })
+    }
+  }
+
+  // pagination 변경시 정보 서버로 전달
+  const pagination_f = () => {
+    getCurrentTab()
+
+    $(`#${currentTab}typePagination .page-item`).off('click.pagination').on('click.pagination', function(){
+      // 사용자가 바꾼 page == current
+      const page = $(this).data('page')
+      // 사용자가 선택한 tab
+      const currentTab = history.state.currentTab
+      // 사용자가 선택한 entries
+      const entries = history.state[currentTab].entries
+
+      setHistory({ [currentTab]: {current:page, entries}, currentTab})
+      requestList(sensorTypeDictionary[currentTab], entries, page)
+    })
+  }
+
+  // entries 변경시 정보를 서버로 전달
+  const entries_f = () => {
+    getCurrentTab()
+
+    $(`#${currentTab}typeListEntries`).off('change.entries').on('change.entries', function(){
+      $(this).find('option').attr('selected', false)
+      const entries = parseInt($(this).find('option:selected').attr('selected', true).val(), 10)
+      setHistory({ [currentTab]: {current:1, entries}, currentTab})
+      requestList(sensorTypeDictionary[currentTab], entries, 1)
+    })
+  }
+
+  // get currentTab
+  const getCurrentTab = () => {
+    if(history.state == null) currentTab = $('.tab-link.on a').attr('href').replace(re,"")
+    else currentTab = history.state.currentTab
+
+  }
+
+  // 탭 클릭시 이동
+  const tabMove = () => {
+    $('#sensorTab .tab-link').on('click', (e) => {
+      currentTab = $(e.target).attr('href').replace(re,"")
+      getHistoryInfo();
+      requestList(sensorTypeDictionary[currentTab], entries, page)
+    })
+  }
+
+  // 탭 초기설정
+  const tabInit = () => {
+    const index = sensorTypeDictionary[currentTab]
+    $('.tab-link').removeClass('on')
+    $('.tab-content').removeClass('on')
+
+    $('.tab-link').eq(index).addClass('on')
+    $('.tab-content').eq(index).addClass('on')
+  }
+</script>

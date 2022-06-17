@@ -1,0 +1,390 @@
+/**********************************
+ ********** 기본 버튼 **************
+ **********************************/
+.btn.btn-normal
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    min-width: 65px;
+    min-height: 30px;
+    padding: 5px 14px 6px;
+
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--btn-normal-color);
+    border: 1px solid var(--btn-normal-border-color);
+    border-radius: 2px;
+    background: var(--btn-normal-bg);
+}
+
+.btn.btn-normal:not(.disabled):not(.disabled):hover
+{
+    color: var(--btn-normal-color);
+    border: 1px solid var(--btn-normal-border-color);
+    background: var(--btn-normal-bg);
+}
+
+.btn.btn-normal.primary-style
+{
+    color: var(--btn-normal-primary-color);
+    border: 1px solid var(--btn-normal-primary-border-color);
+    background: var(--btn-normal-primary-bg);
+}
+
+.btn.btn-normal.primary-style:not(:disabled):not(.disabled):hover
+{
+    color: var(--btn-normal-primary-color);
+    border: 1px solid var(--btn-normal-primary-border-color);
+    background: var(--btn-normal-primary-bg);
+}
+
+.btn.btn-normal.secondary-style
+{
+    color: var(--btn-normal-secondary-color);
+    border: 1px solid var(--btn-normal-secondary-border-color);
+    background: var(--btn-normal-secondary-bg);
+}
+
+.btn.btn-normal.secondary-style:not(:disabled):not(.disabled):hover
+{
+    color: var(--btn-normal-secondary-color);
+    border: 1px solid var(--btn-normal-secondary-border-color);
+    background: var(--btn-normal-secondary-bg);
+}
+
+.btn.btn-normal.point-style
+{
+    color: var(--btn-normal-point-color);
+    border: 1px solid var(--btn-normal-point-border-color);
+    background: var(--btn-normal-point-bg);
+}
+
+.btn.btn-normal.point-style:not(:disabled):not(.disabled):hover
+{
+    color: var(--btn-normal-point-color);
+    border: 1px solid var(--btn-normal-point-border-color);
+    background: var(--btn-normal-point-bg);
+}
+
+.btn.btn-normal:focus
+{
+    outline: none;
+}
+
+.btn.disabled,
+.btn:disabled
+{
+    cursor: not-allowed;
+}
+
+.btn.btn-normal + .btn.btn-normal
+{
+    margin-left: 9px;
+}
+
+.btn.btn-normal.long-size
+{
+    min-width: 100px;
+}
+
+.btn.btn-normal.small-size
+{
+    font-size: 10px;
+
+    min-width: 60px;
+    min-height: 24px;
+    padding: 4px 5px;
+}
+
+.btn.btn-normal.smaller-size
+{
+    font-size: 8px;
+
+    min-width: 70px;
+    min-height: 20px;
+    padding: 2px 5px;
+}
+
+.btn.btn-normal.largest-size
+{
+    font-size: 16px;
+
+    min-width: 185px;
+    height: 50px;
+
+    cursor: pointer;
+
+    border-radius: 4px;
+}
+
+.btn.btn-normal.small-size.long-size
+{
+    min-width: 90px;
+}
+
+/**********************************
+ ********** 텍스트 버튼(링크)**************
+ **********************************/
+.btn.btn-link
+{
+    font-family: var(--font-family-title);
+    font-size: 16px;
+
+    display: inline-block;
+
+    cursor: pointer;
+    vertical-align: middle;
+
+    border: none;
+    background: transparent;
+}
+
+.btn.btn-link:focus
+{
+    outline: none;
+}
+
+.btn.btn-link.point-style
+{
+    color: var(--btn-link-point-color);
+}
+
+.btn.btn-link.btn-back:before
+{
+    content: '< ';
+}
+
+/**********************************
+ ********** 링크 텍스트 **************
+ **********************************/
+.link
+{
+    cursor: pointer;
+}
+.link:focus
+{
+    outline: none;
+}
+
+.link.link-text
+{
+    font-family: var(--font-family-content);
+    font-size: 14px;
+
+    padding: 0;
+
+    color: inherit;
+    border: none;
+    background: none;
+}
+.link.link-text.default-color
+{
+    color: var(--link-text-default-color);
+}
+.link.link-text.default-color
+{
+    color: var(--link-text-default-color);
+}
+.link.link-text.reverse-color
+{
+    color: var(--link-text-reverse-color);
+}
+
+.link.link-text.small-fontSize
+{
+    font-size: 12px;
+}
+
+/**********************************
+ ********** 아이콘 **************
+ **********************************/
+.btn.btn-icon
+{
+    display: inline-block;
+
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    cursor: pointer;
+    vertical-align: middle;
+
+    border: none;
+    background-color: var(--btn-icon-default-bg);
+}
+
+.btn.btn-icon:disabled
+{
+    cursor: not-allowed;
+}
+
+.btn.btn-icon.medium-size
+{
+    width: 38px;
+    height: 38px;
+}
+
+.btn.btn-icon.small-size
+{
+    width: 24px;
+    height: 24px;
+}
+
+.btn.btn-icon.smaller-size
+{
+    width: 15px;
+    height: 15px;
+}
+
+.btn.btn-icon:focus
+{
+    outline: none;
+}
+
+.btn.btn-icon .icon
+{
+    width: 100%;
+    height: 100%;
+
+    vertical-align: top;
+}
+
+.btn-icon.btn-search
+{
+    font-size: 12px;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+
+    vertical-align: middle;
+
+    color: var(--btn-icon-reverse-color);
+    border-radius: 2px;
+    background-color: var(--btn-icon-reverse-bg);
+}
+
+.btn-icon.btn-edit
+{
+    width: 30px;
+    height: 30px;
+}
+
+.btn-icon.btn-list
+{
+    width: 30px;
+    height: 30px;
+}
+
+.btn-icon.btn-list.small-size
+{
+    width: 24px;
+    height: 24px;
+}
+
+.btn-icon.btn-accordion
+{
+    width: 30px;
+    height: 30px;
+}
+
+.btn-icon.btn-question
+{
+    width: 13px;
+    height: 13px;
+}
+
+.btn-icon.btn-accordion.on
+{
+    transform: rotate(180deg);
+}
+
+.btn-icon.btn-dual-arrow-left
+{
+    box-sizing: border-box;
+    width: 15px;
+    height: 15px;
+
+    border: 1px solid var(--primary);
+    border-radius: 1px;
+}
+
+.btn-icon.btn-dual-arrow-right
+{
+    box-sizing: border-box;
+    width: 15px;
+    height: 15px;
+
+    border: 1px solid var(--primary);
+    border-radius: 1px;
+}
+
+.btn-icon.btn-play,
+.btn-icon.btn-pause
+{
+    box-sizing: border-box;
+    width: 60px;
+    height: 30px;
+
+    text-align: center;
+
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+}
+
+.btn-icon.btn-pause.disabled,
+.btn-icon.btn-pause:disabled
+{
+    border-color: var(--btn-icon-disabled-border-color);
+    background: var(--btn-icon-disabled-bg);
+}
+
+.btn-icon.btn-pause.disabled .icon:before,
+.btn-icon.btn-pause:disabled .icon:before,
+.btn-icon.btn-pause.disabled .icon:after,
+.btn-icon.btn-pause:disabled .icon:after
+{
+    background: var(--btn-icon-disabled-color);
+}
+
+.btn.btn-loading
+{
+    box-sizing: border-box;
+    width: 60px;
+    height: 30px;
+
+    text-align: center;
+
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+}
+
+.btn.btn-loading.disabled,
+.btn.btn-loading:disabled
+{
+    border-color: var(--btn-icon-disabled-border-color);
+    background: var(--btn-icon-disabled-bg);
+}
+
+
+/**********************************
+ ********** 부모 **************
+ **********************************/
+.btn-table-box
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    width: 100%;
+
+    text-align: right;
+
+    align-items: flex-start;
+}

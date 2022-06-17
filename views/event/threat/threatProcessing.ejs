@@ -1,0 +1,230 @@
+<div class="modal-comp long-size" id="modalProcessing">
+  <div class="modal-align">
+    <div class="modal-box">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("eventThreat|Processing") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("eventThreat|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <!-- modal-content-wrap -->
+            <div class="modal-content-wrap">
+              <!-- info-title-comp -->
+              <div class="info-title-comp">
+                <h2 class="info-title">
+                  <span class="icon-title icon-title-checklist"></span> <%= __("eventThreat|Selected in") %> : <%= ObjView.length %>
+                </h2>
+              </div>
+              <!-- //info-title-comp -->
+
+              <div class="pack">
+                <!-- table-comp -->
+                <div class="table-comp table-check table-accordion">
+                  <div class="table-scroll data-style">
+                    <div class="thead-scroll">
+                      <table class="table data-style">
+                        <caption><span class="sr-only"><%= __("eventThreat|Processing selected") %></span>
+                        </caption>
+                        <colgroup>
+                          <col style="width: 5%; " />
+                          <col style="width: 5%; " />
+                          <col style="width: 28%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 12%; " />
+                          <col style="width: 26%; " />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th scope="col" class="cell-check">
+                              <div class="ui-checkbox default-style empty-type small-size">
+                                <input type="checkbox" name="processing-check" id="processing-check" checked>
+                                <label for="processing-check"><span class="sr-only"></span></label>
+                              </div>
+                            </th>
+                            <th scope="col" class="cell-accordion"><span class="accordion-empty"></span></th>
+                            <th scope="col"><%= __("eventThreat|Processed time") %></th>
+                            <th scope="col"><%= __("eventThreat|Type") %></th>
+                            <th scope="col"><%= __("eventThreat|Severity") %></th>
+                            <th scope="col"><%= __("eventThreat|Asset name") %></th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div class="tbody-scroll">
+                      <table class="table data-style">
+                        <caption><span class="sr-only"><%= __("eventThreat|Processing selected") %></span></caption>
+                        <colgroup>
+                          <col style="width: 5%; " />
+                          <col style="width: 5%; " />
+                          <col style="width: 28%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 12%; " />
+                          <col style="width: 26%; " />
+                        </colgroup>
+                        <tbody>
+                          <% for (let i = 0; i < ObjView.length; i++) { %>
+                          <% const data = ObjView[i] %>
+                          <tr class="accordion-content-title" data-processing="<%= data.idx %>" data-category="<%= data.category %>">
+                            <td class="cell-check">
+                              <div class="ui-checkbox default-style empty-type small-size">
+                                <input type="checkbox" name="processing<%= i %>-check" id="processing<%= i %>-check" checked>
+                                <label for="processing<%= i %>-check"><span class="sr-only"></span></label>
+                              </div>
+                            </td>
+                            <td class="cell-accordion">
+                              <button type="button" class="btn btn-icon btn-accordion small-size">
+                                <span class="icon icon-accordion icon-small"><span class="sr-only"><%= __("eventThreat|open/fold") %></span></span>
+      												</button>
+                            </td>
+                            <td><%= dateFormat(data.end_time) %></td>
+                            <td>
+                              <% if (data.category == 3){ %><%= __("eventThreat|Spoofing") %>
+                              <% } else if (data.category == 4){ %><%= __("eventThreat|Zombie service") %>
+                              <% } else if (data.category == 5){ %><%= __("eventThreat|Backdoor") %>
+                              <% } else if (data.category == 6){ %><%= __("eventThreat|ICMP Redirect") %>
+                              <% } else if (data.category == 7){ %><%= __("eventThreat|Mining Nodes") %><% } %>
+                            </td>
+                            <td>
+                              <% if (data.severity == 0){ %><span class="icon icon-severity icon-severity-low"><span class="sr-only"><%= __("eventThreat|Low") %></span></span>
+                              <% } else if (data.severity == 1){ %><span class="icon icon-severity icon-severity-medium"><span class="sr-only"><%= __("eventThreat|Medium") %></span></span>
+                              <% } else if (data.severity == 2){ %><span class="icon icon-severity icon-severity-high"><span class="sr-only"><%= __("eventThreat|High") %></span></span>
+                              <% } else if (data.severity == 3){ %><span class="icon icon-severity icon-severity-critical"><span class="sr-only"><%= __("eventThreat|Critical") %></span></span><% } %>
+                            </td>
+                            <td><span class="ellipsis"><%= data.asset_name %></span></td>
+                          </tr>
+                          <tr class="accordion-content">
+                            <td colspan="7">
+                              <div class="accordion-content-box small-size">
+
+                              </div>
+                            </td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                      <% if (ObjView.length == 0) { %>
+                      <!-- empty -->
+                      <div class="empty">
+                        <div class="empty-box">
+                          <div class="symbol symbol-empty">
+                            <span class="symbol-icon question-style"></span>
+                            <div class="symbol-figure empty-style"></div>
+                          </div>
+                          <p class="main-msg"><%= __("eventThreat|No data available") %></p>
+                          <p class="sub-msg"><%= __("eventThreat|There is no data to show you right now.") %></p>
+                        </div>
+                      </div>
+                      <!-- //empty -->
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+                <!-- //table-comp -->
+              </div>
+
+              <div class="table-data">
+                <p class="table-text" data-processingtotal><span class="title"><%= __("eventThreat|Total Selected in") %></span> <span class="num"><%= ObjView.length %></span></p>
+              </div>
+
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("eventThreat|Actions (to be) taken by the authorized") %></dt>
+                  <dd>
+                    <div class="ui-textarea default-style high-size" data-valid data-required><textarea name="" id="processing_response" cols="30" rows="10"></textarea>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+
+            </div>
+            <!-- //modal-content-wrap -->
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("eventThreat|Close") %></button>
+            <button type="button" id="incompleteBtn" class="btn btn-normal point-style long-size"><%= __("eventThreat|Pending process") %></button>
+            <button type="button" id="completeBtn" class="btn btn-normal primary-style long-size"><%= __("eventThreat|Processed") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  logdata('/event/threat/threatprocessing', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var modalProcessing = popupModal('#modalProcessing');
+  modalProcessing.open('#modalProcessing');
+  selectDropdown('.ui-select.default-style');
+  tableCheck('.table-check');
+  tableAccordion('#modalProcessing .table-accordion', {
+    beforeSlideDown : function(obj){
+     const processing = obj.btnEle.closest('tr').data('processing') || 1;
+     const category = obj.btnEle.closest('tr').data('category') || 1;
+     return requestProcessingDetail(processing, category, obj);
+    },
+    afterSlideUp: function(obj){
+     obj.btnEle.closest('tr').prev('.accordion-content').find('.accordion-content-box').html('');
+    }
+  });
+</script>
+
+<script>
+  required('.ui-textarea[data-required]');
+	validation('#modalProcessing [data-validation]');
+  var validationProcessing = $('#modalProcessing [data-validation]').data('validation');
+</script>
+
+<script>
+  $('#modalProcessing .ui-checkbox input').off('change.processingtotal').on('change.processingtotal', function(){
+    const total = $('#modalProcessing tbody .ui-checkbox input:checked').length;
+    $('[data-processingtotal] .num').html(total);
+  });
+</script>
+
+<script>
+  $('#incompleteBtn').off('click.processing').on('click.processing', function(){
+    const tableCheckedId = $.map($('#modalProcessing').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('processing');
+    });
+
+    const response = $('#processing_response').val();
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("eventThreat|Select one more.") %>');
+
+    const dataValue = {
+      idx: tableCheckedId,
+      action: false,
+      response: response
+    }
+
+    requestProcessing(dataValue, validationProcessing, $('#modalProcessing .loading-parent'));
+  });
+  $('#completeBtn').off('click.processing').on('click.processing', function(){
+    const tableCheckedId = $.map($('#modalProcessing').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('processing');
+    });
+
+    const response = $('#processing_response').val();
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("eventThreat|Select one more.") %>');
+
+    const dataValue = {
+      idx: tableCheckedId,
+      action: true,
+      response: response
+    }
+
+    requestProcessing(dataValue, validationProcessing, $('#modalProcessing .loading-parent'));
+  });
+</script>

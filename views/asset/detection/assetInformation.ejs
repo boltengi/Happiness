@@ -1,0 +1,130 @@
+<!-- card-box -->
+<article class="card-box">
+  <div class="card-header bottom-space">
+    <h2 class="card-title"><%= __("asset|Asset information") %></h2>
+    <div class="card-header-right">
+      <button type="button" id="btnBack" class="btn btn-link btn-back point-style"><%= __("asset|Back") %></button>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- card-content -->
+    <div class="card-content">
+      <% for (let i = 0; i < ObjView.length; i++) { %>
+      <% const data = ObjView[i] %>
+      <!-- table-comp -->
+      <div class="table-comp">
+        <table class="table info-style">
+          <caption>table</caption>
+          <colgroup>
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.667%; " />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="row"><%= __("asset|Asset name") %></th>
+              <th scope="row"><%= __("asset|Sensor name") %></th>
+              <th scope="row"><%= __("asset|Vulnerabilities counted") %></th>
+              <th scope="row"><%= __("asset|Processed time") %></th>
+              <th scope="row"><%= __("asset|Status") %></th>
+              <th scope="row"><%= __("asset|Allow Deny") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= data.asset_name %></td>
+              <td><span class="ellipsis"><%= data.sensor_name %></span></td>
+              <td><%= data.detection_count %></td>
+              <td><%= dateFormat(data.detection_time) %></td>
+              <td>
+                <% if (data.status == 0) { %>
+                  <span class="status status-disconnected"></span> <span class="color-disconnected"><%= __("asset|Disconnected") %></span>
+                <% } else if (data.status == 1) { %>
+                <span class="status status-connected"></span> <span class="color-connected"><%= __("asset|Connected") %></span>
+                <% } else { %>
+                <span class="status status-default"></span> <span class="color-status"><%= __("asset|Unknown") %></span>
+                <% } %>
+              </td>
+              <td>
+                <!--
+                * @date 2021-05-06
+                * @desc fix bug about column name
+                * @company
+                * -->
+                <% if (data.allowed == 0) { %>
+                  <%= __("asset|Denied") %>
+                <% } else { %>
+                  <%= __("asset|Allowed") %>
+                <% } %>
+                <!-- // @date 2021-05-06 -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table info-style">
+          <caption>table</caption>
+          <colgroup>
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.6666%; " />
+            <col style="width: 16.667%; " />
+          </colgroup>
+          <thead>
+            <tr>
+                <th scope="row"><%= __("asset|Asset IP") %></th>
+                <th scope="row"><%= __("asset|Asset MAC") %></th>
+                <th scope="row"><%= __("asset|Asset manufacturer") %></th>
+                <th scope="row"><%= __("asset|Asset type") %></th>
+                <th scope="row"><%= __("asset|OS") %></th>
+                <th scope="row"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td><%= data.asset_ip %></td>
+                <td><%= data.asset_mac %></td>
+                <td><span class="ellipsis"><%= data.asset_manufacturer %></span></td>
+                <td><span class="ellipsis"><%= data.asset_type %></span></td>
+                <td><span class="ellipsis"><%= data.os %></span></td>
+                <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- //table-comp -->
+      <% } %>
+      <% if (ObjView.length == 0) { %>
+      <!-- empty -->
+      <div class="empty">
+        <div class="empty-box">
+          <div class="symbol symbol-empty">
+            <span class="symbol-icon question-style"></span>
+            <div class="symbol-figure empty-style"></div>
+          </div>
+          <p class="main-msg"><%= __("asset|No data available") %></p>
+          <p class="sub-msg"><%= __("asset|There is no data to show you right now.") %></p>
+        </div>
+      </div>
+      <!-- //empty -->
+      <% } %>
+      <!-- //card-content -->
+    </div>
+    <!-- //card-content -->
+  </div>
+</article>
+<!-- //card-box -->
+
+<script>
+  $('#btnBack').off('click.historyBack').on('click.historyBack', function(){
+    history.go(-1);
+  });
+</script>
+
+<script>
+  logdata('/asset/detection/assetInformation', <%- JSON.stringify(locals) %>);
+</script>

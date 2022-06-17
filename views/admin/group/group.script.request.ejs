@@ -1,0 +1,251 @@
+<script>
+  const requestTree = () => {
+    fetch('/admin/group/treelist')
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      const $tree = $('#tree').html(data);
+    });
+  }
+
+  const requestList = (page, entries, sid, gid, filter = null) => {
+    const loading = openLoading($(`#listTable`), {size:'large', template: $('#listTable' + ' .search-area').length ? undefined: 'cardTableList', title: '<%= __("administrationGroup|Group") %>', filter: false});
+
+    // // table
+    const condition = {
+      entries: entries,
+      sid: sid,
+      gid: gid
+    };
+
+    if (filter) condition.filter = filter;
+
+    return fetch(`/admin/group/${page}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response.text(),
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(function(data){
+      const $listTable = $('#listTable .html-container').html(data);
+      return {isLoading: true}
+    })
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $('#listTable');
+        removeLoading($loadingParent);
+      }
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestNewPopup = (dataValue) => {
+    fetch(`/admin/group/newgroup`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      $('#modal-new').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestEditPopup = (dataValue, gid) => {
+    fetch(`/admin/group/groupedit/${gid}`,{
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-edit').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestCreate = (dataValue, validationInstance, $loadingParent) => {
+    validationInstance.checkValidation();
+    if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationGroup|Check again") %>', {
+      closeCallback: function(){
+        const $unValidNode = validationInstance.getUnValidItems();
+        if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+      }
+    });
+
+    const loading = openLoading($loadingParent);
+
+    fetch(`/admin/group/groupcreate/`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationGroup|Completed!") %>', {
+        completeCallback: function(){
+          const page = 1; // last pagination is Unknown - $('.pagination').find('li:last-child').data('page')
+          refreshPage(true, {page: page});
+        }
+      });
+    })
+    .then((data)=>{
+      return data.data.text()
+    })
+    .then((data)=>{
+      if(data == 'Duplicate group') return alertModalControl('open', 'alertError', '<%= __("administrationGroup|Duplicated!") %>', {
+        closeCallback: function(){
+          $('#newGroup_name').focus();
+        }
+      })
+      else alertModalControl('open', 'alertError', '<%= __("administrationGroup|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestUpdate = (dataValue, validationInstance, $loadingParent) => {
+    validationInstance.checkValidation();
+    if(!validationInstance.isValidation) return alertModalControl('open', 'alertError', '<%= __("administrationGroup|Check again") %>', {
+      closeCallback: function(){
+        const $unValidNode = validationInstance.getUnValidItems();
+        if($unValidNode) $unValidNode[0].$item.find(":first-child").focus();
+      }
+    });
+
+    const loading = openLoading($loadingParent);
+
+    fetch(`/admin/group/groupupdate/`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 500){
+        return {data: data.data}
+      }
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationGroup|Completed!") %>', {
+        completeCallback: function(){
+          refreshPage();
+        }
+      });
+    })
+    .then((data)=>{
+      return data.data.text()
+    })
+    .then((data)=>{
+      if(data == 'Duplicate group') return alertModalControl('open', 'alertError', '<%= __("administrationGroup|Duplicated!") %>', {
+        closeCallback: function(){
+          $('#editGroup_name').focus();
+        }
+      })
+      else alertModalControl('open', 'alertError', '<%= __("administrationGroup|Error!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  const requestDelete = (tableCheckedId) => {
+
+    const treeObjDepth = $.tree.createTreeObj(treeData);
+    const hasChildren = $.map(tableCheckedId, function(ele){
+      const tree = $.tree.findTreeFolder(treeObjDepth, ele);
+      if(!tree) return undefined;
+      if(Object.keys(tree.children).length) return ele;
+    });
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("administrationGroup|Select one more.") %>');
+    else if (hasChildren.length) return alertModalControl('open', 'alertError', '<%= __("administrationGroup|This has Children") %>');
+    else {
+      alertModalControl('open', 'alertConfirm', '<%= __("administrationGroup|Are you sure you want to delete records?") %>', {
+        confirmCallback: function(){
+          const dataValue = {
+            gid: tableCheckedId
+          }
+
+          fetch(`/admin/group/groupdelete`, {
+            method: 'POST',
+            body: JSON.stringify(dataValue),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(function(response){
+            /**
+            * @date 2021-04-16
+            * @desc go to 1 page if delete user, group, sensor, asset
+            * @company
+            */
+            if(response.status == 200){ refreshPage(true); }
+            /*************************************/
+            if(response.status == 500){ alertModalControl('open', 'alertError', '<%= __("administrationGroup|Error!") %>'); }
+          })
+          .catch(function(errors){console.error('Error:', errors)});
+        }
+      });
+    }
+  }
+</script>

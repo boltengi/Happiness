@@ -1,0 +1,112 @@
+<div class="modal-comp" id="modalDataDelete" >
+  <div class="modal-align">
+    <div class="modal-box">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|Delete data") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span
+              class="sr-only"><%= __("administrationSensor|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container">
+          <div class="modal-tab-content on">
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationSensor|Username") %></dt>
+                  <dd>
+                    <div class="ui-input default-style"><input type="text" placeholder=<%= user_name %> readonly></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationSensor|Password") %></dt>
+                  <dd>
+                    <div class="ui-input default-style">
+                      <input id="checkPassword" type="password" placeholder="" autocomplete="new-password"/>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button"
+              class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+            <button type="button" id="dataDeleteBtn"
+              class="btn btn-normal primary-style long-size"><%= __("administrationSensor|Delete data") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var modalDataDelete = popupModal('#modalDataDelete');
+  modalDataDelete.open('#modalDataDelete');
+</script>
+<script>
+  $('#dataDeleteBtn').on('click', function(){
+    const password = $('#checkPassword').val() + "";
+    const dataValue = {
+      "password": password
+    }
+
+    if(!password.length) {
+      alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>', {
+        closeCallback: function(){
+          $('#checkPassword').focus()
+        }
+      });
+      return
+    }
+
+    fetch('/admin/sensor/sensorusercheck',{
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      if(response.status == 200) {
+        const sensor_id = $('#editSensor_id').val();
+        const dataValue = {
+          "sensor_id": sensor_id
+        }
+        fetch('/admin/sensor/sensordatadelete',{
+          method: 'POST',
+          body: JSON.stringify(dataValue),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(function(response){
+          if(response.status == 200) return alertModalControl('open', 'alertComplete', '<%= __("administrationSensor|Completed!") %>', {
+            completeCallback: function(){
+              refreshPage();
+            }
+          });
+        })
+        .catch(function(errors){console.error('Error:', errors)});
+      }else if(response.status == 500){
+        alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>', {
+          closeCallback: function(){
+            $('#checkPassword').focus()
+          }
+        });
+      }
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  })
+</script>

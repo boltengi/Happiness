@@ -1,0 +1,64 @@
+<div class="card">
+  <div class="card-box">
+    <div class="card-header">
+      <h1 class="card-title"><%= __("administrationSystem|Version info") %></h1>
+    </div>
+    <div class="card-body">
+      <div class="system-container">
+        <div class="tab info-style" id="systemTab">
+          <div class="tab-links">
+            <div class="tab-link on">
+              <a href="#adminSystemVulnerability"><%= __("administrationSystem|Vulnerability engine") %></a>
+            </div>
+            <div class="tab-link">
+              <a href="#adminSystemSensor"><%= __("administrationSystem|Sensor package") %></a>
+            </div>
+            <div class="tab-link" style="display: none; ">
+              <a href="#adminSystemLicense"><%= __("administrationSystem|License") %></a>
+            </div>
+            <div class="tab-link">
+              <a href="#adminSystemManual"><%= __("administrationSystem|Manual") %></a>
+            </div>
+          </div>
+          <div class="tab-container">
+            <!-- vulnerability -->
+            <div id="adminSystemVulnerability" class="tab-content on">
+              <div class="html-container"></div>
+            </div>
+            <!-- //vulnerability -->
+            <!-- sensor -->
+            <div id="adminSystemSensor" class="tab-content">
+              <div class="html-container"></div>
+            </div>
+            <!-- //sensor -->
+            <!-- license -->
+            <div id="adminSystemLicense" class="tab-content">
+              <div class="html-container"></div>
+            </div>
+            <!-- //license -->
+            <!-- manual -->
+            <div id="adminSystemManual" class="tab-content">
+              <div class="html-container"></div>
+            </div>
+            <!-- //manual -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  tab('.tab');
+  formWidth();
+</script>
+
+<script>
+  requestSystem('Vulnerability');
+</script>
+
+<script>
+  $('#systemTab .tab-link').off('click.radarTab').on('click.radarTab', function(e){
+    const selectedTab = $(this).find('a').attr('href').replace('#adminSystem','');
+    requestSystem(selectedTab);
+  });
+</script>

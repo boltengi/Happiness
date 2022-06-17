@@ -1,0 +1,231 @@
+/**********************************
+ ********** 페이지 제목 **************
+ **********************************/
+.page-title-comp
+{
+    position: relative;
+
+    display: flex;
+
+    padding-top: 30px;
+    padding-bottom: 22px;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-title-comp:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+
+.page-title
+{
+    font-family: var(--font-family-title);
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.35;
+
+    position: relative;
+
+    display: inline-block;
+
+    padding-left: 31px;
+
+    color: var(--page-title-color);
+
+    flex: 1;
+}
+
+.page-title-comp .icon-title
+{
+    position: absolute;
+    top: 3px;
+    left: 3px;
+
+    display: inline-block;
+
+    width: 18px;
+    height: 20px;
+
+    vertical-align: middle;
+}
+
+.icon-title-dashboard
+{
+    background: url('../img/component/title/icon-title-dashboard.svg') center center no-repeat;
+}
+
+.icon-title-event
+{
+    background: url('../img/component/title/icon-title-event.svg') center center no-repeat;
+}
+
+.icon-title-asset
+{
+    background: url('../img/component/title/icon-title-asset.svg') center center no-repeat;
+}
+
+.icon-title-vulnerability
+{
+    background: url('../img/component/title/icon-title-vulnerability.svg') center center no-repeat;
+}
+
+.icon-title-wireless
+{
+    background: url('../img/component/title/icon-title-wireless.svg') center center no-repeat;
+}
+
+.icon-title-administration
+{
+    background: url('../img/component/title/icon-title-administration.svg') center center no-repeat;
+}
+
+.page-title-comp .icon-title-notification
+{
+    width: 20px;
+    /* reference */
+    /*
+      title: Email
+      author: Artyom Khamitov
+      reference url: https://www.iconfinder.com/iconsets/glyphs
+      license: CC BY
+    */
+
+    background: url('../img/component/title/icon-title-notification.svg') center center no-repeat;
+}
+
+.icon-title-report
+{
+    background: url('../img/component/title/icon-title-report.svg') center center no-repeat;
+}
+
+.page-title-comp .page-title-right
+{
+    padding-right: 10px;
+
+    text-align: right;
+}
+
+.page-title-comp .page-title-right .title-right-item
+{
+    display: inline-block;
+}
+
+/**********************************
+ ********** 정보 제목 **************
+ **********************************/
+.info-title-comp
+{
+    position: relative;
+
+    padding-bottom: 11px;
+}
+
+.info-title
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.25;
+
+    position: relative;
+
+    display: inline-block;
+
+    padding-left: 30px;
+
+    color: var(--info-title-color);
+}
+
+.info-title-comp .icon-title
+{
+    position: absolute;
+    top: 0;
+    left: 6px;
+
+    display: inline-block;
+
+    width: 15px;
+    height: 15px;
+
+    vertical-align: middle;
+}
+
+.info-title-comp .icon-title.icon-title-list
+{
+    background: url('../img/component/title/icon-title-list.svg') center center no-repeat;
+}
+
+.icon-title-time
+{
+    background: url('../img/component/title/icon-title-time.svg') center center no-repeat;
+}
+
+.icon-title-checklist
+{
+    background: url('../img/component/title/icon-title-checklist.svg') center bottom no-repeat;
+}
+
+.info-title-comp .icon-title.icon-title-checklist
+{
+    top: -1px;
+}
+
+/**********************************
+ ********** bullet **************
+ **********************************/
+.bullet-title
+{
+    font-family: var(--font-family-title);
+    font-size: 10px;
+
+    position: relative;
+
+    margin: 0;
+    padding-left: 8px;
+}
+
+.bullet-title.alpha-style:before
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    content: '*';
+}
+
+/**********************************
+ ********** desc **************
+ **********************************/
+.desc-title-comp
+{
+    position: relative;
+
+    display: flex;
+
+    margin-top: 20px;
+    margin-bottom: 10px;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.desc-title
+{
+    font-family: var(--font-family-title);
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1.35;
+
+    position: relative;
+
+    display: inline-block;
+
+    color: var(--page-title-color);
+
+    flex: 1;
+}

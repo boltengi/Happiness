@@ -1,0 +1,19 @@
+/**********************************
+ ********** img-card default-style **************
+ **********************************/
+.img-card.default-style .img
+{
+    display: flex;
+
+    margin-top: 40px;
+    padding: 0 15px;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.img-card.default-style .img img
+{
+    width: 300px;
+    max-height: 500px;
+}

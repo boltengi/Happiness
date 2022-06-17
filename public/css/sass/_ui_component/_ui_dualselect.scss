@@ -1,0 +1,81 @@
+/**********************************
+ ********** dual select **************
+ **********************************/
+.dualselect
+{
+    display: flex;
+
+    flex-wrap: wrap;
+}
+
+.dualselect .arrow-box
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 48px;
+
+    text-align: center;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.dualselect .arrow-box .btn + .btn
+{
+    margin-top: 30px;
+}
+
+.dualselect .item-box
+{
+    flex: 1;
+}
+
+.dualselect .item-box .item-header
+{
+    display: flex;
+
+    padding-bottom: 8px;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dualselect .item-box .item-header .item-title
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    padding-left: 9px;
+
+    color: var(--spiner-black);
+}
+
+.dualselect .item-box .item-header .item-title:before
+{
+    padding-right: 3px;
+
+    content: '-';
+}
+
+.dualselect .item-box .item-header .item-right
+{
+    text-align: right;
+}
+
+.dualselect .item-box .tbody-scroll
+{
+    position: relative;
+
+    height: 400px;
+}
+.dualselect .item-list .tbody-scroll .dualselect-empty
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: none;
+}

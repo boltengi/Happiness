@@ -1,0 +1,51 @@
+<%- contentFor('title')%>
+<%= __("administrationSystem|Version info") %> - <%= __("administrationSystem|Administration") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-administration"></span> <%= __("administrationSystem|Administration") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="system-divide-wrap">
+    <div class="system-divide">
+      <div id="systemContent" class="divide-inner"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+var requestContent = () => {
+
+
+  return fetch(`/admin/system/content`)
+  .then(function(response){
+    return response.text();
+  })
+  .then(function(data){
+    const $systemContent = $('#systemContent').html(data);
+  })
+  .catch(function(error){console.error('Error:', error)});
+}
+
+const requestSystem = (selectedTab) => {
+
+  const requestTab = selectedTab;
+
+  return fetch(`/admin/system/${requestTab}`)
+  .then(function(response){
+    return response.text();
+  })
+  .then(function(data){
+    const $tab = $('#adminSystem' + selectedTab + ' .html-container').html(data);
+  })
+  .catch(function(error){console.error('Error:', error)});
+}
+
+</script>
+<script>
+requestContent()
+</script>

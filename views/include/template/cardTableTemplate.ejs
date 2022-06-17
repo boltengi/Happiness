@@ -1,0 +1,126 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"></h2>
+      <div class="card-header-right">
+        <!-- timesearch-area -->
+				<div class="timesearch-area">
+					<div class="ui-radio default-style">
+						<input type="radio" name="" id="" checked>
+						<label for=""><%= __("template|Processed time") %></label>
+					</div>
+					<div class="ui-time">
+						<div class="time-setting">
+							<button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("template|Quick select") %></span></button>
+							<div class="time-setting-content">
+								<div class="time-setting-header">
+									<h3 class="time-setting-title"><%= __("template|Quick select") %></h3>
+									<button type="button" class="btn-time-setting-close"><span class="sr-only"></span></button>
+								</div>
+								<ul>
+									<li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("template|Today") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("template|Last 7day") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("template|Last 30day") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("template|This week") %></button></li>
+									<li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("template|This month") %></button></li>
+								</ul>
+							</div>
+						</div>
+						<div class="ui-datepicker datepicker-from">
+					    <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="" value=""></div>
+						</div>
+						<span class="form-text">-</span>
+						<div class="ui-datepicker datepicker-to">
+					    <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="" value=""></div>
+						</div>
+					</div>
+				</div>
+				<!-- //.timesearch-area -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("template|search") %></span></span></button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+			<div class="search-area">
+        <!-- filter-custom -->
+        <div class="filter-custom">
+        	<div class="custom-result">
+        	</div>
+					<div class="custom-search">
+						<button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("template|Add filter") %></span></span></button>
+						<div class="custom-search-content">
+							<div class="custom-search-header">
+								<h3 class="custom-search-title"><%= __("template|Add filter") %></h3>
+								<button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("template|close") %></span></button>
+							</div>
+							<div class="custom-search-box">
+								<div class="ui-search">
+									<div class="filter-select">
+									</div>
+									<div class="condition-box">
+									</div>
+								</div>
+							</div>
+							<div class="custom-search-footer">
+								<button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("template|Add") %></button>
+							</div>
+						</div>
+					</div>
+        </div>
+        <!-- //filter-custom -->
+      </div>
+			<!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+				<div class="table-comp table-check">
+					<div class="table-scroll default-style">
+						<div class="thead-scroll">
+							<table class="table default-style">
+								<caption><span class="sr-only"><%= __("template|eventAssetList") %></span></caption>
+								<colgroup>
+								</colgroup>
+								<thead>
+                  <tr>
+                    <th scope="row"></th>
+  				        </tr>
+								</thead>
+							</table>
+						</div>
+					  <div class="tbody-scroll">
+              <div class="partial-loading-bgbox"></div>
+					  </div>
+					</div>
+				</div>
+				<!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../pagination.ejs', {paginationID: 'templatePagination'}) %>
+          <div class="ui-select default-style" data-direction="up" id="templateListEntries">
+  			    <select name="" id="">
+  		        <option value="10" selected><%= __("template|Show 10 entries") %></option>
+  		        <option value="20"><%= __("template|Show 20 entries") %></option>
+  		        <option value="30"><%= __("template|Show 30 entries") %></option>
+  			    </select>
+  				</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',()=>{
+  selectDropdown('#templateListEntries.ui-select')
+});
+/*************************************/
+</script>

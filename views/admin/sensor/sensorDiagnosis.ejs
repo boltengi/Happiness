@@ -1,0 +1,514 @@
+<div class="modal-comp longer-size" id="modalDiagnosis" data-height="790px">
+  <div class="modal-align">
+    <div class="modal-box">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|Diagnosis targeting setting") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container">
+          <div class="modal-tab-content on">
+            <div class="modal-content-wrap">
+              <!-- sliders -->
+              <div class="sliders default-style">
+                <div class="slider on">
+                  <div class="slider-header">
+                    <div class="slider-title"><%= __("administrationSensor|Embeded software sensor") %></div>
+                    <div class="slider-right">
+                      <span class="total"><%= __("administrationSensor|Total selected in") %> <span class="num">0</span></span>
+                    </div>
+                  </div>
+                  <div class="slider-content">
+                    <div class="slider-content-wrap">
+                      <!-- dualselect -->
+                      <div class="dualselect default-style">
+                        <div class="item-box all-item-box">
+                          <div class="item-header">
+            								<div class="item-title"><%= __("administrationSensor|Sensor list") %></div>
+                            <div class="item-right">
+            									<div class="ui-explore">
+            										<div class="ui-input default-style smaller-size" data-width="110px"><input type="text" placeholder="Search" /></div>
+            										<button type="button" class="btn btn-icon btn-explore smaller-size"><span class="icon icon-explore icon-smaller"><span class="sr-only">Search</span></span></button>
+            									</div>
+                            </div>
+                          </div>
+                          <div class="item-list pack">
+            								<!-- table-comp -->
+            								<div class="table-comp table-check" data-ischeckable="true">
+            									<div class="table-scroll data-style">
+            										<div class="thead-scroll">
+            											<table class="table data-style">
+            												<caption><span class="sr-only">table</span></caption>
+            												<colgroup>
+            													<col style="width: 10%; " />
+            													<col style="width: 40%; " />
+            													<col style="width: 40%; " />
+            												</colgroup>
+            												<thead>
+            													<tr>
+            														<th scope="col" class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox1" id="checkbox1_0">
+            																<label for="checkbox1_0"><span class="sr-only"></span></label>
+            															</div>
+            														</th>
+                                        <th scope="col"><%= __("administrationSensor|Group name") %></th>
+            														<th scope="col"><%= __("administrationSensor|Sensor name") %></th>
+            													</tr>
+            												</thead>
+            											</table>
+            										</div>
+            										<div class="tbody-scroll">
+            											<table class="table data-style">
+            												<!-- <caption><span class="sr-only">table</span></caption> -->
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 40%; " />
+            													<col style="width: 40%; " />
+            												</colgroup>
+            												<tbody>
+            													<tr data-dualid="1" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox1" id="checkbox1_1">
+            																<label for="checkbox1_1"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>korean1</td>
+            														<td>한국어11</td>
+            													</tr>
+            													<tr data-dualid="2" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox1" id="checkbox1_2">
+            																<label for="checkbox1_2"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>english2</td>
+            														<td>영어22</td>
+            													</tr>
+            													<tr data-dualid="3" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox1" id="checkbox1_3">
+            																<label for="checkbox1_3"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>french3</td>
+            														<td>프랑스어33</td>
+            													</tr>
+            													<tr data-dualid="4" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox2" id="checkbox2_1">
+            																<label for="checkbox2_1"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>chinese4</td>
+            														<td>중국어44</td>
+            													</tr>
+            													<tr data-dualid="5" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox2" id="checkbox2_2">
+            																<label for="checkbox2_2"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>spanish5</td>
+            														<td>스페인어55</td>
+            													</tr>
+            													<tr data-dualid="6" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox2" id="checkbox2_3">
+            																<label for="checkbox2_3"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>german6</td>
+            														<td>독일어66</td>
+            													</tr>
+            												</tbody>
+            											</table>
+            											<!-- dualselect-empty -->
+            											<div class="dualselect-empty">
+            												<div class="empty">
+            													<div class="empty-box">
+            														<div class="symbol symbol-empty">
+            															<span class="symbol-icon question-style"></span>
+            															<div class="symbol-figure empty-style"></div>
+            														</div>
+                                        <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            														<p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now") %></p>
+            													</div>
+            												</div>
+            											</div>
+            											<!-- //dualselect-empty -->
+            										</div>
+            									</div>
+            								</div>
+            								<!-- //table-comp -->
+                          </div>
+                        </div>
+                        <div class="arrow-box">
+            							<button type="button" class="btn btn-icon btn-dual-arrow-right">
+            								<span class="icon icon-dual-arrow-right"><span class="sr-only">right</span></span>
+            							</button>
+            							<button type="button" class="btn btn-icon btn-dual-arrow-left">
+            								<span class="icon icon-dual-arrow-left"><span class="sr-only">left</span></span>
+            							</button>
+                        </div>
+                        <div class="item-box target-item-box">
+            							<div class="item-header">
+            								<div class="item-title"><%= __("administrationSensor|Target list") %></div>
+                            <div class="item-right">
+            									<div class="ui-explore">
+            										<div class="ui-input default-style smaller-size" data-width="110px"><input type="text" placeholder="Search" /></div>
+            										<button type="button" class="btn btn-icon btn-explore smaller-size"><span class="icon icon-explore icon-smaller"><span class="sr-only">Search</span></span></button>
+            									</div>
+                            </div>
+                          </div>
+                          <div class="item-list pack">
+            								<!-- table-comp -->
+            								<div class="table-comp table-check" data-ischeckable="true">
+            									<div class="table-scroll data-style colored-style">
+            										<div class="thead-scroll">
+            											<table class="table data-style colored-style">
+            												<caption><span class="sr-only">table</span></caption>
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 40%; " />
+            													<col style="width: 40%; " />
+            												</colgroup>
+            												<thead>
+            													<tr>
+            														<th scope="col" class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox2" id="checkbox2_0">
+            																<label for="checkbox2_0"><span class="sr-only"></span></label>
+            															</div>
+            														</th>
+                                        <th scope="col"><%= __("administrationSensor|Group name") %></th>
+            														<th scope="col"><%= __("administrationSensor|Sensor name") %></th>
+            													</tr>
+            												</thead>
+            											</table>
+            										</div>
+            										<div class="tbody-scroll">
+            											<table class="table data-style colored-style">
+            												<!-- <caption><span class="sr-only">table</span></caption> -->
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 40%; " />
+            													<col style="width: 40%; " />
+            												</colgroup>
+            												<tbody>
+
+            												</tbody>
+            											</table>
+            											<!-- dualselect-empty -->
+            											<div class="dualselect-empty">
+            												<div class="empty">
+            													<div class="empty-box">
+            														<div class="symbol symbol-empty">
+            															<span class="symbol-icon question-style"></span>
+            															<div class="symbol-figure empty-style"></div>
+            														</div>
+                                        <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            														<p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now") %></p>
+            													</div>
+            												</div>
+            											</div>
+            											<!-- //dualselect-empty -->
+            										</div>
+            									</div>
+            								</div>
+            								<!-- //table-comp -->
+                          </div>
+                        </div>
+                      </div>
+                      <!-- //dualselect -->
+                    </div>
+                  </div>
+                  <div class="slider-btnbox">
+                    <button type="button" class="btn btn-slider">
+                      <span class="bar"></span>
+                      <span class="bar"></span>
+                      <span class="bar"></span>
+                      <span class="sr-only">slider</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="slider">
+                  <div class="slider-header">
+                    <div class="slider-title"><%= __("administrationSensor|Asset") %></div>
+                    <div class="slider-right">
+                      <span class="total"><%= __("administrationSensor|Total selected in") %> <span class="num">0</span></span>
+                    </div>
+                  </div>
+                  <div class="slider-content">
+                    <div class="slider-content-wrap">
+                      <!-- dualselect -->
+                      <div class="dualselect default-style">
+                        <div class="item-box all-item-box">
+                          <div class="item-header">
+            								<div class="item-title"><%= __("administrationSensor|Asset list") %></div>
+                            <div class="item-right">
+            									<div class="ui-explore">
+            										<div class="ui-input default-style smaller-size" data-width="110px"><input type="text" placeholder="Search" /></div>
+            										<button type="button" class="btn btn-icon btn-explore smaller-size"><span class="icon icon-explore icon-smaller"><span class="sr-only">Search</span></span></button>
+            									</div>
+                            </div>
+                          </div>
+                          <div class="item-list pack">
+            								<!-- table-comp -->
+            								<div class="table-comp table-check" data-ischeckable="true">
+            									<div class="table-scroll data-style">
+            										<div class="thead-scroll">
+            											<table class="table data-style">
+            												<caption><span class="sr-only">table</span></caption>
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 30%; " />
+            													<col style="width: 30%; " />
+                                      <col style="width: 30%; " />
+            												</colgroup>
+            												<thead>
+            													<tr>
+            														<th scope="col" class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox11" id="checkbox11_0">
+            																<label for="checkbox11_0"><span class="sr-only"></span></label>
+            															</div>
+            														</th>
+            														<th scope="col"><%= __("administrationSensor|Group name") %></th>
+            														<th scope="col"><%= __("administrationSensor|Asset name") %></th>
+                                        <th scope="col"><%= __("administrationSensor|Asset IP") %></th>
+            													</tr>
+            												</thead>
+            											</table>
+            										</div>
+            										<div class="tbody-scroll">
+            											<table class="table data-style">
+            												<!-- <caption><span class="sr-only">table</span></caption> -->
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 30%; " />
+            													<col style="width: 30%; " />
+                                      <col style="width: 30%; " />
+            												</colgroup>
+            												<tbody>
+            													<tr data-dualid="1" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox11" id="checkbox11_1">
+            																<label for="checkbox11_1"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>korean1</td>
+            														<td>한국어11</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            													<tr data-dualid="2" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox11" id="checkbox11_2">
+            																<label for="checkbox11_2"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>english2</td>
+            														<td>영어22</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            													<tr data-dualid="3" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox11" id="checkbox11_3">
+            																<label for="checkbox11_3"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>french3</td>
+            														<td>프랑스어33</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            													<tr data-dualid="4" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox12" id="checkbox12_1">
+            																<label for="checkbox12_1"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>chinese4</td>
+            														<td>중국어44</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            													<tr data-dualid="5" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox12" id="checkbox12_2">
+            																<label for="checkbox12_2"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>spanish5</td>
+            														<td>스페인어55</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            													<tr data-dualid="6" data-ismovable="true" data-ischeckable="true">
+            														<td class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox12" id="checkbox12_3">
+            																<label for="checkbox12_3"><span class="sr-only"></span></label>
+            															</div>
+            														</td>
+            														<td>german6</td>
+            														<td>독일어66</td>
+                                        <td>192.168.0.0</td>
+            													</tr>
+            												</tbody>
+            											</table>
+            											<!-- dualselect-empty -->
+            											<div class="dualselect-empty">
+            												<div class="empty">
+            													<div class="empty-box">
+            														<div class="symbol symbol-empty">
+            															<span class="symbol-icon question-style"></span>
+            															<div class="symbol-figure empty-style"></div>
+            														</div>
+                                        <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            														<p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now") %></p>
+            													</div>
+            												</div>
+            											</div>
+            											<!-- //dualselect-empty -->
+            										</div>
+            									</div>
+            								</div>
+            								<!-- //table-comp -->
+                          </div>
+                        </div>
+                        <div class="arrow-box">
+            							<button type="button" class="btn btn-icon btn-dual-arrow-right">
+            								<span class="icon icon-dual-arrow-right"><span class="sr-only">right</span></span>
+            							</button>
+            							<button type="button" class="btn btn-icon btn-dual-arrow-left">
+            								<span class="icon icon-dual-arrow-left"><span class="sr-only">left</span></span>
+            							</button>
+                        </div>
+                        <div class="item-box target-item-box">
+            							<div class="item-header">
+            								<div class="item-title"><%= __("administrationSensor|Target list") %></div>
+                            <div class="item-right">
+            									<div class="ui-explore">
+            										<div class="ui-input default-style smaller-size" data-width="110px"><input type="text" placeholder="Search" /></div>
+            										<button type="button" class="btn btn-icon btn-explore smaller-size"><span class="icon icon-explore icon-smaller"><span class="sr-only">Search</span></span></button>
+            									</div>
+                            </div>
+                          </div>
+                          <div class="item-list pack">
+            								<!-- table-comp -->
+            								<div class="table-comp table-check" data-ischeckable="true">
+            									<div class="table-scroll data-style colored-style">
+            										<div class="thead-scroll">
+            											<table class="table data-style colored-style">
+            												<caption><span class="sr-only">table</span></caption>
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 30%; " />
+            													<col style="width: 30%; " />
+                                      <col style="width: 30%; " />
+            												</colgroup>
+            												<thead>
+            													<tr>
+            														<th scope="col" class="cell-check">
+            															<div class="ui-checkbox default-style empty-type small-size">
+            																<input type="checkbox" name="checkbox2" id="checkbox2_0">
+            																<label for="checkbox2_0"><span class="sr-only"></span></label>
+            															</div>
+            														</th>
+                                        <th scope="col"><%= __("administrationSensor|Group name") %></th>
+            														<th scope="col"><%= __("administrationSensor|Asset name") %></th>
+                                        <th scope="col"><%= __("administrationSensor|Asset IP") %></th>
+            													</tr>
+            												</thead>
+            											</table>
+            										</div>
+            										<div class="tbody-scroll">
+            											<table class="table data-style colored-style">
+            												<!-- <caption><span class="sr-only">table</span></caption> -->
+            												<colgroup>
+                                      <col style="width: 10%; " />
+            													<col style="width: 30%; " />
+            													<col style="width: 30%; " />
+                                      <col style="width: 30%; " />
+            												</colgroup>
+            												<tbody>
+
+            												</tbody>
+            											</table>
+            											<!-- dualselect-empty -->
+            											<div class="dualselect-empty">
+            												<div class="empty">
+            													<div class="empty-box">
+            														<div class="symbol symbol-empty">
+            															<span class="symbol-icon question-style"></span>
+            															<div class="symbol-figure empty-style"></div>
+            														</div>
+            														<p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            														<p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now") %></p>
+            													</div>
+            												</div>
+            											</div>
+            											<!-- //dualselect-empty -->
+            										</div>
+            									</div>
+            								</div>
+            								<!-- //table-comp -->
+                          </div>
+                        </div>
+                      </div>
+                      <!-- //dualselect -->
+                    </div>
+                  </div>
+                  <div class="slider-btnbox">
+                    <button type="button" class="btn btn-slider">
+                      <span class="bar"></span>
+                      <span class="bar"></span>
+                      <span class="bar"></span>
+                      <span class="sr-only">slider</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- //sliders -->
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button"
+              class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+            <button type="button"
+              class="btn btn-normal primary-style long-size modal-btn-close"><%= __("administrationSensor|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var modalDiagnosis = popupModal('#modalDiagnosis');
+  modalDiagnosis.open('#modalDiagnosis');
+</script>
+<script>
+  slider('.sliders');
+  formWidth('.ui-input');
+  tableCheck('.table-check');
+  dualselect('.dualselect');
+</script>

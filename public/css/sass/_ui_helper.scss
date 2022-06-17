@@ -1,0 +1,56 @@
+/**********************************
+ ********** atomic **************
+ **********************************/
+.sr-only
+{
+    position: absolute !important;
+
+    overflow: hidden !important;
+    clip: rect(1px, 1px, 1px, 1px) !important;
+    /* 1 */
+
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+
+    white-space: nowrap !important;
+    /* 3 */
+
+    border: 0 !important;
+
+    -webkit-clip-path: inset(50%) !important;
+            clip-path: inset(50%) !important;
+
+    /* 2 */
+}
+
+.cursor-pointer
+{
+    cursor: pointer !important;
+}
+
+.float-left
+{
+    float: left !important;
+}
+
+.text-center
+{
+    text-align: center !important;
+}
+
+.text-left
+{
+    text-align: left !important;
+}
+
+.text-right
+{
+    text-align: right !important;
+}
+
+.text-break
+{
+    word-break: break-all !important;
+}

@@ -1,0 +1,32 @@
+<% let max = Number(locals.max) || 9 %>
+<% let current = Number(locals.current) || 1 %>
+<% let pages = Number(locals.pages) || 1 %>
+<% let id = locals.paginationID || 'pagination' %>
+
+<% const getPagination = () => {
+  let begin, end;
+  const maxHalf = max%2 ? Math.floor(max/2) : max/2 - 1;
+
+  begin = 1;
+  end = max;
+
+  if( (current > maxHalf) && (current < (pages - maxHalf) ) ) { begin = current - maxHalf; end = current + maxHalf; }
+  if( current >= pages - maxHalf ) { begin = pages-max + 1; end = pages }
+  if( pages <= max ){ begin = 1; end = pages; }
+
+  return {
+    begin: begin,
+    end: end
+  };
+} %>
+
+<% const begin = getPagination().begin %>
+<% const end = getPagination().end %>
+
+<ul class="pagination" id="<%= id %>">
+  <li class="page-item page-prev" data-page="1"><a class="page-link page-first"><span class="sr-only"><%= __("pagination|first") %></span></a></li>
+  <% for (let i = begin; i <= end && i <= pages; i++){ %>
+    <li class="page-item page-num<%= i == current ? ' active' : '' %>" data-page="<%= i %>"><a class="page-link"><%= i %></a></li>
+  <% } %>
+  <li class="page-item page-next" data-page="<%= pages %>"><a class="page-link page-last"><span class="sr-only"><%= __("pagination|last") %></span></a></li>
+</ul>

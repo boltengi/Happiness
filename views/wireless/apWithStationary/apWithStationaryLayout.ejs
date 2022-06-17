@@ -1,0 +1,149 @@
+<%- contentFor('title')%>
+<%= __("wirelessAP|AP with stationary") %> - <%= __("wirelessAP|Wireless") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<!-- main -->
+<main id="main">
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-wireless"></span> <%= __("wirelessAP|Wireless") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+  <div class="tree-table-divide-wrap">
+    <div class="tree-divide">
+      <div id="tree" class="divide-inner">
+      <!--
+      * @date 2021-05-31
+      * @desc front performance improvement - dummy rendering
+      * @company
+      * -->
+      <%- include('./apWithStationaryTree.ejs', {rendering: 'dummy'})%>
+      <!-- // @date 2021-05-31 -->
+    </div>
+    </div>
+    <div class="table-divide">
+      <div id="content" class="divide-inner">
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <%- include('./apWithStationaryContent.ejs', {rendering: 'dummy'})%>
+        <!-- // @date 2021-05-31 -->
+      </div>
+    </div>
+  </div>
+</main>
+<!-- //main -->
+
+<%- contentFor('modal')%>
+<div id="alert" class="alert">
+  <%- include('../../include/alertModal.ejs')%>
+</div>
+
+<style>
+  /* for loading */
+  #assetMonitor {
+    min-height: 731px;
+  }
+</style>
+
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script defer src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+
+<script>
+  var customFilterCondition = [
+    {
+      select: {originval: 'mac', dataval: '<%= __("wirelessAP|MAC") %>'},
+      condition: {type: 'input'}
+    },
+    {
+      select: {originval: 'ap_mac', dataval: '<%= __("wirelessAP|AP MAC") %>'},
+      condition: {type: 'input'}
+    },
+    {
+      select: {originval: 'power', dataval: '<%= __("wirelessAP|S/N") %>'},
+      condition: {type: 'input'}
+    },
+  ];
+</script>
+
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    const url = location.href.split("?")[0];
+    history.replaceState(state, null, url);
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+  var maintainState = () => {
+    const {entries = 10, page = 1, sensor_id, filter = null } = history.state || {};
+
+    $('#listEntries').find(`option[value="${entries}"]`).prop('selected', true);
+    $('#pagination').find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == page}).addClass('active');
+    if (!sensor_id) return;
+
+    const ap = sensor_id;
+    if (!ap) return;
+    const ap_mac = ap.ap_mac;
+    $('#apList').find(`option[value="${ap_mac}"]`).prop('selected', true);
+
+    /**
+    * @date 2021-05-06
+    * @desc fix bug about duplicated filter condition
+    * @company
+    */
+    const $list = $('#assetMonitor');
+    const filterCustom = $list.find(`.filter-custom`).data('filterCustom')
+    /*************************************/
+    filterCustom && $.each(filter, function(index,element){
+      filterCustom.addItem(element)
+    });
+  }
+</script>
+
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',() => {
+  maintainState()
+});
+/*************************************/
+</script>
+
+<script>
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+</script>
+
+<%- include('./apWith.script.request.ejs')%>
+
+<script>
+  window.addEventListener("load", function (event) {
+    requestTree();
+  });
+</script>

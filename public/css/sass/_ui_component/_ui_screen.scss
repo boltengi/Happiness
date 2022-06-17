@@ -1,0 +1,73 @@
+/**********************************
+ ********** dashboard-screen **************
+ **********************************/
+.dashboard-screen.default-style
+{
+    position: relative;
+
+    overflow: hidden;
+
+    width: 100%;
+
+    border-radius: 2px;
+    box-shadow: var(--screen-shadow);
+}
+.dashboard-screen.default-style .dashboard-screen-title
+{
+    display: flex;
+
+    min-height: 25px;
+
+    background: var(--screen-title-bg);
+
+    justify-content: space-between;
+    align-items: center;
+}
+.dashboard-screen.default-style .dashboard-screen-title .title
+{
+    font-family: var(--font-family-content);
+    font-size: 10px;
+
+    padding: 5px 7px 6px;
+
+    color: var(--screen-title-color);
+
+    flex: 1;
+}
+.dashboard-screen .dashboard-screen-title .title-right
+{
+    padding-top: 1px;
+    padding-right: 4px;
+
+    flex: initial;
+}
+.dashboard-screen .dashboard-screen-title .screen-btn-close
+{
+    display: inline-block;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+    vertical-align: top;
+
+    border: none;
+    background: url('../img/component/screen/dashboard-screen-icon-close.svg') center center no-repeat;
+}
+.dashboard-screen .dashboard-screen-title  .screen-btn-close:focus
+{
+    outline: none;
+}
+.dashboard-screen.default-style .dashboard-screen-content
+{
+    position: relative;
+}
+.screen-line-box
+{
+    border: 3px solid var(--screen-line-box-border-color);
+}
+.screen-line-box.opacity-style
+{
+    background: var(--screen-line-box-border-color);
+    box-shadow: var(--screen-line-box-shadow);
+}

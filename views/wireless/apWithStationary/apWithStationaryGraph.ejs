@@ -1,0 +1,339 @@
+<div class="chart-divide-wrap">
+  <div class="chart-divide">
+    <div class="divide-inner loading-parent pick-parent" id="wirelessnetwork">
+      <div class="chart-network">
+        <div class="chart polar-chart">
+          <div class="chart-range">
+            <div id="myNetworkHighChart" class="chart-block network-graph"></div>
+          </div>
+        </div>
+        <div class="chart-info">
+          <span class="chart-term-text">(<%= __("wirelessAP|Today") %>)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-divide">
+    <div class="divide-inner loading-parent pick-parent" id="wirelesstrends">
+      <div class="chart-trend">
+        <div class="chart-title"><%= __("wirelessAP|Weekly trend") %></div>
+        <div class="chart">
+          <div id="myLineHighChart" class="chart-block"></div>
+        </div>
+        <div class="chart-info">
+          <span class="chart-term-text">(<%= __("wirelessAP|Week") %>)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #myNetworkHighChart {
+    width: 100%;
+    max-width: 615px;
+    height: 450px;
+  }
+  #myLineHighChart {
+    width: 100%;
+    max-width: 600px;
+    height: 320px;
+  }
+</style>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  var TIME = 3 * 60 * 1000;
+  // TEST CODE
+  // var TIME = 0.1 * 60 * 1000;
+  var myInterval = (cb, TIME) => {
+    let flag = true;
+    const tick = () => {
+      setTimeout(() => {
+        if(!flag) return;
+        cb().then((data)=>{
+          tick();
+        });
+      }, TIME);
+    }
+
+    cb().then((data)=>{
+      tick();
+    });
+    return () => { flag = false; }
+  }
+</script>
+
+<script>
+  var setWirelessTrends = (data) => {
+
+    logdata('/wireless/apWithStationary/wirelessTrends', data);
+
+    const ObjView = data.ObjView || [];
+
+    const graphData = ObjView.sort(function(a, b){
+                              return new Date(a.connection_time).getTime() > new Date(b.connection_time).getTime() ? 1 : -1
+                            })
+                            .map(function(element, index){
+                              const count = Number(element.count);
+                              return {name: element.connection_time, y: Number(element.connection_count)}
+                            });
+
+    const category = graphData.map(function(element){
+      const date = Highcharts.dateFormat('%m-%d', new Date(element.name));
+      return date;
+    });
+
+    // Create the chart
+    Highcharts.chart('myLineHighChart', {
+      credits: {
+        enabled: false
+      },
+      chart: {
+        type: 'area',
+        zoomType: 'x'
+      },
+      title: {
+        text: undefined
+      },
+      xAxis: {
+        title: {
+          text: undefined
+        },
+        tickWidth: 0,
+        gridLineColor: '#E5E9ED',
+        gridLineWidth: 1,
+        labels: {
+          align: 'center',
+          x: 0,
+          y: 20,
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          }
+        },
+        categories: category,
+        tickmarkPlacement: 'on',
+      },
+      yAxis: {
+        title: {
+          text: undefined
+        },
+        min: 0,
+        tickInterval: 10,
+        gridLineColor: '#E5E9ED',
+        labels: {
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          },
+          format: '{value:,.0f}'
+        }
+      },
+      colors: ['#ff638d'],
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 0.7
+            },
+            stops: [
+              [0, Highcharts.color('#ff638d').setOpacity(0.5).get('rgba')],
+              [1, Highcharts.color('#ff638d').setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            symbol: 'circle',
+            fillColor: '#FFFFFF',
+            lineWidth: 1,
+            radius: 2,
+            lineColor: null // inherit from series
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      tooltip: {
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: {fontSize: '10px', color: '#fff'},
+          headerFormat: '',
+          pointFormat: '<span>- <%= __("wirelessAP|Count") %>: {point.y}</span>'
+      },
+      series: [{
+        data: graphData
+      }]
+    });
+    return { isLoading: true };
+  };
+  var setNetwork = (data) => {
+    logdata('/wireless/apWithStationary/network', data);
+
+    (function () {
+
+      const ObjView = data.ObjView || [];
+
+      const ap_name = ObjView.find((element)=>element.ap_name) ? ObjView.find((element)=>element.ap_name).ap_name : getState()[sensor_id].ap_name;
+
+      const graphData = ObjView.filter(function (element, index) {
+        return element.ap_name != '';
+      }).map(function (element, index) {
+        return {from: ap_name, to: element.stationary_mac}
+      });
+
+      if(!ObjView.length){
+        graphData.push({from: ap_name, to: ap_name})
+      }
+
+      Highcharts.addEvent(
+        Highcharts.Series,
+        'afterSetOptions',
+        function (e) {
+          var colors = Highcharts.getOptions().colors,
+            i = 0,
+            nodes = {};
+
+          if ( this instanceof Highcharts.seriesTypes.networkgraph ) {
+            e.options.data.forEach(function (link) {
+
+              if(link.from && !nodes[link.from]){
+                nodes[link.from] = {
+                  id:	link.from,
+                  marker: {
+                    radius: 10,
+                  },
+                  color: '#69c5b2',
+                  dataLabels: {color: '#69c5b2', y: -5, style: {fontSize: 11}}
+                }
+              }
+              if(!ObjView.length) return;
+              nodes[link.to] = {
+                id:	link.to,
+                marker: {
+                  radius: 5,
+                },
+                color: '#ff638d',
+                dataLabels: {enabled: false},
+              }
+            });
+            e.options.nodes = Object.keys(nodes).map(function (id) {
+              return nodes[id];
+            });
+          }
+        }
+      );
+
+      // Create the chart
+      Highcharts.chart('myNetworkHighChart', {
+        credits: {
+          enabled: false
+        },
+        chart: {
+          type: 'networkgraph',
+          backgroundColor: 'transparent',
+        },
+        title: {
+          text: undefined
+        },
+        plotOptions: {
+          networkgraph: {
+            keys: ['from', 'to'],
+            layoutAlgorithm: {
+              enableSimulation: true,
+              // friction: -0.98,
+              initialPositions: "circle",
+              linkLength: 80,
+              integration: 'verlet', // "euler"
+              initialPositionRadius: 0.5,
+              gravitationalConstant: 0.0625
+            },
+            link: {
+              width: 1,
+              color: '#B1B1B0',
+              dashStyle: 'Dash'
+            },
+            dataLabels: {
+              enabled: true,
+              y: -1,
+              style: {
+                fontSize: 10
+              },
+              inside: false, // text 반전
+              textPath: {
+                enabled: false // circle 에 맞춰 text 곡선처리
+              },
+              linkTextPath: {
+                enabled: false
+              },
+              linkFormat: '',
+            },
+          },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: { fontSize: '10px', color: '#fff' },
+        },
+        series: [{
+          name: 'A',
+          id: 'A',
+          color: 'transparent',
+          data: graphData
+        }]
+      });
+
+    })();
+  };
+</script>
+<script>
+  var sensor_id = getState().sensor_id || '';
+  var ap = getState()[sensor_id];
+
+  if(sensor_id && ap) {
+    var ap_mac = ap.ap_mac;
+    var wirelesstrendsData = requestWirelesstrends(sensor_id, ap_mac);
+
+    wirelesstrendsData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data;
+    })
+    .then(setWirelessTrends)
+    .then((data)=>{
+      if(data.isLoading){
+        const $loadingParent = $('#wirelesstrends');
+        removeLoading($loadingParent);
+      }
+    });
+
+    // var networkData = requestNetwork(sensor_id, ap_mac);
+    //
+    // networkData.then(setNetwork);
+
+    networkDataStopper = myInterval(() => {
+      var networkData = requestNetwork(sensor_id, ap_mac);
+      return networkData.then(setNetwork);
+    }, TIME)
+
+    removePick($('#wirelesstrends'));
+    removePick($('#wirelessnetwork'));
+
+  }else{
+    addPick($('#wirelesstrends'),{mainMsg: "<%= __("wirelessAP|Please select 'Sensor & AP' in sensor tree") %>", subMsg: "<%= __("wirelessAP|There is no data to show you right now.") %>"});
+    addPick($('#wirelessnetwork'),{mainMsg: "<%= __("wirelessAP|Please select 'Sensor & AP' in sensor tree") %>", subMsg: "<%= __("wirelessAP|There is no data to show you right now.") %>"});
+  }
+</script>
+<% } %>

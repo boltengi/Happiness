@@ -1,0 +1,367 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationUser|User") %></h2>
+      <div class="card-header-right">
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("administrationUser|search") %></span></span></button>
+
+        <!--
+        * @date 2021-04-15
+        * @desc add reset button
+        * @company
+        * -->
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("administrationUser|reset") %></span></span></button>
+        <!-- // @date 2021-04-15 -->
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <div class="filter-custom">
+          <div class="custom-result">
+          </div>
+          <div class="custom-search">
+            <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("administrationUser|Add filter") %></span></span></button>
+            <div class="custom-search-content">
+              <div class="custom-search-header">
+                <h3 class="custom-search-title"><%= __("administrationUser|Add filter") %></h3>
+                <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("administrationUser|close") %></span></button>
+              </div>
+              <div class="custom-search-box">
+                <div class="ui-search">
+                  <div class="filter-select">
+                  </div>
+                  <div class="condition-box">
+                  </div>
+                </div>
+              </div>
+              <div class="custom-search-footer">
+                <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("administrationUser|Add") %></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp table-check">
+          <div class="table-scroll default-style">
+            <div class="thead-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("administrationUser|UserList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 25%; "/><!-- Company -->
+                  <col style="width: 21%; "/><!-- User -->
+                  <col style="width: 15%; "/><!-- E-mail -->
+                  <col style="width: 12%; "/><!-- Role -->
+                  <col style="width: 12%; "/><!-- Latest login -->
+                  <col style="width: 12%; "/><!-- Edit -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="row" class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="checkbox1" id="checkbox0_1">
+                        <label for="checkbox0_1"><span class="sr-only"><%= __("administrationUser|select") %></span></label>
+                      </div>
+                    </th>
+                    <th scope="row"><%= __("administrationUser|Company") %></th>
+                    <th scope="row"><%= __("administrationUser|User") %></th>
+                    <th scope="row"><%= __("administrationUser|E-mail") %></th>
+                    <th scope="row"><%= __("administrationUser|Role") %></th>
+                    <th scope="row"><%= __("administrationUser|Latest login") %></th>
+                    <th scope="row"><%= __("administrationUser|Edit") %></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("administrationUser|UserList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 25%; "/><!-- Company -->
+                  <col style="width: 21%; "/><!-- User -->
+                  <col style="width: 15%; "/><!-- E-mail -->
+                  <col style="width: 12%; "/><!-- Role -->
+                  <col style="width: 12%; "/><!-- Latest login -->
+                  <col style="width: 12%; "/><!-- Edit -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <!--
+                  * @date 2021-05-31
+                  * @desc change data that's sended for delete
+                  * @company
+                  * -->
+                  <tr data-uid="<%= data.uid %>" data-user_email="<%= data.user_email %>">
+                  <!-- // @date 2021-05-31 -->
+                    <td class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="user<%= i %>" id="user<%= i %>">
+                        <label for="user<%= i %>"><span class="sr-only"><%= __("administrationUser|select") %></span></label>
+                      </div>
+                    </td>
+                    <td><span class="ellipsis"><%= data.company %></span></td>
+                    <td><span class="ellipsis"><%= data.user_name %></span></td>
+                    <td><span class="ellipsis"><%= data.user_email %></span></td>
+                    <td class="cell-center">
+                      <% if (data.role == 0){ %><%= __("administrationUser|Admin") %><% } else { %><%= __("administrationUser|Manager") %><% } %>
+                    </td>
+                    <td class="cell-center"><%= dateFormat(data.last_login) %></td>
+                    <td class="cell-center">
+                      <button type="button" class="btn btn-icon btn-edit" data-btn="edit">
+                        <span class="icon icon-edit"><span class="sr-only"><%= __("administrationUser|edit") %></span></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("administrationUser|No data available") %></p>
+                  <p class="sub-msg"><%= __("administrationUser|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="btn-table-box">
+          <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationUser|Delete") %></button>
+          <button type="button" data-btn="new" class="btn btn-normal primary-style"><%= __("administrationUser|New user") %></button>
+        </div>
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("administrationUser|Show 10 entries") %></option>
+              <option value="20"><%= __("administrationUser|Show 20 entries") %></option>
+              <option value="30"><%= __("administrationUser|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/user/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<!--
+* @date 2021-05-27
+* @desc essential current password
+* @company
+* -->
+<script>
+  (function(){
+    const uid = $('#header #user-name').data('uid');
+    $('#listTable tbody tr').each(function(){
+      const $this = $(this);
+      if(uid != $this.data('uid')) $this.find('[data-btn="edit"]').attr('disabled', true);
+    });
+  })();
+</script>
+<!-- // @date 2021-05-27 -->
+
+<script>
+  maintainState();
+</script>
+<script>
+var getPage = () => {
+  const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+  return page;
+}
+var getEntries = () => {
+  const entries = $('#listEntries option:selected').val() || 10;
+  return entries
+}
+var getFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const filterSelect = $(element).find('.result-title').data('result-key');
+    const filterCondition = $(element).find('.result-text').data('result-value');
+    const filter = {};
+    filter[filterSelect] = filterCondition;
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+var getStateFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const $filterTitle = $(element).find('.result-title');
+    const $filterText = $(element).find('.result-text');
+    const filterSelect = $filterTitle.data('result-key');
+    const filterCondition = $filterText.data('result-value');
+    const filterSelectText = $filterTitle.text();
+    const filterConditionText = $filterText.text();
+    const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+</script>
+<script>
+	filterCustom('.filter-custom', {data: customFilterCondition});
+  tableCheck('.table-check')
+  selectDropdown('.ui-select');
+  formWidth();
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+
+    requestList(page, entries, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+
+    requestList(page, entries, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = getEntries() || 10;
+
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, filter: stateFilter});
+
+    requestList(page, entries, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, filter: filters});
+
+    requestList(page, entries, stateFilter);
+  });
+  /*************************************/
+</script>
+<script>
+  // new sensor
+  $('[data-btn="new"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+    const dataValue = {}
+
+    requestNewPopup(dataValue);
+  });
+</script>
+<script>
+  // edit 수정
+  $('[data-btn="edit"]').off('click.edit').on('click.edit', function(){
+    const uid = $(this).closest('tr').data('uid');
+
+    const dataValue = {
+      uid: uid
+    }
+
+    requestEditPopup(dataValue, uid);
+  });
+</script>
+<script>
+  $('[data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    /**
+    * @date 2021-05-31
+    * @desc change data that's sended for delete
+    * @company
+    */
+    const tableCheckedId = $.map($('#listTable tbody').find('.cell-check input:checked'), function(ele){
+      const $tr = $(ele).closest('tr')
+      return {
+        uid: $tr.data('uid'),
+        email: $tr.data('user_email')
+      };
+      /*************************************/
+    });
+
+    requestDelete(tableCheckedId);
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

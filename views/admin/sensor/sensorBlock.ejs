@@ -1,0 +1,152 @@
+<!-- modal-comp -->
+<div class="modal-comp longer-size" id="modalBlocklist" data-height="710px">
+  <div class="modal-align">
+    <div class="modal-box">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|Blockage rule setup") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container">
+          <div class="modal-tab-content on">
+            <div class="modal-content-wrap">
+              <!-- info-title-comp -->
+              <div class="info-title-comp">
+                <h2 class="info-title">
+                <span class="icon-title icon-title-list"></span> <%= __("administrationSensor|Blockage rule") %></h2>
+              </div>
+              <!-- //info-title-comp -->
+              <!-- blockage-content -->
+              <div class="blockage-content">
+                <div class="blockage-case">
+                  <span class="text">
+                    <span class="rule rule-alpha">1</span>
+                    <%= __("administrationSensor|Vulnerability checkup status") %>
+                  </span>
+                  <div class="blockage-status">
+                    <div class="ui-select default-style icon-type">
+                      <select name="" id="" readonly<% if(!requestBody.vulnerability_block){ %> disabled<% } %>>
+                        <option value="0" data-val="severity-low" <% if(requestBody.vulnerability_block_level == 0){ %>selected<% } %>><%= __("administrationSensor|Low") %></option>
+                        <option value="1" data-val="severity-medium" <% if(requestBody.vulnerability_block_level == 1){ %>selected<% } %>><%= __("administrationSensor|Medium") %></option>
+                        <option value="2" data-val="severity-high" <% if(requestBody.vulnerability_block_level == 2){ %>selected<% } %>><%= __("administrationSensor|High") %></option>
+                        <option value="3" data-val="severity-critical" <% if(requestBody.vulnerability_block_level == 3){ %>selected<% } %>><%= __("administrationSensor|Critical") %></option>
+                      </select>
+                    </div>
+                    <div class="ui-switch default-style">
+                      <input type="checkbox" name="switch0" id="switch0" readonly<% if(requestBody.vulnerability_block){ %> checked<% } %>>
+                      <label for="switch0"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="blockage-case">
+                  <span class="text">
+                    <span class="rule rule-beta">2</span>
+                    <%= __("administrationSensor|Unauthorized device") %>
+                  </span>
+                </div>
+              </div>
+              <!-- //blockage-content -->
+              <!-- info-title-comp -->
+              <div class="info-title-comp">
+                <h2 class="info-title">
+                <span class="icon-title icon-title-list"></span> <%= __("administrationSensor|Blocked asset list") %></h2>
+              </div>
+              <!-- //info-title-comp -->
+              <div class="pack">
+                <!-- table-comp -->
+                <div class="table-comp">
+                  <div class="table-scroll data-style">
+                    <div class="thead-scroll">
+                      <table class="table data-style">
+                        <caption><span class="sr-only"><%= __("administrationSensor|Blocked asset list") %></span></caption>
+                        <colgroup>
+                          <col style="width: 25%; " />
+                          <col style="width: 25%; " />
+                          <col style="width: 35%; " />
+                          <col style="width: 10%; " />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th scope="col"><%= __("administrationSensor|IP") %></th>
+                            <th scope="col"><%= __("administrationSensor|MAC") %></th>
+                            <th scope="col"><%= __("administrationSensor|Setup date") %></th>
+                            <th scope="col"><%= __("administrationSensor|Rules") %></th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div class="tbody-scroll">
+                      <table class="table data-style">
+                        <caption><span class="sr-only"><%= __("administrationSensor|Blocked asset list") %></span></caption>
+                        <colgroup>
+                          <col style="width: 25%; " />
+                          <col style="width: 25%; " />
+                          <col style="width: 35%; " />
+                          <col style="width: 10%; " />
+                        </colgroup>
+                        <tbody>
+                          <% for(let i = 0; i < ObjView.length; i++) { %>
+                          <% const data = ObjView[i] %>
+                          <tr data-asset_id="<%= data.idx %>">
+                            <td><%= data.asset_ip %></td>
+                            <td><%= data.asset_mac %></td>
+                            <td><%= dateFormat(data.regtime) %></td>
+                            <td>
+                              <% if (data.rules == 1) { %><span class="rule rule-alpha">1</span> <% } %>
+                              <% if (data.rules == 2) { %><span class="rule rule-beta">2</span> <% } %>
+                            </td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                      <% if (ObjView.length == 0) { %>
+                      <!-- empty -->
+                      <div class="empty">
+                        <div class="empty-box">
+                          <div class="symbol symbol-empty">
+                            <span class="symbol-icon question-style"></span>
+                            <div class="symbol-figure empty-style"></div>
+                          </div>
+                          <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+                          <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+                        </div>
+                      </div>
+                      <!-- //empty -->
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+                <!-- //table-comp -->
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //modal-comp -->
+<script>
+  logdata('/admin/sensor/sensorblock', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+</script>
+<script>
+  var modalBlocklist = popupModal('#modalBlocklist');
+  modalBlocklist.open('#modalBlocklist');
+</script>

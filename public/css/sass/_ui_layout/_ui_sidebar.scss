@@ -1,0 +1,228 @@
+/**********************************
+ ********** sidebar **************
+ **********************************/
+#sidebar
+{
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+
+    box-sizing: border-box;
+    width: 225px;
+    height: 100%;
+    padding-top: 58px;
+
+    text-align: left;
+
+    background: var(--sidebar-bg);
+}
+
+.menu
+{
+    background: var(--menu-bg);
+}
+
+.menu > ul
+{
+    padding-top: 35px;
+}
+
+.menu > ul > li + li
+{
+    margin-top: 56px;
+}
+
+.menu > ul > li > a
+{
+    font-family: var(--font-family-title);
+    font-size: 15px;
+    line-height: 46px;
+
+    display: block;
+
+    min-height: 46px;
+    padding-left: 70px;
+
+    color: var(--menu-color);
+    border-left: 4px solid var(--menu-item-border-color);
+}
+
+.menu > ul > li > a.on
+{
+    border-left-color: var(--menu-item-on-border-color);
+    background-color: var(--menu-item-on-bg);
+}
+
+.menu > ul > li.menu-dashboard > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-dashboard.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-event > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-event.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-asset > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-asset.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-vulnerability > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-vulnerability.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-wireless > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-wireless.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-administration > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-administration.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-notification > a
+{
+    /* reference */
+    /*
+    title: Email
+    author: Artyom Khamitov
+    reference url: https://www.iconfinder.com/iconsets/glyphs
+    license: CC BY
+  */
+    background-image: url('../img/layout/sidebar/menu-icon-notification.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-report > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-report.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-sensor > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-asset.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-group > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-administration.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li.menu-list > a
+{
+    background-image: url('../img/layout/sidebar/menu-icon-list.svg');
+    background-repeat: no-repeat;
+    background-position: 34px center;
+}
+
+.menu > ul > li > a.on + ul
+{
+    display: block;
+}
+
+.menu > ul > li > ul
+{
+    display: none;
+
+    padding-top: 9px;
+}
+
+.menu > ul > li > ul > li + li
+{
+    margin-top: 13px;
+}
+
+.menu > ul > li > ul > li > a
+{
+    font-family: var(--font-family-content);
+    font-size: 14px;
+    line-height: 1.714;
+
+    position: relative;
+
+    display: block;
+
+    min-height: 24px;
+    padding-left: 75px;
+
+    color: #fff;
+}
+
+.menu > ul > li > ul > li > a:before
+{
+    position: absolute;
+    top: 0;
+    left: 65px;
+
+    padding-right: 4px;
+
+    content: '-';
+}
+
+.menu > ul > li > ul > li > a.on
+{
+    color: var(--menu-item-on-color);
+    background: var(--menu-item-on-bg);
+}
+
+// 3depth
+.menu > ul > li > ul > li > ul > li
+{
+    margin-top: 5px;
+}
+
+.menu > ul > li > ul > li > ul > li > a
+{
+    font-family: var(--font-family-content);
+    font-size: 13px;
+    line-height: 1.714;
+
+    position: relative;
+
+    display: block;
+
+    min-height: 20px;
+    padding-left: 85px;
+
+    color: #fff;
+}
+
+.menu > ul > li > ul > li > ul > li > a:before
+{
+    position: absolute;
+    top: 0;
+    left: 75px;
+
+    padding-right: 4px;
+
+    content: '⋅';
+}
+
+.menu > ul > li > ul > li > ul > li > a.on
+{
+    color: var(--menu-item-on-dim-color);
+    background: var(--menu-item-on-bg);
+}

@@ -1,0 +1,414 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("eventAsset|Event list to process") %></h2>
+      <div class="card-header-right">
+        <!-- timesearch-area -->
+        <div class="timesearch-area">
+          <div class="ui-radio default-style">
+            <input type="radio" name="time_type" id="detection_time" checked>
+            <label for="detection_time"><%= __("eventAsset|Processed time") %></label>
+          </div>
+          <div class="ui-time">
+            <div class="time-setting">
+              <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("eventAsset|Quick select") %></span></button>
+              <div class="time-setting-content">
+                <div class="time-setting-header">
+                  <h3 class="time-setting-title"><%= __("eventAsset|Quick select") %></h3>
+                  <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("eventAsset|close") %></span></button>
+                </div>
+                <ul>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("eventAsset|Today") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("eventAsset|Last 7day") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("eventAsset|Last 30day") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("eventAsset|This week") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("eventAsset|This month") %></button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="ui-datepicker datepicker-from">
+              <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+            </div>
+            <span class="form-text">-</span>
+            <div class="ui-datepicker datepicker-to">
+              <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+            </div>
+          </div>
+        </div>
+        <!-- //.timesearch-area -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("eventAsset|search") %></span></span></button>
+
+        <!--
+        * @date 2021-04-15
+        * @desc add reset button
+        * @company
+        * -->
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("eventAsset|reset") %></span></span></button>
+        <!-- // @date 2021-04-15 -->
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <div class="filter-custom">
+          <div class="custom-result">
+          </div>
+          <div class="custom-search">
+            <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("eventAsset|Add filter") %></span></span></button>
+            <div class="custom-search-content">
+              <div class="custom-search-header">
+                <h3 class="custom-search-title"><%= __("eventAsset|Add filter") %></h3>
+                <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("eventAsset|close") %></span></button>
+              </div>
+              <div class="custom-search-box">
+                <div class="ui-search">
+                  <div class="filter-select">
+                  </div>
+                  <div class="condition-box">
+                  </div>
+                </div>
+              </div>
+              <div class="custom-search-footer">
+                <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("eventAsset|Add") %></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp table-check table-accordion">
+          <div class="table-scroll default-style">
+            <div class="thead-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("eventAsset|eventList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 5%; " />
+                  <col style="width: 12%; " /><!-- Processed time -->
+                  <col style="width: 24%; " /><!-- Asset name -->
+                  <col style="width: 14%; " /><!-- Sensor name -->
+                  <col style="width: 12%; " /><!-- Event category -->
+                  <col style="width: 12%; " /><!-- Severity -->
+                  <col style="width: 8%; " /><!-- Allow Deny -->
+                  <col style="width: 10%; " /><!-- Event processing -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="row" class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="checkbox1" id="checkbox0_1">
+                        <label for="checkbox0_1"><span class="sr-only"><%= __("eventAsset|select") %></span></label>
+                      </div>
+                    </th>
+                    <th scope="row" class="cell-accordion">
+                      <span class="accordion-empty"></span>
+                    </th>
+                    <th scope="row"><%= __("eventAsset|Processed time") %></th>
+                    <th scope="row"><%= __("eventAsset|Asset name") %></th>
+                    <th scope="row"><%= __("eventAsset|Sensor name") %></th>
+                    <th scope="row"><%= __("eventAsset|Event category") %></th>
+                    <th scope="row"><%= __("eventAsset|Severity") %></th>
+                    <th scope="row"><%= __("eventAsset|Allow Deny") %></th>
+                    <th scope="row"><%= __("eventAsset|Event processing") %></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("eventAsset|eventList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 5%; " />
+                  <col style="width: 12%; " /><!-- Processed time -->
+                  <col style="width: 24%; " /><!-- Asset name -->
+                  <col style="width: 14%; " /><!-- Sensor name -->
+                  <col style="width: 12%; " /><!-- Event category -->
+                  <col style="width: 12%; " /><!-- Severity -->
+                  <col style="width: 8%; " /><!-- Allow Deny -->
+                  <col style="width: 10%; " /><!-- Event processing -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <!-- accordion-content-title -->
+                  <tr class="accordion-content-title" data-asset_event_id="<%= data.idx %>">
+                    <td class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+                        <input type="checkbox" name="asset<%= i %>-check" id="asset<%= i %>-check">
+                        <label for="asset<%= i %>-check"><span class="sr-only"><%= __("eventAsset|select") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-accordion">
+                      <button type="button" class="btn btn-icon btn-accordion">
+                        <span class="icon icon-accordion"><span class="sr-only"><%= __("eventAsset|open/fold") %></span></span>
+                      </button>
+                    </td>
+                    <td class="cell-center"><%= dateFormat(data.end_time) %></td>
+                    <td><span class="ellipsis"><%= data.asset_name %></span></td>
+                    <td><span class="ellipsis"><%= data.sensor_name %></span></td>
+                    <td class="cell-center">
+                      <% if (data.category == 0){ %><%= __("eventAsset|New Device") %>
+                      <% } else if (data.category == 1){ %><%= __("eventAsset|Asset disconnected") %>
+                      <% } else if (data.category == 2){ %><%= __("eventAsset|Sensor disconnected") %><% } %>
+                    </td>
+                    <td class="cell-center">
+                      <% if (data.severity == 0){ %><span class="severity severity-low"><%= __("eventAsset|Low") %></span>
+                      <% } else if (data.severity == 1){ %><span class="severity severity-medium"><%= __("eventAsset|Medium") %></span>
+                      <% } else if (data.severity == 2){ %><span class="severity severity-high"><%= __("eventAsset|High") %></span>
+                      <% } else if (data.severity == 3){ %><span class="severity severity-critical"><%= __("eventAsset|Critical") %></span><% } %>
+                    </td>
+                    <td class="cell-center">
+                      <% if (data.allowed == 0){ %><span class="warning-color"><%= __("eventAsset|Denied") %></span>
+                      <% } else if (data.allowed == 1){ %><span class="success-color"><%= __("eventAsset|Allowed") %></span><% } %>
+                    </td>
+                    <td class="cell-center">
+                      <% if (data.action == false){ %><%= __("eventAsset|Pending process") %>
+                      <% } else if (data.action == true){ %><%= __("eventAsset|Processed") %>
+                      <% } else if (data.action == null){ %><%= __("eventAsset|To be processed") %><% } %>
+                    </td>
+                  </tr>
+                  <!-- //accordion-content-title -->
+                  <!-- accordion-content -->
+                  <tr class="accordion-content">
+                    <td colspan="9">
+                      <div class="accordion-content-box">
+
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- //accordion-content -->
+                  <% } %>
+                </tbody>
+              </table>
+              <!--
+              * @date 2021-05-31
+              * @desc front performance improvement - dummy rendering
+              * @company
+              * -->
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- // @date 2021-05-31 -->
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("eventAsset|No data available") %></p>
+                  <p class="sub-msg"><%= __("eventAsset|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="btn-table-box">
+          <button type="button" data-btn="processing" class="btn btn-normal primary-style"><%= __("eventAsset|Process selected events") %></button>
+        </div>
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("eventAsset|Show 10 entries") %></option>
+              <option value="20"><%= __("eventAsset|Show 20 entries") %></option>
+              <option value="30"><%= __("eventAsset|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/event/asset/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  dateTime('.ui-time');
+  setTime('.ui-time');
+  filterCustom('.filter-custom', {data: customFilterCondition});
+  formWidth();
+  tableCheck('.table-check');
+  tableAccordion('#listTable .table-accordion', {
+    beforeSlideDown : function(obj){
+      const asset_event_id = obj.btnEle.closest('tr').data('asset_event_id');
+      return requestDetail(asset_event_id, obj);
+    },
+    afterSlideUp: function(obj){
+      obj.btnEle.closest('tr').prev('.accordion-content').find('.accordion-content-box').html('');
+    }
+  })
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+var getPage = () => {
+  const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+  return page;
+}
+var getEntries = () => {
+  const entries = $('#listEntries option:selected').val() || 10;
+  return entries
+}
+var getTime = () => {
+  const time = {
+    type: 'detection_time',
+    from: $('#from-datepicker').val(),
+    to: $('#to-datepicker').val()
+  }
+  return time;
+}
+var getFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const filterSelect = $(element).find('.result-title').data('result-key');
+    const filterCondition = $(element).find('.result-text').data('result-value');
+    const filter = {};
+    filter[filterSelect] = filterCondition;
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+var getStateFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const $filterTitle = $(element).find('.result-title');
+    const $filterText = $(element).find('.result-text');
+    const filterSelect = $filterTitle.data('result-key');
+    const filterCondition = $filterText.data('result-value');
+    const filterSelectText = $filterTitle.text();
+    const filterConditionText = $filterText.text();
+    const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+</script>
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+
+    requestList(page, entries, time, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = getEntries() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page});
+
+    requestList(page, entries, time, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = getEntries() || 10;
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, time: time, filter: stateFilter});
+
+    requestList(page, entries, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = getEntries() || 10;
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, time: time, filter: stateFilter});
+
+    requestList(page, entries, time, filters);
+  });
+  /*************************************/
+</script>
+<script>
+  $('[data-btn="processing"]').off('click.processing').on('click.processing', function(){
+    const tableCheckedId = $.map($('#listTable').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('asset_event_id');
+    });
+
+    const dataValue = {
+      idx: tableCheckedId
+    }
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("eventAsset|Select one more.") %>');
+
+    requestProcessingPopup(dataValue);
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

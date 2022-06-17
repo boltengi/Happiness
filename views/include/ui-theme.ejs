@@ -1,0 +1,28 @@
+<% if(getThemeClass(company) == 'SK') { %>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+// theme for client
+GRAPH_COLOR.PRIMARY = '#FF6F00';
+GRAPH_COLOR.SECONDARY = '#B1B1B0';
+GRAPH_COLOR.POINT = '#E6E7E8';
+GRAPH_COLOR.DELTA = '#FF525E';
+GRAPH_COLOR.EPSILON = '#FFC064';
+GRAPH_COLOR.ZETA = '#f9e8b9';
+/**
+* @date 2021-06-04
+* @desc use normal color for networkgraph
+* @company
+*/
+// GRAPH_COLOR.NETWORK_SENSOR = '#FF6F00';
+// GRAPH_COLOR.NETWORK_ROOT = '#636461';
+// GRAPH_COLOR.NETWORK_GROUP = '#FF525E';
+// GRAPH_COLOR.NETWORK_SENSOR = '#FF6F00';
+// GRAPH_COLOR.NETWORK_SENSOR_SUB = '#FFD9BC';
+// GRAPH_COLOR.NETWORK_ASSET = '#FFC064';
+// GRAPH_COLOR.NETWORK_ASSET_SUB = '#FFE9C9';
+/*************************************/
+GRAPH_COLOR.DASHBOARD_ASSET_DETECTION = '#FF6F00';
+GRAPH_COLOR.DASHBOARD_ASSET_REGISTRATION = '#FFC064'
+});
+</script>
+<% } %>

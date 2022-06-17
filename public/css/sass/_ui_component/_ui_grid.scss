@@ -1,0 +1,347 @@
+/**********************************
+ ********** container **************
+ **********************************/
+.container
+{
+    box-sizing: border-box;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: $grid-gutter / 2;
+    padding-left: $grid-gutter / 2;
+}
+
+/**********************************
+ ********** row **************
+ **********************************/
+.row
+{
+    display: flex;
+
+    margin-right: -$grid-gutter / 2;
+    margin-left: -$grid-gutter / 2;
+
+    flex-wrap: wrap;
+}
+
+/**********************************
+ ********** col **************
+ **********************************/
+%col-default
+{
+    position: relative;
+
+    box-sizing: border-box;
+    padding-right: $grid-gutter / 2;
+    padding-left: $grid-gutter / 2;
+}
+
+.col,
+[class^='col-']
+{
+    @extend %col-default;
+}
+
+.col
+{
+    max-width: 100%;
+
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.col-auto
+{
+    box-sizing: border-box;
+    width: auto;
+    max-width: 100%;
+
+    flex: 0 0 auto;
+}
+
+@mixin col-grid($columns)
+{
+    max-width: 100% / $grid-columns * $columns;
+
+    flex: 0 0 100% / $grid-columns * $columns;
+}
+
+@for $i from 1 through $grid-columns
+{
+    .col-#{$i}
+    {
+        @extend %col-default;
+        @include col-grid($i);
+    }
+}
+
+@each $breakpointMap,
+$breakpointKey in $grid-breakpoints
+{
+    @media (min-width: $breakpointKey)
+    {
+        %col-defaults-#{$breakpointMap}
+        {
+            position: relative;
+
+            box-sizing: border-box;
+            padding-right: $grid-gutter / 2;
+            padding-left: $grid-gutter / 2;
+        }
+
+        .col-#{$breakpointMap}
+        {
+            flex-basis: 0;
+            flex-grow: 1;
+            @extend %col-defaults-#{$breakpointMap};
+        }
+
+        .col-#{$breakpointMap}-auto
+        {
+            width: auto;
+            max-width: 100%;
+
+            @extend %col-defaults-#{$breakpointMap};
+        }
+
+        @for $i from 1 through $grid-columns
+        {
+            .col-#{$breakpointMap}-#{$i}
+            {
+                @extend %col-defaults-#{$breakpointMap};
+                @include col-grid($i);
+            }
+        }
+    }
+}
+
+/********************************************************************
+ ********** container ************************************************
+ ********************************************************************/
+.divide-inner
+{
+    height: 100%;
+}
+
+.tree-table-divide-wrap
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    justify-content: space-between;
+}
+
+.tree-table-divide-wrap .tree-divide
+{
+    width: 330px;
+}
+
+.tree-table-divide-wrap .table-divide
+{
+    width: 1270px;
+}
+
+.deck-graph-devide-wrap
+{
+    font-size: 0;
+
+    display: block;
+    display: inline-block;
+}
+
+.deck-graph-devide-wrap .deck-graph-devide
+{
+    display: inline-block;
+
+    width: 520px;
+}
+
+.deck-graph-devide-wrap .deck-graph-devide + .deck-graph-devide
+{
+    margin-left: 30px;
+}
+
+.deck-graph-devide-wrap .deck-bar-devide
+{
+    display: inline-block;
+
+    width: 520px;
+    margin-left: 30px;
+}
+
+.deck-bar-devide-wrap
+{
+    font-size: 0;
+
+    display: block;
+    display: inline-block;
+}
+
+.deck-bar-devide-wrap .deck-bar-devide
+{
+    display: inline-block;
+
+    width: 520px;
+}
+
+.deck-bar-devide-wrap .deck-bar-devide + .deck-bar-devide
+{
+    margin-left: 30px;
+}
+
+.chart-divide-header
+{
+    position: relative;
+    z-index: 10;
+
+    display: flex;
+
+    height: 40px;
+
+    background: var(--chart-divide-header-bg);
+}
+
+.chart-divide-header.top-spacing
+{
+    margin-top: 14px;
+}
+
+.chart-divide-header .chart-header-left
+{
+    display: inline-flex;
+
+    padding-left: 10px;
+
+    text-align: right;
+
+    align-items: center;
+    flex: auto;
+    justify-content: flex-start;
+}
+
+.chart-divide-header .chart-header-left .title-right-item
+{
+    display: inline-block;
+
+    vertical-align: middle;
+}
+
+.chart-divide-header .chart-header-right
+{
+    display: inline-flex;
+
+    padding-right: 15px;
+
+    text-align: right;
+
+    align-items: center;
+    flex: auto;
+    justify-content: flex-end;
+}
+
+.chart-divide-header .chart-header-right .title-right-item
+{
+    display: inline-block;
+
+    vertical-align: middle;
+}
+
+.chart-divide-wrap
+{
+    position: relative;
+    z-index: 0;
+
+    display: flex;
+}
+
+.chart-divide-wrap .chart-divide
+{
+    box-shadow: var(--chart-divide-shadow);
+
+    flex: 1;
+}
+
+.chart-divide-wrap .chart-divide + .chart-divide
+{
+    margin-left: 10px;
+}
+
+.imgcard-table-divide-wrap
+{
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.imgcard-table-divide-wrap .imgcard-divide
+{
+    width: 29.5%;
+}
+
+.imgcard-table-divide-wrap .table-divide
+{
+    width: 69.5%;
+}
+
+.half-divide-wrap
+{
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.half-divide
+{
+    width: 49.5%;
+}
+
+/**********************************
+ ********** div for tree-table-divide  **************
+ **********************************/
+.trunk-wrap
+{
+    box-sizing: border-box;
+    height: 100%;
+}
+.trunk-wrap .trunk-divide
+{
+    display: block;
+}
+.trunk-wrap .trunk-divide + .trunk-divide
+{
+    margin-top: 18px;
+}
+
+/**********************************
+ ********** div for tree-height  **************
+ **********************************/
+.tree-table-divide-wrap .tree-divide .card .card-box
+{
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.tree-table-divide-wrap .tree-divide .card .card-box .tree-comp
+{
+    min-height: 0;
+
+    flex: 1;
+}
+
+.tree-table-divide-wrap .tree-divide .card .card-box .tree-comp .tree
+{
+    position: relative;
+}
+
+.tree-table-divide-wrap .tree-divide .card .card-box .tree-comp .tree > .tree-list
+{
+    position: absolute;
+    top: 27px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

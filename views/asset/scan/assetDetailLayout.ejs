@@ -1,0 +1,97 @@
+<%- contentFor('title')%>
+<%= __("assetScan|Detected status") %> - <%= __("assetScan|Asset") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<main id="main">
+
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-asset"></span> <%= __("assetScan|Asset") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+
+  <div id="summary"></div>
+
+  <div class="table-divide-wrap">
+    <div class="table-divide">
+      <!-- card -->
+      <div class="card">
+        <div id="informationDetail"></div>
+
+        <div id="trends"></div>
+
+        <div id="vulnscanList"></div>
+
+      </div>
+      <!-- //card -->
+    </div>
+  </div>
+
+
+</main>
+<!-- //main -->
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    history.replaceState(state, null);
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+  var maintainState = () => {
+    const {vulnscanEntries = 10, vulnscanPage = 1, trendsTime = 1} = history.state || {};
+    $('#trendsTime').find(`option[value="${trendsTime}"]`).prop('selected', true);
+    $('#vulnscanEntries').find(`option[value="${vulnscanEntries}"]`).prop('selected', true);
+    $('#pagination').find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == vulnscanPage}).addClass('active');
+  }
+</script>
+<script>
+  var getQueryString = function(){
+    const query = window.location.search.substr(1).split('&');
+    if (query == '') return {};
+    const obj = {}
+    for (let i = 0; i < query.length; i++){
+      const p = query[i].split('=', 2);
+      if(p.length == 1) obj[p[0]] = '';
+      else obj[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));;
+    }
+    return obj
+  }
+</script>
+<script>
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+</script>
+
+<%- include('./scan.script.request.ejs')%>
+
+<script>
+  window.addEventListener("load", function (event) {
+    const aid = location.href.split('/')[location.href.split('/').length-1];
+
+    requestSummary();
+
+    requestInformation(aid);
+
+    requestTrendsTemplate();
+
+    const page = getState().page || 1;
+    const vulnscanEntries = getState().vulnscanEntries || 10;;
+    requestVulnscan(aid, page, vulnscanEntries);
+  });
+</script>

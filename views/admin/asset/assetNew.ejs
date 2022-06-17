@@ -1,0 +1,369 @@
+<% const columnObj = {}
+  for (let i = 0; i < columnList.length ; i = i+2){
+    columnObj[columnList[i]] = columnList[i+1]
+  }
+%>
+
+<div class="modal-comp" id="modalNew" data-height="730px">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationAsset|New asset") %></a></div>
+              <div class="modal-tab-link" style="display: none; "><a href=""><%= __("administrationAsset|Large registration") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationAsset|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container">
+          <!-- modal-tab-content -->
+          <div class="modal-tab-content on" data-validation>
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Sensor group") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required id="newSensor_group-ui">
+                      <select name="" id="newSensor_group">
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Sensor name") %></dt>
+                  <dd>
+                    <div id="newWrapSensor_id" class="form-ui-wrap">
+                      <div class="ui-select default-style" data-valid data-required id="newSensor_id-ui">
+                      </div>
+                    </div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Sensor does not exist in this group") %>'><%= __("administrationSensor|Sensor does not exist in this group") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|Name") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.name %>"><input type="text" id="newAsset_name" placeholder=""></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|IP") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.ip %>"><input type="text" id="newAsset_ip" placeholder=""></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt class="is-essential"><%= __("administrationAsset|MAC") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.mac %>"><input type="text" id="newAsset_mac" placeholder=""></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Type") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-direction="up">
+                      <select name="" id="newAsset_type">
+                        <% const assetType = [
+                          'Unknown',
+                          'CCTV',
+                          'AP Station',
+                          'NAS',
+                          'Printer',
+                          'Speaker',
+                          'Mobile',
+                          'Wireless Router',
+                          'Tablet',
+                          'Laptop',
+                          'Wireless Phone',
+                          'Pocket WiFi',
+                          'Desktop' ,
+                          'Industrial Camera' ,
+                          'UHD STREAM GENERATOR' ,
+                          'Wireless Sensor' ,
+                          'VPNRouter' ,
+                          'BlackBox' ,
+                          'Wireless Receiver' ,
+                          'USB' ,
+                          'Switch',
+                          'Smart Watch' ,
+                          'Smart TV' ,
+                          'Healthcare Monitor Sensor' ,
+                          'PoS Panel PC' ,
+                          'PoS' ,
+                          'Outdoor Wireless Router' ,
+                          'NVR',
+                          'Media Player' ,
+                          'Extender' ,
+                          'Electonic Control' ,
+                          'ADSL Router' ,
+                          'Access Control' ,
+                          'DVR' ,
+                          '4G LTE router',
+                          'Gateway'
+                        ]
+                        %>
+                        <% for (let j = 0; j < assetType.length ;j++){ %>
+                        <% const data = assetType[j] %>
+                          <option value="<%= data %>"><%= data %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Manufacturer") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.manufacturer %>"><input type="text" id="newAsset_manufacturer" placeholder=""></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt><%= __("administrationAsset|Model") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-maxbyte data-rel="<%= columnObj.model %>"><input type="text" id="newAsset_model" placeholder=""></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationSensor|Maximum request length exceeded") %>'><%= __("administrationSensor|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Allow Deny") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-direction="up">
+                      <select name="" id="newAsset_allowed">
+                        <option value="1"><%= __("administrationAsset|Allow") %></option>
+                        <option value="0"><%= __("administrationAsset|Deny") %></option>
+                      </select>
+                    </div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationAsset|In order to use this function,") %> <%= __("administrationAsset|please activate 'Assets blocking policies(Unauthorized)'") %>'><%= __("administrationAsset|In order to use this function,") %><br /> <%= __("administrationAsset|please activate 'Assets blocking policies(Unauthorized)'") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <!-- //modal-tab-content -->
+          <!-- modal-tab-content -->
+          <div class="modal-tab-content">
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Sensor group") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" id="largeSensor_group-ui">
+                      <select name="" id="largeSensor_group">
+                        <option value=""></option>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Sensor name") %></dt>
+                  <dd>
+                    <div id="largeWrapSensor_id" class="form-ui-wrap">
+
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationAsset|Large file upload") %></dt>
+                  <dd>
+                    <div class="ui-file default-style">
+          						<input type="file" name="file0" id="file0">
+          						<label for="file0">
+          							<span class="file-upload"><%= __("administrationAsset|File Upload") %></span>
+          						</label>
+          						<span class="file-name">File Name.*</span>
+          						<div class="file-info-box">
+          							<a href="#" class="file-download"><%= __("administrationAsset|Template download") %></a>
+          							<div class="file-info">
+          								<dl>
+          									<dt><%= __("administrationAsset|Upload list") %></dt><dd>10,506</dd>
+          									<dt class="success-status"><%= __("administrationAsset|Success") %></dt><dd class="success-status">10,500</dd>
+          									<dt class="fail-status"><%= __("administrationAsset|Error") %></dt><dd class="fail-status">6</dd>
+          								</dl>
+          							</div>
+          						</div>
+          					</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <!-- //modal-tab-content -->
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationAsset|Close") %></button>
+            <button type="button" id="newSendBtn" class="btn btn-normal primary-style long-size"><%= __("administrationAsset|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  logdata('/admin/asset/newasset', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var modalNew = popupModal('#modalNew');
+  modalNew.open('#modalNew');
+</script>
+<script>
+  maxbyte('.ui-input[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+<script>
+	validation('#modalNew [data-validation]');
+  var validationNew = $('#modalNew [data-validation]').data('validation');
+</script>
+<script>
+  (function(){
+    var newRequestBody = <%- JSON.stringify(requestBody) %> || {};
+    var newTree_groups = newRequestBody.tree_groups;
+    var treeObj = $.tree.createGroupSensorObj(newTree_groups);
+    var initGid = newRequestBody.gid || Object.keys(treeObj)[1];
+    var initSid = newRequestBody.sid || '';
+    function selectSensorUI(tree_grous, selectOne, selectTwoWrap, selectTwo, initGid = 1, initSid){
+      const $sensor_group =  $('#' + selectOne).html('');
+      const $wrapSensor_id =  $('#' + selectTwoWrap).html('');
+      Object.entries(treeObj).forEach(([k,v], i) =>{
+        if(k == 1) return;
+        if(v.gid == initGid) linkedSelect(v.gid);
+        $sensor_group.append(`<option value="${v.gid}" ${v.gid == initGid ? ` selected` : null}>${v.text}</option>`);
+      });
+      selectDropdown(`#${selectOne}-ui .ui-select.default-style`);
+
+      function linkedSelect(gid){
+        $wrapSensor_id.html(`<div class="ui-select default-style" data-valid data-required id="${selectTwo}-ui" data-width="100%"><select name="" id="${selectTwo}"></select></div>`);
+        const $sensor_id = $('#' + selectTwo);
+        const $form_info = $sensor_id.closest('dd').next('dd').find('.form-info');
+        if(Object.entries(treeObj[gid].children).length){
+          Object.entries(treeObj[gid].children).forEach(([k,v]) =>{
+            $sensor_id.append(`<option value="${v.sensor_id}" ${v.sid == initSid ? ` selected` : null} data-sid="${v.sid}">${v.text}</option>`);
+          });
+          $form_info.removeClass('on');
+        }else{
+          $sensor_id.append(`<option value=""><%= __("administrationAsset|Sensor does not exist in this group.") %></option>`);
+          $form_info.addClass('on');
+        }
+
+        selectDropdown(`#${selectTwo}-ui.ui-select.default-style`);
+        formWidth();
+        required(`#${selectTwo}-ui.ui-select[data-required]`);
+        validationNew.addValidItem($(`#${selectTwo}-ui`),1);
+      }
+      $sensor_group.on('change', function(){
+        const gid = $(this).val();
+        linkedSelect(gid);
+      });
+    }
+
+    var newSelectOne = 'newSensor_group';
+    var newSelectTwoWrap = 'newWrapSensor_id';
+    var newSelectTwo = 'newSensor_id';
+    selectSensorUI(newTree_groups, newSelectOne, newSelectTwoWrap, newSelectTwo, initGid, initSid);
+
+    var largeSelectOne = 'largeSensor_group';
+    var largeSelectTwoWrap = 'largeWrapSensor_id';
+    var largeSelectTwo = 'largeSensor_id';
+    /**
+      * @date 2021-04-19
+      * @desc fix bug about checking validation of large
+      * @company
+      */
+    // selectSensorUI(newTree_groups, largeSelectOne, largeSelectTwoWrap, largeSelectTwo, initGid, initSid);
+      /*************************************/
+  })();
+  (function(){
+    var newRequestBody = <%- JSON.stringify(requestBody) %> || {};
+    var newTree_groups = newRequestBody.tree_groups;
+
+    function changeAllowDeny(){
+      const sid  = $('#newSensor_id').find('option:selected').data('sid');
+      const {unauthorised_block} = newTree_groups.find(ele=>ele.sid == sid) || {};
+
+      $('#newAsset_allowed').attr('disabled', !unauthorised_block);
+      if(unauthorised_block == 0){
+        $('#newAsset_allowed').closest('dd').next('dd').find('.form-info').addClass('is-info');
+      }else{
+        $('#newAsset_allowed').closest('dd').next('dd').find('.form-info').removeClass('is-info');
+      }
+    }
+    changeAllowDeny();
+    $('#newSensor_group-ui').on('change', 'select', function(){
+      changeAllowDeny();
+    })
+    $('#newWrapSensor_id').on('change', 'select', function(){
+      changeAllowDeny();
+    });
+  })();
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+</script>
+<script>
+  $('#newSendBtn').on('click', function(e){
+
+    const $parent = $('#modalNew .form-group-list').eq(0);
+    const gid = $parent.find('#newSensor_group').val();
+    const sensor_id = $parent.find('#newSensor_id').val();;
+    const asset_name = $parent.find('#newAsset_name').val();
+    const asset_ip = $parent.find('#newAsset_ip').val();
+    const asset_mac = $parent.find('#newAsset_mac').val();
+    const asset_type = $parent.find('#newAsset_type').val();
+    const asset_manufacturer = $parent.find('#newAsset_manufacturer').val();
+    const asset_model = $parent.find('#newAsset_model').val();
+    const asset_allowed = $parent.find('#newAsset_allowed').val();
+
+    const dataValue = {
+      "gid": gid,
+      "sensor_id": sensor_id,
+      "asset_name": asset_name,
+      "asset_ip": asset_ip,
+      "asset_mac": asset_mac,
+      "asset_type": asset_type,
+      "asset_manufacturer": asset_manufacturer,
+      "asset_model": asset_model,
+      "asset_allowed": asset_allowed,
+    }
+
+    requestCreate(dataValue, validationNew, $('#modalNew .loading-parent'));
+  });
+</script>

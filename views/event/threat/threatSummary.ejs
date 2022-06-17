@@ -1,0 +1,304 @@
+<!-- deck-wrap -->
+<div class="deck-wrap">
+  <div class="deck-bar-devide-wrap">
+    <div class="deck-bar-devide" data-threattype>
+      <article class="deck loading-parent" id="threattype-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("eventThreat|Threat assortment") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventThreat|Week") %>)</span>
+            <span class="deck-total-text" data-total><span class="num">0</span></span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <div class="deck-bar-wrap lots-type">
+            <div class="bar-graph-box tight-type" data-spoofing>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Spoofing") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box tight-type" data-zombieservice>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Zombie service") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box tight-type" data-backdoor>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Backdoor") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box tight-type" data-icmpRedirect>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|ICMP Redirect") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box tight-type" data-miningnodes>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Mining nodes") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class="deck-bar-devide" data-assettop>
+      <article class="deck loading-parent" id="assettop-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("eventThreat|Threatened assets Top5") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventThreat|Week") %>)</span>
+            <span class="deck-total-text" data-total><span class="num">0</span></span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <!-- table-comp -->
+					<div class="table-comp">
+						<table class="table summary-style">
+							<caption>table</caption>
+							<colgroup>
+                <col style="width: 35% " />
+                <col style="width: 35% " />
+                <col style="width: 30% " />
+							</colgroup>
+							<thead>
+								<tr>
+                  <th scope="col"><%= __("eventThreat|Asset name") %></th>
+                  <th scope="col"><%= __("eventThreat|Threat type") %></th>
+									<th scope="col"><%= __("eventThreat|Count") %></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<!-- //table-comp -->
+        </div>
+      </article>
+    </div>
+    <div class="deck-bar-devide" data-event>
+      <article class="deck loading-parent" id="event-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("eventThreat|Event processing status") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("eventThreat|Week") %>)</span>
+            <span class="deck-total-text" data-total><span class="num">0</span></span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <div class="deck-bar-wrap">
+            <div class="bar-graph-box" data-complete>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Processed") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph alpha-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-incomplete>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|Pending process") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-unconfirmed>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("eventThreat|To be processed") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph gamma-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+<!-- //deck-wrap -->
+
+<% if(typeof rendering == 'undefined') { %>
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+<script>
+  var setStatusThreattype = function(data){
+
+    logdata('/event/threat/status/threattype', data);
+
+    const dummyData = [{count: "20300", status: 0},{count: "2030", status: 1},{count: "10300", status: 2}];
+    const ObjView = data.ObjView || dummyData;
+
+    const $threattype = $('[data-threattype]');
+    let total = 0;
+    let spoofing = 0;
+    let zombieservice = 0;
+    let backdoor = 0;
+    let icmpRedirect = 0;
+    let miningnode = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.codeType == 3) spoofing = count;
+      if (element.codeType == 4) zombieservice = count;
+      if (element.codeType == 5) backdoor = count;
+      if (element.codeType == 6) icmpRedirect = count;
+      if (element.codeType == 7) miningnode = count;
+    });
+
+    $threattype.find('[data-total]').find('.num').html(format.numComma(total));
+
+    $threattype.find('[data-spoofing]').find('.num').html(format.numComma(spoofing));
+    $threattype.find('[data-spoofing]').find('.bar-graph-bar').css({width: spoofing/total*100 + '%'});
+    $threattype.find('[data-zombieservice]').find('.num').html(format.numComma(zombieservice));
+    $threattype.find('[data-zombieservice]').find('.bar-graph-bar').css({width: zombieservice/total*100 + '%'});
+    $threattype.find('[data-backdoor]').find('.num').html(format.numComma(backdoor));
+    $threattype.find('[data-backdoor]').find('.bar-graph-bar').css({width: backdoor/total*100 + '%'});
+    $threattype.find('[data-icmpRedirect]').find('.num').html(format.numComma(icmpRedirect));
+    $threattype.find('[data-icmpRedirect]').find('.bar-graph-bar').css({width: icmpRedirect/total*100 + '%'});
+    $threattype.find('[data-miningnode]').find('.num').html(format.numComma(miningnode));
+    $threattype.find('[data-miningnode]').find('.bar-graph-bar').css({width: miningnode/total*100 + '%'});
+
+    return { isLoading: true };
+  }
+  var setStatusAssettop = function(data){
+
+    logdata('/event/threat/status/aasettop', data);
+
+    const ObjView = data.ObjView;
+
+    const $assettop = $('[data-assettop]');
+
+    let total = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+    });
+
+    $.each(ObjView, function(index, element){
+      $assettop.find('.table-comp tbody').append(`<tr>
+        <td class="cell-center">${element.asset_name ? element.asset_name : "-"}</td>
+        <td class="cell-center">${
+          (element.category == 3) ? "<%= __("eventThreat|Spoofing") %>" :
+          (element.category == 4) ? "<%= __("eventThreat|Zombie service") %>" :
+          (element.category == 5) ? "<%= __("eventThreat|Backdoor") %>" :
+          (element.category == 6) ? "<%= __("eventThreat|ICMP Redirect") %>" :
+          (element.category == 7) ? "<%= __("eventThreat|Mining Nodes") %>" : ""
+        }</td>
+        <td class="cell-center"><strong>${format.numComma(element.count)}</strong></td>
+      </tr>`);
+    });
+
+    $assettop.find('[data-total]').find('.num').html(format.numComma(total));
+
+    return { isLoading: true };
+
+  }
+  var setStatusEvent = function(data){
+
+    logdata('/event/threat/status/event', data);
+
+    const ObjView = data.ObjView;
+
+    const $event = $('[data-event]');
+    let total = 0;
+    let complete = 0;
+    let incomplete = 0;
+    let unconfirmed = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status === true) complete = count;
+      if (element.status === false) incomplete = count;
+      if (element.status === null) unconfirmed = count;
+    });
+
+    $event.find('[data-total]').find('.num').html(format.numComma(total));
+    $event.find('[data-complete]').find('.num').html(format.numComma(complete));
+    $event.find('[data-complete]').find('.bar-graph-bar').css({width: complete/total*100 + '%'});
+    $event.find('[data-incomplete]').find('.num').html(format.numComma(incomplete));
+    $event.find('[data-incomplete]').find('.bar-graph-bar').css({width: incomplete/total*100 + '%'});
+    $event.find('[data-unconfirmed]').find('.num').html(format.numComma(unconfirmed));
+    $event.find('[data-unconfirmed]').find('.bar-graph-bar').css({width: unconfirmed/total*100 + '%'});
+
+    return { isLoading: true };
+
+  }
+</script>
+<script>
+  (function(){
+    var codetypeData = requestStatus('threattype');
+    codetypeData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusThreattype)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#threattype-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+
+    var topData = requestStatus('assettop');
+    topData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusAssettop)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#assettop-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+
+    var eventData = requestStatus('event');
+    eventData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(setStatusEvent)
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $(`#event-graph`);
+        removeLoading($loadingParent);
+      }
+    });
+  })();
+</script>
+<% } %>

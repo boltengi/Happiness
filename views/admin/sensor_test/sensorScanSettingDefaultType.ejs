@@ -1,0 +1,396 @@
+<div class="modal-comp long-size" id="modalSetting" data-height="700px">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationSensor|Scan setting") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container">
+          <div class="modal-tab-content on">
+            <div class="modal-content-wrap">
+              <!-- info-title-comp -->
+              <div class="info-title-comp">
+                <h2 class="info-title">
+                <span class="icon-title icon-title-time"></span> <%= __("administrationSensor|Selected in") %> : <%= ObjView.length %> ea</h2>
+              </div>
+              <!-- //info-title-comp -->
+              <div class="pack">
+                <!-- table-comp -->
+      					<div class="table-comp table-check" id="scanSettingList">
+      						<div class="table-scroll data-style">
+      							<div class="thead-scroll">
+      								<table class="table data-style">
+      									<caption><span class="sr-only"><%= __("administrationSensor|scan setting selected") %></span></caption>
+      									<colgroup>
+                          <col style="width: 8%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 12%; " />
+                          <col style="width: 10%; " />
+                          <col style="width: 24%; " />
+      									</colgroup>
+      									<thead>
+      										<tr>
+      											<th scope="col" class="cell-check">
+                              <div class="ui-checkbox default-style empty-type small-size">
+                                <input type="checkbox" name="settingAll" id="settingAll" checked>
+                                <label for="settingAll"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                              </div>
+                            </th>
+      											<th scope="col"><%= __("administrationSensor|Sensor ID") %></th>
+                            <th scope="col"><%= __("administrationSensor|Sensor name") %></th>
+      											<th scope="col"><%= __("administrationSensor|Status") %></th>
+      											<th scope="col"><%= __("administrationSensor|Version") %></th>
+                            <th scope="col"><%= __("administrationSensor|Update time") %></th>
+      										</tr>
+      									</thead>
+      								</table>
+      							</div>
+      							<div class="tbody-scroll">
+      								<table class="table data-style">
+      									<caption><span class="sr-only"><%= __("administrationSensor|scan setting selected") %></span></caption>
+      									<colgroup>
+                          <col style="width: 8%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 24%; " />
+                          <col style="width: 12%; " />
+                          <col style="width: 10%; " />
+                          <col style="width: 24%; " />
+      									</colgroup>
+      									<tbody>
+                          <% for(let i = 0; i < ObjView.length; i++) { %>
+                          <% const data = ObjView[i] %>
+      										<tr data-sensor_id="<%= data.sensor_id %>">
+                            <td class="cell-check">
+                              <div class="ui-checkbox default-style empty-type small-size">
+                                <input type="checkbox" name="setting" id="setting<%= i %>" checked>
+                                <label for="setting<%= i %>"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                              </div>
+                            </td>
+                            <td>
+                              <span class="ellipsis"><%= data.sensor_id %></span>
+                            </td>
+                            <td>
+                              <span class="ellipsis"><%= data.sensor_name %></span>
+                            </td>
+                            <td>
+                              <% if( data.status == 0 ){ %>
+                              <span class="status status-disconnected small-size"></span>
+                              <% } else if (data.status == 1){%>
+                              <span class="status status-connected small-size"></span>
+                              <% } else { %>
+                              <span class="status status-default small-size"></span>
+                              <% } %>
+                            </td>
+                            <td><%= data.version %></td>
+                            <td><%= dateFormat(data.last_connected_time) %></td>
+                          </tr>
+                          <% } %>
+      									</tbody>
+      								</table>
+      							</div>
+      						</div>
+      					</div>
+      					<!-- //table-comp -->
+              </div>
+
+              <div class="table-data">
+    						<p class="table-text"><span class="title"><%= __("administrationSensor|Total Selected in") %></span> <span id="scanSettingTotal"><%= ObjView.length %></span> ea</p>
+    					</div>
+
+              <!-- scan-setting -->
+              <div class="scan-setting" id="scanSetting">
+                <!-- table-comp -->
+      					<div class="table-comp">
+      						<div class="table-comp">
+      							<table class="table setting-style multi-thead">
+      								<caption><span class="sr-only"><%= __("administrationSensor|Scan setting") %></span></caption>
+      								<colgroup>
+                        <col style="width: 16%; " />
+                        <col style="width: 16%; " />
+                        <col style="width: 16%; " />
+                        <col style="width: 16%; " />
+                        <col style="width: 20%; " />
+                        <col style="width: 16%; " />
+      								</colgroup>
+      								<thead>
+                        <tr>
+                          <th scope="col" colspan="3"><%= __("administrationSensor|Detection interval") %> <span class="unit">(<%= __("administrationSensor|min") %>)</span></th>
+                          <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis schedule") %> <br> <span class="unit">(<%= __("administrationSensor|HR 24") %>)</span></th>
+                          <th scope="col" colspan="2"><%= __("administrationSensor|Assets blocking policies") %></th>
+                        </tr>
+                        <tr>
+                          <th scope="col"><%= __("administrationSensor|Asset") %></th>
+                          <th scope="col"><%= __("administrationSensor|Bluetooth") %></th>
+                          <th scope="col"><%= __("administrationSensor|Wireless") %></th>
+                          <th scope="col"><%= __("administrationSensor|Vulnerability") %></th>
+                          <th scope="col"><%= __("administrationSensor|Unauthorized") %></th>
+                        </tr>
+      								</thead>
+      								<tbody>
+      									<tr>
+                          <td>
+                            <div class="ui-select default-style small-size" data-direction="up" data-set_asset_schedule="">
+                              <select name="" id="">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="60">60</option>
+                              </select>
+                            </div>
+                            <div class="ui-switch default-style small-size" data-direction="up" data-set_asset_detection_status="">
+                              <input type="checkbox" name="set_asset_detection_status" id="set_asset_detection_status" checked>
+                              <label for="set_asset_detection_status"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="ui-select default-style small-size" data-direction="up" data-set_bluetooth_schedule="">
+                              <select name="" id="">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="60">60</option>
+                              </select>
+                            </div>
+                            <div class="ui-switch default-style small-size" data-direction="up" data-set_bluetooth_detection_status="">
+                              <input type="checkbox" name="set_bluetooth_detection_status" id="set_bluetooth_detection_status" checked>
+                              <label for="set_bluetooth_detection_status"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="ui-select default-style small-size" data-direction="up" data-set_wireless_schedule="">
+                              <select name="" id="">
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                              </select>
+                            </div>
+                            <div class="ui-switch default-style small-size" data-direction="up" data-set_wireless_detection_status="">
+                              <input type="checkbox" name="set_wireless_detection_status" id="set_wireless_detection_status" checked>
+                              <label for="set_wireless_detection_status"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="ui-select default-style small-size" data-direction="up" data-set_vulnerability_schedule="">
+                              <select name="" id="">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12" selected>12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                              </select>
+                            </div>
+                            <div class="ui-switch default-style small-size" data-set_vulnerability_detection_status="">
+                              <input type="checkbox" name="set_vulnerability_detection_status" id="set_vulnerability_detection_status" checked>
+                              <label for="set_vulnerability_detection_status"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="ui-select default-style icon-type small-size" data-direction="up" data-set_vulnerability_block_level="">
+                              <select name="" id="">
+                                <option value="0" data-val="severity-low"><%= __("administrationSensor|low") %></option>
+                                <option value="1" data-val="severity-medium"><%= __("administrationSensor|medium") %></option>
+                                <option value="2" data-val="severity-high"><%= __("administrationSensor|high") %></option>
+                                <option value="3" data-val="severity-critical" selected><%= __("administrationSensor|critical") %></option>
+                              </select>
+                            </div>
+                            <div class="ui-switch default-style small-size" data-set_vulnerability_block="">
+                              <input type="checkbox" name="set_vulnerability_block" id="set_vulnerability_block" checked>
+                              <label for="set_vulnerability_block"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="ui-switch default-style small-size" data-set_unauthorised_block="">
+                              <input type="checkbox" name="set_unauthorised_block" id="set_unauthorised_block" checked>
+                              <label for="set_unauthorised_block"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                            </div>
+                          </td>
+      									</tr>
+                      </tbody>
+      							</table>
+      						</div>
+      					</div>
+      					<!-- //table-comp -->
+              </div>
+              <!-- //scan-setting -->
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationSensor|Close") %></button>
+            <button type="button" class="btn btn-normal primary-style long-size" id="settingBtn"><%= __("administrationSensor|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  selectDropdown('.ui-select.default-style');
+  tableCheck('.table-check');
+  var modalSetting = popupModal('#modalSetting');
+  modalSetting.open('#modalSetting');
+</script>
+<script>
+  $('#scanSetting').each(function(){
+    const $sensor = $(this);
+    // asset
+    $sensor.find('[data-set_asset_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const $select = $(this).closest('tr').find('[data-set_asset_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+    });
+
+    // bluetooth
+    $sensor.find('[data-set_bluetooth_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "bluetooth_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-set_bluetooth_schedule] select')
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+    });
+
+    // wireless
+    $sensor.find('[data-set_wireless_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "wireless_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-set_wireless_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+    });
+
+    // diagnosis
+    $sensor.find('[data-set_vulnerability_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "vulnerability_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-set_vulnerability_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+
+      // on 으로 변경시에만 asset 상태가 on으로 함께 변함
+      if (isChecked) $(this).closest('tr').find('[data-set_asset_detection_status] input').prop('checked', true).trigger('change');
+
+    });
+
+    // block-vulnerability
+    $sensor.find('[data-set_vulnerability_block] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "vulnerability_block": isChecked };
+      const $select = $(this).closest('tr').find('[data-set_vulnerability_block_level] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+    });
+
+  });
+</script>
+<script>
+  $('#scanSettingList .cell-check').on('change.scansettingTotal',  function(){
+    const length = $('#scanSettingList td.cell-check input:checked').length;
+    $('#scanSettingTotal').html(length);
+  })
+</script>
+<script>
+  $('#settingBtn').on('click.setting', function(){
+    const sensor_id = $.map($('#scanSettingList').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id');
+    });
+
+    const dataValue = {
+      asset_schedule: $('[data-set_asset_schedule] select').val(),
+      asset_detection_status: $('[data-set_asset_detection_status] input').is(":checked"),
+      bluetooth_schedule: $('[data-set_bluetooth_schedule] select').val(),
+      bluetooth_detection_status: $('[data-set_bluetooth_detection_status] input').is(":checked"),
+      wireless_schedule: $('[data-set_wireless_schedule] select').val(),
+      wireless_detection_status: $('[data-set_wireless_detection_status] input').is(":checked"),
+      vulnerability_schedule: $('[data-set_vulnerability_schedule] select').val(),
+      vulnerability_detection_status: $('[data-set_vulnerability_detection_status] input').is(":checked"),
+      vulnerability_block_level: $('[data-set_vulnerability_block_level] select').val(),
+      vulnerability_block: $('[data-set_vulnerability_block] input').is(":checked"),
+      unauthorised_block: $('[data-set_unauthorised_block] input').is(":checked")
+    }
+
+    dataValue.sensor_id = sensor_id;
+
+    if (!sensor_id.length) return alertModalControl('open', 'alertError', 'Select one more.');
+
+
+    const loading = openLoading($('#modalSetting .loading-parent'));
+
+    fetch(`/admin/sensor/sensorupdate`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response,
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return {
+        data: data.data,
+        isLoading: true
+      }
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        const $loadingParent = $('#modalNew .loading-parent');
+        removeLoading($loadingParent);
+      }
+      return {data:data.data}
+    })
+    .then(function(data){
+      if(data.data.status == 200) return alertModalControl('open', 'alertComplete', 'Completed!', {
+        completeCallback: function(){
+          refreshPage();
+        }
+      });
+      if(data.data.status == 500){ alertModalControl('open', 'alertError', 'error!'); }
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+</script>

@@ -1,0 +1,151 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <div class="card-box">
+    <!-- tree-comp -->
+    <div class="tree-comp">
+      <div class="tree-header">
+        <h2 class="tree-title"><%= __("administrationSensor|Sensor Tree") %></h2>
+      </div>
+      <div class="tree-search">
+        <div class="ui-search">
+          <div class="ui-input default-style"><input type="text" placeholder="<%= __("administrationSensor|Search") %>"></div>
+          <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("administrationSensor|Search") %></span></span></button>
+        </div>
+      </div>
+      <div class="tree">
+        <button type="button" class="btn btn-tree-all"><%= __("administrationSensor|Open all") %></button>
+        <!-- tree-empty -->
+        <div class="tree-empty">
+          <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                <span class="symbol-icon question-style"></span>
+                <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+              <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+            </div>
+          </div>
+          <!-- //empty -->
+        </div>
+        <!-- //tree-empty -->
+      </div>
+    </div>
+    <!-- //tree-comp -->
+  </div>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/sensor/treelist', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var getTypeCheckedSensorKey = (parent, tree_type, sensor_type, sensor_key) => {
+    const checkedTreetypeInputLength = $(`${parent} .tree-item${tree_type} input[type="checkbox"]:checked`).length;
+    const checkedSensortypeInputLength = $(`${parent} .tree-item${sensor_type} input[type="checkbox"]:checked`).length;
+
+    if(checkedTreetypeInputLength > 0 && checkedSensortypeInputLength == 0) {
+      return sensor_key = [-1];
+    }
+
+    return sensor_key;
+  };
+</script>
+<script>
+  // for sensor group, sensor of new popup
+  // function getChosedSetting(){
+  function getSubContext(){
+
+    const $tree = $('.tree-comp');
+    let selectedSid = '';
+    let selectedGid = '';
+
+    const selectedSids = $.map($tree.find('.tree-item.sensor-type input:checked'), function(element){
+      return $(element).closest('.tree-item').data('sid');
+    });
+
+    if(selectedSids.length){
+      selectedSid = selectedSids[0];
+      selectedGid = $tree.find(`[data-sid="${selectedSid}"]`).closest('.tree-list').prev('.tree-item.tree-type').data('id').replace('tree-g-', '');
+    }else{
+      const selectedGids = $.map($tree.find('.tree-item.tree-type input:checked'), function(element){
+        return $(element).closest('.tree-item').data('id').replace('tree-g-', '');
+      });
+      if(selectedGids.length) selectedGid = selectedGids[0];
+    }
+
+    return {
+      sid: selectedSid,
+      gid: selectedGid
+    }
+  }
+</script>
+<script>
+  var treeData = <%- tree_groups %> || [];
+</script>
+<script>
+  function getGroup(treeData){
+    const group = Object.entries(treeData).filter((item) => item[1].type == 'folder').map(item=>{
+      const _item = item[1]
+      return {gid: _item.gid, group_name: _item.text}
+    });
+    return group;
+  }
+</script>
+<script>
+  var initCheckedDataIDs = getState().initCheckedDataIDs;
+  var initCheckedItems = getState().sid && getState().sid.map(element=>({type: 'sid', value: element}));
+
+  tree('.tree-comp', {
+    data: treeData, checkCallback: function(data){
+      // checkedIds, checkedId
+      const checkedIds = data.checkedIds;
+
+      const page = 1;
+      let sid = checkedIds.sid;
+
+      sid = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sid);
+
+      const dataIDs = data.dataIDs;
+      const selectedTab = getState().selectedTab || 'deviceType';
+      let sensorType = 0;
+      switch (selectedTab) {
+        case 'deviceType':
+          sensorType = 0;
+          break;
+        case 'embeddedType':
+          sensorType = 1;
+          break;
+        case 'clientType':
+          sensorType = 2;
+          break;
+        default:
+
+      }
+
+      const deviceType = getState().deviceType || {entries: 10, time: null, filter: null};
+      const embeddedType = getState().embeddedType || {entries: 10, time: null, filter: null};
+      const clientType = getState().clientType || {entries: 10, time: null, filter: null};
+
+      setState({
+        sid: sid,
+        initCheckedDataIDs: dataIDs,
+        deviceType: {...deviceType, page: page},
+        embeddedType: {...embeddedType, page: page},
+        clientType: {...clientType, page: page}
+      });
+      requestTab(sid, selectedTab);
+    },
+    initCheckedItems: initCheckedItems,
+    initCheckedDataIDs: initCheckedDataIDs
+  });
+
+  var selectedTab = getState().selectedTab || 'deviceType';
+  var sid = getState().sid || null;
+  requestTab(sid, selectedTab);
+</script>
+<% } %>

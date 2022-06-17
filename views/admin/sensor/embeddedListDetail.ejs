@@ -1,0 +1,57 @@
+<div class="accordion-detail">
+  <!-- accordion-detail-content -->
+  <div class="accordion-detail-content">
+    <div class="table-comp">
+      <table class="table detail-style">
+        <caption><%= __("administrationSensor|sensorDetailInformation") %></caption>
+        <colgroup>
+          <col style="width: 50%; " />
+          <col style="width: 50%; " />
+        </colgroup>
+        <tbody>
+          <% for( let i = 0; i < ObjView.length; i++ ){ %>
+          <% const data = ObjView[i]; %>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Reg time") %></dt>
+                  <dd><%= dateFormat(data.regtime) %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Version") %></dt>
+                  <dd><%= data.version %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Last connected time") %></dt>
+                  <dd><%= dateFormat(data.last_connected_time) %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- //accordion-detail-content -->
+
+
+  <script>
+    var data = <%- JSON.stringify(ObjView) %>;
+    
+  </script>
+
+<script>
+  logdata('/admin/sensor/sensordetail', <%- JSON.stringify(locals) %>);
+</script>

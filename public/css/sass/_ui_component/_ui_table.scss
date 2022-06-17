@@ -1,0 +1,1731 @@
+/**********************************
+ ********** table-comp options **************
+ **********************************/
+.table-comp.spacing-top
+{
+    margin-top: 15px;
+}
+
+.table-comp.more-spacing-top
+{
+    margin-top: 30px;
+}
+
+/**********************************
+ ********** 기본 table **************
+ **********************************/
+.table-comp .table.default-style
+{
+    background: var(--table-default-bg);
+}
+
+.table-scroll
+{
+    position: relative;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+    padding-bottom: 19px;
+}
+
+.table-scroll .table
+{
+    margin-bottom: 0;
+}
+
+.table.default-style
+{
+    font-size: 13px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-default-color);
+    border-bottom: 2px solid var(--table-default-border-color);
+    background: var(--table-default-bg);
+}
+
+.table.default-style caption
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.default-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 13px;
+    line-height: 1.53;
+
+    box-sizing: border-box;
+    height: 58px;
+    padding: 10px 4px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-default-head-color);
+    border-top: none;
+    background: var(--table-default-head-bg);
+}
+
+.table.default-style.multi-thead thead th
+{
+    height: 29px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    border-top: 1px solid var(--table-default-head-border-color);
+    border-right: 1px solid var(--table-default-head-border-color);
+    border-left: 1px solid var(--table-default-head-border-color);
+}
+
+.table.default-style.multi-thead thead tr:first-child th
+{
+    border-top: none;
+}
+
+.table.default-style.multi-thead thead th:first-child
+{
+    border-left: none;
+}
+
+.table.default-style.multi-thead thead th:last-child
+{
+    border-right: none;
+}
+
+.table.default-style.multi-thead thead th.cell-check
+{
+    border-right: none;
+    border-left: none;
+}
+
+.table.default-style.multi-thead thead th.cell-accordion
+{
+    border-right: none;
+    border-left: none;
+}
+
+.table.default-style.multi-thead thead th .unit
+{
+    font-size: 10px;
+}
+
+.table.default-style > tbody > tr:first-child > td
+{
+    height: 50px;
+
+    border-top: none;
+}
+
+.table.default-style > tbody > tr > td
+{
+    font-size: 13px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    height: 52px;
+    padding: 6px 10px;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-default-body-color);
+    border-top: 2px solid var(--table-default-body-border-color);
+    background: var(--table-default-body-bg);
+}
+
+.table.default-style tbody td .ellipsis
+{
+    display: block;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.table.default-style tbody .is-detected > td
+{
+    background: var(--table-default-body-bg-detected);
+}
+
+/**********************************
+ ********** table accordion **************
+ **********************************/
+.table.default-style tbody .accordion-content-title.on
+{
+    box-shadow: var(--table-default-title-shadow);
+}
+
+.table.default-style tbody .accordion-content,
+.table.summary-style tbody .accordion-content
+{
+    display: none;
+}
+
+.table.default-style tbody .accordion-content td
+{
+    height: auto;
+    padding: 0;
+
+    vertical-align: middle;
+
+    border-bottom: none;
+}
+
+.accordion-content-box
+{
+    position: relative;
+
+    display: none;
+
+    width: 100%;
+
+    text-align: left;
+}
+
+.accordion-detail
+{
+    position: relative;
+
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    width: 100%;
+
+    background: var(--accordion-detail-bg);
+    box-shadow: var(--accordion-detail-shadow);
+
+    flex-wrap: nowrap;
+}
+
+.accordion-detail:before
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 1.8%;
+
+    content: '';
+
+    background: var(--accordion-detail-bar-bg);
+}
+
+.accordion-detail .accordion-detail-content:before
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    box-sizing: border-box;
+    width: 8px;
+
+    content: '';
+
+    background: var(--accordion-detail-bar-border-color);
+}
+
+.accordion-detail .accordion-detail-content
+{
+    box-sizing: border-box;
+    width: 100%;
+    padding-left: 8%;
+
+    flex: 1;
+}
+
+.accordion-detail-content .detail-info
+{
+    display: inline-flex;
+
+    box-sizing: border-box;
+    min-height: 51px;
+    padding-top: 10px;
+    padding-right: 24px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+
+    align-items: center;
+}
+
+.table.summary-style .accordion-detail-content .detail-info
+{
+    min-height: auto;
+}
+
+.accordion-detail-content .detail-info.multi-style dl dt
+{
+    vertical-align: top;
+}
+
+.accordion-detail-content .detail-info dl dt
+{
+    font-family: var(--font-family-title);
+    font-size: 13px;
+
+    color: var(--detail-info-title-color);
+}
+
+.accordion-detail-content .detail-info dl dt:after
+{
+    padding-right: 12px;
+    padding-left: 12px;
+
+    content: ':';
+}
+
+.accordion-detail-content .detail-info dl dd
+{
+    font-size: 13px;
+
+    color: var(--detail-info-content-color);
+}
+
+.accordion-detail-content .detail-info dl dd *
+{
+    font-size: inherit;
+}
+
+.accordion-detail-content .detail-info dl dt,
+.accordion-detail-content .detail-info dl dd
+{
+    display: inline-block;
+}
+
+/**********************************
+ ********** detail style(in accordion) **************
+ **********************************/
+.table.detail-style
+{
+    width: 100%;
+}
+
+.table.detail-style caption
+{
+    font-size: 1px;
+    line-height: 1;
+
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.detail-style td
+{
+    border: 1px solid var(--table-detail-border-color);
+}
+
+.table.detail-style tr:first-child td
+{
+    border-top: none;
+}
+
+.table.detail-style td:last-child
+{
+    border-right: none;
+}
+
+/**********************************
+ ********** scroll table **************
+ **********************************/
+.table-scroll.default-style
+{
+    height: 597px;
+}
+
+.table-scroll.default-style .thead-scroll
+{
+    padding-right: 29px;
+    padding-left: 16px;
+
+    background: var(--table-scroll-thead-bg);
+}
+
+.table-scroll.default-style .thead-scroll .table
+{
+    border-bottom: none;
+}
+
+.table-scroll.default-style .tbody-scroll
+{
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    height: 520px;
+    margin-right: 12px;
+    margin-left: 14px;
+
+    background: var(--table-scroll-body-bg);
+}
+
+.table-scroll.default-style .tbody-scroll .table.default-style
+{
+    margin-top: 0;
+    padding-bottom: 0;
+
+    background: var(--table-scroll-body-table-bg);
+}
+
+/**********************************
+ ********** info table **************
+ **********************************/
+.table.info-style
+{
+    font-size: 13px;
+
+    width: 100%;
+
+    text-align: center;
+
+    color: var(--table-info-color);
+    background: var(--table-info-bg);
+}
+
+.table.info-style + .table.info-style
+{
+    margin-top: 5px;
+}
+
+.table.info-style caption
+{
+    font-size: 1px;
+    line-height: 1;
+
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.info-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 15px;
+
+    box-sizing: border-box;
+    height: 62px;
+    padding: 12px 12px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-default-head-color);
+    border: 1px solid var(--table-info-head-border-color);
+    background: var(--table-info-head-bg);
+}
+
+.table.info-style tbody td
+{
+    font-size: 15px;
+    line-height: 1.38;
+
+    position: relative;
+
+    box-sizing: border-box;
+    height: 62px;
+    padding: 12px 12px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-info-body-color);
+    border: 1px solid var(--table-info-body-border-color);
+    border-top: none;
+    background: var(--table-info-body-bg);
+}
+
+.table.info-style tbody td:after
+{
+    position: absolute;
+    right: -1px;
+    bottom: -2px;
+    left: -1px;
+
+    content: '';
+
+    border-bottom: 1px solid var(--table-info-body-bg);
+}
+
+.accordion-empty
+{
+    display: inline-block;
+
+    width: 40px;
+}
+
+/**********************************
+ ********** data table **************
+ **********************************/
+.table.data-style
+{
+    font-size: 11px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-data-color);
+    border-bottom: 2px solid var(--table-data-border-color);
+    border-left: 3px solid var(--table-data-border-color);
+    background: var(--table-data-bg);
+}
+
+.table.data-style caption
+{
+    font-size: 1px;
+    line-height: 1;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.data-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+
+    box-sizing: border-box;
+    height: 30px;
+    padding: 7px 6px;
+
+    vertical-align: middle;
+
+    color: var(--table-data-head-color);
+    border-top: none;
+    border-bottom: 1px solid var(--table-data-head-border-color);
+    background: var(--table-data-head-bg);
+}
+
+.table.data-style tbody td
+{
+    font-size: 11px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    height: 28px;
+    padding: 1px;
+
+    vertical-align: middle;
+
+    color: var(--table-data-body-color);
+    border-top: 2px solid var(--table-data-body-border-color);
+}
+
+.table.data-style tbody .is-selected td
+{
+    background: var(--table-data-body-bg-selected);
+}
+
+.table.data-style tbody td.cell-accordion
+{
+    padding: 0;
+}
+
+.table.data-style tbody td .ellipsis
+{
+    display: block;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/**********************************
+ ********** data table + colored-style **************
+ **********************************/
+.table.data-style.colored-style
+{
+    color: var(--table-data-color);
+    border-bottom: 2px solid var(--table-data-border-color);
+    border-left: 3px solid var(--table-data-border-color);
+    background: var(--table-data-bg);
+}
+
+.table.data-style.colored-style thead th
+{
+    color: var(--table-data-head-color);
+    border-top: none;
+    border-bottom: 1px solid var(--table-data-head-border-color);
+    background: var(--table-data-head-bg);
+}
+
+.table.data-style.colored-style tbody td
+{
+    color: var(--table-data-body-color);
+    border-top: 2px solid var(--table-data-body-border-color-colored);
+    background: var(--table-data-body-bg-colored);
+}
+.table-scroll.data-style.colored-style .tbody-scroll
+{
+    background: var(--table-data-bg-colored);
+}
+/**********************************
+ ********** data scroll table **************
+ **********************************/
+.table-scroll.data-style
+{
+    padding-bottom: 3px;
+}
+
+.table-scroll.data-style .thead-scroll
+{
+    padding-right: 20px;
+    padding-left: 3px;
+
+    background: var(--table-data-scroll-thead-bg);
+}
+
+.table-scroll.data-style .tbody-scroll
+{
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    height: 281px;
+
+    border-right: 3px solid var(--table-data-scroll-border-color);
+    border-left: 3px solid var(--table-data-scroll-border-color);
+    background: var(--table-scroll-body-bg);
+}
+
+.table-scroll.data-style .thead-scroll .table.data-style
+{
+    width: calc(100% - 3px);
+    margin-right: 3px;
+
+    border-bottom-color: var(--table-data-scroll-thead-bg);
+    border-left-color: var(--table-data-scroll-thead-bg);
+}
+
+.table-scroll.data-style .tbody-scroll .table.data-style
+{
+    width: calc(100% - 3px);
+    margin-top: 0;
+    margin-right: 3px;
+
+    border-right: 2px solid var(--table-data-scroll-border-color);
+}
+
+/**********************************
+ ********** data accordion table **************
+ **********************************/
+.table.data-style tbody .accordion-content-title.on
+{
+    box-shadow: var(--table-data-shadow);
+}
+
+.table.data-style tbody .accordion-content td
+{
+    height: auto;
+    padding: 0;
+
+    border-bottom: none;
+}
+
+.accordion-content-box.small-size .accordion-detail:before
+{
+    width: 2%;
+}
+
+.accordion-content-box.small-size .accordion-detail .accordion-detail-btn-box
+{
+    padding-left: 4.5%;
+}
+
+.accordion-content-box.small-size .accordion-detail-content
+{
+    box-sizing: border-box;
+    padding-left: calc(10% - 2px);
+}
+
+.accordion-content-box.small-size .accordion-detail-content:before
+{
+    width: 3px;
+}
+
+.accordion-content-box.small-size .accordion-detail-content .detail-info
+{
+    display: inline-flex;
+
+    min-height: 24px;
+    padding-top: 5px;
+    padding-right: 24px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+
+    align-items: center;
+}
+
+.accordion-content-box.small-size .accordion-detail-content .detail-info dl dt
+{
+    font-size: 10px;
+}
+
+.accordion-content-box.small-size .accordion-detail-content .detail-info dl dt:after
+{
+    padding-right: 6px;
+    padding-left: 6px;
+}
+
+.accordion-content-box.small-size .accordion-detail-content .detail-info dl dd
+{
+    font-size: 10px;
+}
+
+/**********************************
+ ********** setting table **************
+ **********************************/
+.table.setting-style
+{
+    font-size: 9px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-setting-color);
+    background: var(--table-setting-bg);
+}
+
+.table.setting-style caption
+{
+    font-size: 1px;
+    line-height: 1;
+
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.setting-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 9px;
+
+    box-sizing: border-box;
+    height: 40px;
+    padding: 8px 12px;
+
+    vertical-align: middle;
+
+    color: var(--table-setting-head-color);
+    border-top: none;
+    background: var(--table-setting-head-bg);
+}
+
+.table.setting-style > tbody > tr
+{
+    box-shadow: var(--table-setting-shadow);
+}
+
+.table.setting-style > tbody > tr > td
+{
+    font-size: 13px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    height: 42px;
+    padding: 6px 2px;
+
+    vertical-align: middle;
+
+    color: var(--table-setting-body-color);
+    border-bottom: none;
+    background: var(--table-setting-body-bg);
+}
+
+.table.setting-style.multi-thead thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 9px;
+    line-height: 1.33;
+
+    box-sizing: border-box;
+    height: 29px;
+    padding: 8px 4px;
+
+    vertical-align: middle;
+
+    color: var(--table-setting-head-color);
+    border: 1px solid var(--table-setting-head-bg-border-color);
+    border-bottom: none;
+    background: var(--table-setting-head-bg-multi);
+}
+
+.table.setting-style.multi-thead thead tr:first-child
+{
+    border-top: none;
+}
+
+.table.setting-style.multi-thead thead th:first-child
+{
+    border-left: 1px solid var(--table-setting-head-bg-multi);
+}
+
+.table.setting-style.multi-thead thead th:last-child
+{
+    border-right: 1px solid var(--table-setting-head-bg-multi);
+}
+
+/**********************************
+ ********** filter 에서 사용하는 table **************
+ **********************************/
+.table.collection-style
+{
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    border-top: 5px solid var(--table-collection-border-color);
+    border-right: 4px solid var(--table-collection-border-color);
+    border-bottom: 5px solid var(--table-collection-border-color);
+    border-left: 4px solid var(--table-collection-border-color);
+    background: var(--table-collection-bg);
+}
+
+.table.collection-style caption
+{
+    font-size: 1px;
+    line-height: 1;
+
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.collection-style tbody th
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+
+    height: 30px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-collection-color);
+    border-top: 5px solid var(--table-collection-border-color);
+    border-right: 1px solid var(--table-collection-border-color);
+    background: var(--table-collection-body-bg);
+}
+
+.table.collection-style tbody td
+{
+    font-size: 11px;
+
+    box-sizing: border-box;
+    height: 30px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-collection-body-color);
+    border-top: 5px solid var(--table-collection-border-color);
+    background: var(--table-collection-body-bg);
+}
+
+.table.collection-style.filter-type tbody td
+{
+    position: relative;
+
+    padding-right: 30px;
+}
+
+.table.collection-style.filter-type tbody td .btn-filter-minus
+{
+    position: absolute;
+    top: 50%;
+    right: 0;
+
+    margin-top: -15px;
+
+    border-top: none;
+}
+
+.table.collection-style tbody tr:first-child th,
+.table.collection-style tbody tr:first-child td
+{
+    border-top: none;
+}
+
+.table-scroll.collection-style
+{
+    overflow-y: auto;
+
+    height: 355px;
+}
+
+/**********************************
+ ********** note table **************
+ **********************************/
+.table.note-style
+{
+    font-size: 11px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-note-color);
+    border-bottom: 1px solid var(--table-note-border-color);
+    background: var(--table-note-bg);
+}
+
+.table.note-style caption
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.note-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+    line-height: 1;
+
+    box-sizing: border-box;
+    height: 28px;
+    padding: 5px 4px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-note-head-color);
+    background: var(--table-note-head-bg);
+}
+
+.table.note-style > tbody > tr > td
+{
+    font-size: 11px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    height: 35px;
+    padding: 0;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-note-body-color);
+    border-top: 1px solid var(--table-note-body-border-color);
+    background: var(--table-note-body-bg);
+}
+
+.table.note-style tbody td .ellipsis
+{
+    display: block;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/**********************************
+ ********** summary table **************
+ **********************************/
+.table.summary-style
+{
+    font-size: 11px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-summary-color);
+    border-bottom: 1px solid var(--table-summary-border-color);
+    background: var(--table-summary-bg);
+}
+
+.table.summary-style caption
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table.summary-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 16px;
+    line-height: 1;
+
+    box-sizing: border-box;
+    height: 38px;
+    padding: 5px 4px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--table-summary-head-color);
+    background: var(--table-summary-head-bg);
+}
+.table.summary-style thead th:first-child
+{
+    border-top-left-radius: 4px;
+}
+.table.summary-style thead th:last-child
+{
+    border-top-right-radius: 4px;
+}
+
+.table.summary-style > tbody > tr.is-selected > td
+{
+    background: var(--table-summary-body-bg-selected);
+}
+
+.table.summary-style > tbody.hover-color > tr:hover > td
+{
+    background: var(--table-summary-body-bg-hover);
+}
+
+.table.summary-style > tbody.pointer-cursor > tr:hover > td
+{
+    cursor: pointer;
+}
+
+.table.summary-style > tbody > tr > td
+{
+    font-size: 13px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    height: 36px;
+    padding: 4px 10px;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-summary-body-color);
+    border-top: 1px solid var(--table-summary-body-border-color);
+    background: var(--table-default-body-bg);
+}
+
+.table.summary-style > tbody > tr > td img
+{
+    max-width: 100px;
+    max-height: 50px;
+}
+
+.table.summary-style tbody td .ellipsis
+{
+    display: block;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/**********************************
+ ********** summary scroll table **************
+ **********************************/
+.table-scroll.summary-style
+{
+    height: 597px;
+    padding-bottom: 19px;
+}
+
+.table-scroll.summary-style .thead-scroll
+{
+    padding-right: 29px;
+    padding-left: 16px;
+
+    background: var(--table-scroll-thead-bg);
+}
+
+.table-scroll.summary-style .thead-scroll .table
+{
+    height: auto;
+    padding-right: 20px;
+    padding-left: 3px;
+
+    border-bottom: none;
+    background: var(--table-data-scroll-thead-bg);
+}
+
+.table-scroll.summary-style .tbody-scroll
+{
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    height: 541px;
+    margin-right: 12px;
+    margin-left: 14px;
+
+    background: var(--table-scroll-body-bg);
+}
+
+.table-scroll.summary-style .tbody-scroll .table
+{
+    margin-top: 0;
+    padding-bottom: 0;
+
+    border-bottom: none;
+    background: var(--table-scroll-body-table-bg);
+}
+
+.table-scroll.summary-style .tbody-scroll .table tbody tr:first-child td
+{
+    border-top: none;
+}
+
+.table-scroll.summary-style .tbody-scroll .table tbody tr:last-child td
+{
+    border-bottom: 1px solid var(--table-summary-body-border-color);
+}
+
+/**********************************
+ ********** brief **************
+ **********************************/
+.brief-box
+{
+    padding-right: 8px;
+    padding-left: 8px;
+
+    border-radius: 4px;
+    background: var(--brief-box-bg);
+}
+.table.brief-style
+{
+    font-family: var(--font-family-title);
+
+    width: 100%;
+
+    text-align: center;
+
+    color: var(--table-brief-color);
+    background: var(--table-brief-bg);
+}
+.table.brief-style caption
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+}
+.table.brief-style thead th
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    box-sizing: border-box;
+    height: 30px;
+    padding: 9px 10px 5px;
+
+    vertical-align: middle;
+
+    color: var(--table-brief-head-color);
+    border-bottom: 1px solid var(--table-brief-head-border-color);
+}
+
+.table.brief-style tbody td
+{
+    font-size: 11px;
+
+    box-sizing: border-box;
+    height: 21px;
+    padding: 3px 10px;
+
+    text-align: left;
+    vertical-align: middle;
+}
+
+.table.brief-style tbody tr:first-child th,
+.table.brief-style tbody tr:first-child td
+{
+    height: 31px;
+    padding-top: 13px;
+}
+
+.table.brief-style tbody tr:last-child th,
+.table.brief-style tbody tr:last-child td
+{
+    height: 31px;
+    padding-bottom: 13px;
+}
+
+.table.brief-style tbody th
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+
+    box-sizing: border-box;
+    height: 21px;
+    padding: 3px 10px;
+
+    vertical-align: middle;
+}
+
+.table.brief-style tbody th.title-total
+{
+    color: var(--table-brief-body-total);
+}
+
+.table.brief-style tbody th.title-critical
+{
+    color: var(--table-brief-body-critical);
+}
+
+.table.brief-style tbody th.title-high
+{
+    color: var(--table-brief-body-high);
+}
+
+.table.brief-style tbody th.title-medium
+{
+    color: var(--table-brief-body-medium);
+}
+
+.table.brief-style tbody th.title-low
+{
+    color: var(--table-brief-body-low);
+}
+
+/**********************************
+ ********** desc table **************
+ **********************************/
+
+.table.desc-style
+{
+    font-size: 13px;
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    text-align: center;
+
+    color: var(--table-desc-color);
+    border-bottom: 1px solid var(--table-desc-border-color);
+    background: var(--table-desc-bg);
+}
+
+.table.desc-style caption
+{
+    font-size: 0;
+    line-height: 0;
+
+    display: none;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+
+    opacity: 0;
+}
+
+.table-comp .table.desc-style
+{
+    background: var(--table-desc-bg);
+}
+
+.table.desc-style > tbody > tr > th
+{
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.38;
+
+    position: relative;
+
+    box-sizing: border-box;
+    padding: 10px 12px 10px 20px;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-desc-body-color);
+    border-top: 1px solid var(--table-desc-body-border-color);
+    background: var(--table-desc-body-bg);
+}
+
+.table.desc-style > tbody > tr > th.is-essential::after
+{
+    position: absolute;
+    top: 50%;
+    left: 10px;
+
+    content: '*';
+    transform: translateY(-30%);
+}
+
+.table.desc-style > tbody > tr > td
+{
+    font-size: 14px;
+    line-height: 1.38;
+
+    box-sizing: border-box;
+    padding: 10px 12px;
+
+    text-align: left;
+    vertical-align: middle;
+
+    color: var(--table-desc-body-color);
+    border-top: 1px solid var(--table-desc-body-border-color);
+    background: var(--table-desc-body-bg);
+}
+
+.table.desc-style > tbody > tr > th.emphasis-background,
+.table.desc-style > tbody > tr > td.emphasis-background
+{
+    background: var(--table-desc-body-emphasis-bg);
+}
+
+.table.desc-style > tbody > tr > th.warning-background,
+.table.desc-style > tbody > tr > td.warning-background
+{
+    background-color: var(--table-desc-body-warning-bg);
+}
+
+.table.desc-style > tbody > tr > th.danger-background,
+.table.desc-style > tbody > tr > td.danger-background
+{
+    background-color: var(--table-desc-body-danger-bg);
+}
+
+/**********************************
+ ********** pagination **************
+ **********************************/
+.pagination
+{
+    display: flex;
+
+    flex-wrap: nowrap;
+}
+
+.pagination .page-item .page-link
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 28px;
+
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    box-sizing: border-box;
+    width: auto;
+    min-width: 30px;
+    height: 30px;
+    margin-right: 7px;
+    padding: 3px;
+
+    cursor: pointer;
+    text-align: center;
+    vertical-align: top;
+
+    color: var(--pagination-color);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--pagination-border-color);
+    border-radius: 4px;
+    background-color: var(--pagination-bg);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination .page-item .page-link.page-first
+{
+    position: relative;
+}
+
+.pagination .page-item .page-link.page-first:before
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-left: -5px;
+
+    content: '';
+
+    border-top: 6px solid transparent;
+    border-right: 7px solid var(--pagination-active-arrow);
+    border-bottom: 6px solid transparent;
+}
+
+.pagination .page-item .page-link.page-first:after
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-left: -3px;
+
+    content: '';
+
+    border-top: 6px solid transparent;
+    border-right: 7px solid var(--pagination-bg);
+    border-bottom: 6px solid transparent;
+}
+
+.pagination .page-item .page-link.page-last
+{
+    position: relative;
+}
+
+.pagination .page-item .page-link.page-last:before
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-left: -3px;
+
+    content: '';
+
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid var(--shadow-mountain);
+}
+
+.pagination .page-item .page-link.page-last:after
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-left: -5px;
+
+    content: '';
+
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid #fff;
+}
+
+.pagination .page-item .page-link:hover
+{
+    color: var(--pagination-hover-color);
+    border-color: var(--pagination-hover-border-color);
+    background: var(--pagination-hover-bg);
+}
+
+.pagination .page-item.active .page-link
+{
+    color: var(--pagination-active-color);
+    border: 1px solid var(--pagination-active-border-color);
+    background: var(--pagination-active-bg);
+}
+
+/**********************************
+ ********** pagination small size **************
+ **********************************/
+.pagination.small-size .page-item .page-link
+{
+    font-size: 10px;
+    line-height: 23px;
+
+    min-width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.pagination.small-size .page-item .page-link.page-first:before
+{
+    margin-top: -4px;
+    margin-left: -3px;
+
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+}
+
+.pagination.small-size .page-item .page-link.page-first:after
+{
+    margin-top: -4px;
+    margin-left: -2px;
+
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+}
+
+.pagination.small-size .page-item .page-link.page-last:before
+{
+    margin-top: -4px;
+    margin-left: -2px;
+
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+}
+
+.pagination.small-size .page-item .page-link.page-last:after
+{
+    margin-top: -4px;
+    margin-left: -3px;
+
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+}
+
+/**********************************
+ ********** table top **************
+ **********************************/
+.table-top
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    margin-bottom: 22px;
+    padding-top: 23px;
+    padding-right: 28px;
+    padding-left: 33px;
+
+    justify-content: space-between;
+}
+
+.table-top .table-top-right
+{
+    display: flex;
+
+    width: 100%;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.table-top .table-top-left
+{
+    display: flex;
+
+    width: 100%;
+
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.table-top .table-top-right .pagination + .ui-select.default-style
+{
+    margin-left: 13px;
+}
+
+/**********************************
+ ********** table bottom **************
+ **********************************/
+.table-bottom
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+    // margin-bottom: 25px;
+
+    margin-bottom: 22px;
+    padding-top: 23px;
+    padding-right: 28px;
+    padding-left: 33px;
+
+    justify-content: space-between;
+}
+
+.table-bottom .table-bottom-right
+{
+    display: flex;
+
+    width: 100%;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.table-bottom .table-bottom-right .pagination + .ui-select.default-style
+{
+    margin-left: 13px;
+}
+
+/**********************************
+ ********** table data **************
+ **********************************/
+.table-data
+{
+    text-align: right;
+}
+
+.table-data .table-text
+{
+    font-family: var(--font-family-title);
+    font-size: 12px;
+
+    display: inline-block;
+
+    padding: 12px 19px 7px 10px;
+
+    color: var(--table-text-data-color);
+    border-bottom: 1px solid var(--table-text-data-border-color);
+}
+
+.table-data .table-text .title:after
+{
+    display: inline-block;
+
+    padding-right: 36px;
+    padding-left: 41px;
+
+    content: ':';
+}
+
+/**********************************
+ ********** table cell text-align **************
+ **********************************/
+.table-comp .table thead tr th.cell-check,
+.table-comp .table tbody tr td.cell-check,
+.table-comp .table thead tr th.cell-accordion,
+.table-comp .table tbody tr td.cell-accordion
+{
+    text-align: center;
+}
+
+.table-comp .table tbody tr td.cell-center
+{
+    text-align: center;
+}
+
+/**********************************
+ ********** table cell hover **************
+ **********************************/
+.cell-link:hover,
+.cell-selected
+{
+    cursor: pointer;
+
+    text-shadow: var(--table-cell-text-shadow);
+}

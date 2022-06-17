@@ -1,0 +1,79 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <div class="card-box">
+    <!-- tree-comp -->
+    <div class="tree-comp no-multi" data-single="true">
+      <div class="tree-header">
+        <h2 class="tree-title"><%= __("wirelessRadar|Sensor Tree") %></h2>
+      </div>
+      <div class="tree-search">
+        <div class="ui-search">
+          <div class="ui-input default-style"><input type="text" placeholder="<%= __("wirelessRadar|Search") %>"></div>
+          <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("wirelessRadar|Search") %></span></span></button>
+        </div>
+      </div>
+      <div class="tree high-size">
+        <button type="button" class="btn btn-tree-all"><%= __("wirelessRadar|Open all") %></button>
+        <!-- tree-empty -->
+        <div class="tree-empty">
+          <!-- empty -->
+          <div class="empty">
+            <div class="empty-box">
+              <div class="symbol symbol-empty">
+                <span class="symbol-icon question-style"></span>
+                <div class="symbol-figure empty-style"></div>
+              </div>
+              <p class="main-msg"><%= __("wirelessRadar|No data available") %></p>
+              <p class="sub-msg"><%= __("wirelessRadar|There is no data to show you right now") %></p>
+            </div>
+          </div>
+          <!-- //empty -->
+        </div>
+        <!-- //tree-empty -->
+      </div>
+    </div>
+    <!-- //tree-comp -->
+  </div>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/wireless/radarDetection/treelist', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  var treeData = <%- tree_groups %> || [];
+</script>
+<script>
+  var selectedItem = getState().sensor_id && { type:'sensor_id', value: getState().sensor_id };
+  tree('.tree-comp', {
+    data: treeData, selectedItem: selectedItem,selectCallback: function (data) {
+
+      // checkedIds, checkedId
+      const checkedId = data.checkedId;
+
+      const page = 1;
+      const sensor_id = checkedId.sensor_id;
+      const selectedTab = getState().selectedTab || 'AP';
+      const AP = getState().AP || {entries: 10, time: null, filter: null}
+      const Stationary = getState().Stationary || {entries: 10, time: null, filter: null}
+      const Bluetooth = getState().Bluetooth || {entries: 10, time: null, filter: null}
+
+      setState({
+        sensor_id: sensor_id,
+        AP: {...AP, page: 1},
+        Stationary: {...Stationary, page: 1},
+        Bluetooth: {...Bluetooth, page: 1},
+      });
+      requestTab(sensor_id, selectedTab);
+    }
+  });
+
+  var selectedTab = getState().selectedTab || 'AP';
+  var sensor_id = getState().sensor_id || null;
+  requestTab(sensor_id, selectedTab);
+</script>
+<% } %>

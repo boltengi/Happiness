@@ -1,0 +1,69 @@
+<script>
+  const requestList = (page, entries, filter) => {
+
+    const loading = openLoading($(`#listTable`), {size:'large', template: $('#listTable' + ' .search-area').length ? undefined: 'cardTableList', title: '<%= __("notificationNoti|Email alarm") %>', filter: false});
+
+    // // table
+    const condition = {
+      entries: entries,
+    };
+
+    if (filter) condition.filter = filter;
+
+    return fetch(`/notification/noti/${page}`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      return {
+        data: response.text(),
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(function(data){
+      const $listTable = $('#listTable .html-container').html(data);
+      return {isLoading: true}
+    })
+    .then(function (data) {
+      if(data.isLoading){
+        const $loadingParent = $('#listTable');
+        removeLoading($loadingParent);
+      }
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestUpdate = (dataValue) => {
+
+    fetch(`/notification/noti/notiupdate`, {
+      method: 'PUT',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(data){
+      if(data.status == 500){
+        return {data: data}
+      }
+      if(data.status == 200) {
+        return { data: data }
+      }
+    })
+    .then((data)=>{
+      return data.data.text();
+    })
+    .then((data)=>{
+      if(data) return;
+      alertModalControl('open', 'alertError', '<%= __("notificationNoti|Email alarm!") %>');
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+</script>

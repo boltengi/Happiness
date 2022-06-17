@@ -1,0 +1,580 @@
+<div class="card-body">
+  <div class="chart-divide-header top-spacing">
+    <div class="chart-header-right">
+      <!-- <div class="title-right-item">
+        <span class="ui-switch-label default-style"><%= __("wirelessRadar|On Off") %></span>
+        <div class="ui-switch default-style">
+          <input type="checkbox" name="switch0" id="switch0">
+          <label for="switch0"><span class="sr-only"><%= __("wirelessRadar|switch") %></span></label>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <div class="chart-divide-wrap">
+    <div class="chart-divide">
+      <div class="divide-inner loading-parent pick-parent" id="wireless1daytrends">
+        <div class="chart-network">
+          <div class="chart polar-chart">
+            <div class="chart-range">
+              <div class="chart-header">
+                <div class="range-title"><%= __("wirelessRadar|Vicinity sensing level") %></div>
+                <div class="ui-range default-style" data-width="200px" style="width: 200px;">
+                  <input type="range" min="-100" max="0" step="5" value="-100" list="rangeList" id="myPolarRange"/>
+                  <datalist id="rangeList">
+                    <option value="-100" data-text="-100">-100</option>
+                    <option value="-75" data-text="-75">-75</option>
+                    <option value="-50" data-text="-50">-50</option>
+                    <option value="-25" data-text="-25">-25</option>
+                    <option value="0" data-text="0">0</option>
+                  </datalist>
+                </div>
+                <div class="chart-legend-list info-style">
+                  <ul>
+                    <li>
+                      <div class="chart-legend">
+                        <span class="legend-title">
+                          <span class="icon-graph-legend data-style legend-alpha"></span>
+                          <%= __("wirelessRadar|AP") %>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="chart-legend">
+                        <span class="legend-title">
+                          <span class="icon-graph-legend data-style legend-beta"></span>
+                          <%= __("wirelessRadar|Stationary") %>
+                        </span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="chart-legend">
+                        <span class="legend-title">
+                          <span class="icon-graph-legend data-style legend-gamma"></span>
+                          <%= __("wirelessRadar|Bluetooth") %>
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="chart-y-axis" id="myPolarHighChartLine">
+                <div class="chart-line-box">
+                  <div class="chart-line-vertical">
+                    <span class="chart-line vertical-style" data-text="-100"></span>
+                    <span class="chart-line vertical-style" data-text="-50"></span>
+                    <span class="chart-line vertical-style" data-text="0"></span>
+                    <span class="chart-line vertical-style" data-text="-50"></span>
+                    <span class="chart-line vertical-style" data-text="-100"></span>
+                  </div>
+                  <div class="chart-line-horizontal">
+                    <span class="chart-line horizontal-style"></span>
+                  </div>
+                </div>
+              </div>
+              <div id="myPolarHighChart" class="chart-block"></div>
+            </div>
+            <div class="chart-info">
+              <span class="chart-term-text">(<%= __("wirelessRadar|Today") %>)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-divide">
+      <div class="divide-inner loading-parent pick-parent" id="wirelesstrends">
+        <div class="chart-trend">
+          <div class="chart-title"><%= __("wirelessRadar|Weekly trend") %></div>
+          <div class="chart-legend-list info-style">
+            <ul>
+              <li>
+                <div class="chart-legend">
+                  <span class="legend-title">
+                    <span class="icon-graph-legend collect-style legend-alpha"></span>
+                    <%= __("wirelessRadar|AP") %>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div class="chart-legend">
+                  <span class="legend-title">
+                    <span class="icon-graph-legend collect-style legend-beta"></span>
+                    <%= __("wirelessRadar|Stationary") %>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div class="chart-legend">
+                  <span class="legend-title">
+                    <span class="icon-graph-legend collect-style legend-gamma"></span>
+                    <%= __("wirelessRadar|Bluetooth") %>
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="chart">
+            <div id="myLineHighChart" class="chart-block"></div>
+          </div>
+          <div class="chart-info">
+            <span class="chart-term-text">(<%= __("wirelessRadar|Week") %>)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #myPolarHighChart {
+    width: 100%;
+    max-width: 615px;
+    height: 450px;
+  }
+  #myLineHighChart {
+    width: 100%;
+    max-width: 600px;
+    height: 320px;
+  }
+</style>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  formWidth();
+</script>
+<script>
+  var TIME = 3 * 60 * 1000;
+  // TEST CODE
+  // var TIME = 0.1 * 60 * 1000;
+  var myInterval = (cb, TIME) => {
+    let flag = true;
+    const tick = () => {
+      setTimeout(() => {
+        if(!flag) return;
+        cb().then((data)=>{
+          tick();
+        });
+      }, TIME);
+    }
+
+    cb().then((data)=>{
+      tick();
+    });
+    return () => { flag = false; }
+  }
+</script>
+
+<script>
+  var setWirelessTrends = (data) => {
+
+    logdata('/wireless/radarDetection/wirelessTrends', data);
+
+    const ObjView = data.ObjView;
+
+    const ObjViewAP = ObjView.map((element) => element.ap_cnt);
+
+    const ObjViewStationary = ObjView.map((element) => element.wifi_cnt);
+
+    const ObjViewBluetooth = ObjView.map((element) => element.bluetooth_cnt);
+
+    const ObjViewStatus = ObjView.map((element) => element.status);;
+
+    const graphDataAP = $.map(ObjViewAP, function(element, index){
+     return Number(element)
+    });
+
+    const graphDataStationary = $.map(ObjViewStationary, function(element, index){
+     return Number(element)
+    });
+
+    const graphDataBluetooth = $.map(ObjViewBluetooth, function(element, index){
+     return Number(element)
+    });
+
+    const graphDatastatus = $.map(ObjViewStatus, function(element, index){
+     return element
+    });
+
+    const category = $.map(graphDatastatus, function(element, index){
+      const date = Highcharts.dateFormat('%m-%d', new Date(element));
+      return date
+    });
+
+
+    // Create the chart
+    const myLineHighChart = Highcharts.chart('myLineHighChart', {
+      credits: {
+        enabled: false
+      },
+      chart: {
+        type: 'area',
+        zoomType: 'x'
+      },
+      title: {
+        text: undefined
+      },
+      xAxis: {
+        title: {
+          text: undefined
+        },
+        tickWidth: 0,
+        gridLineColor: '#E5E9ED',
+        gridLineWidth: 1,
+        labels: {
+          align: 'center',
+          x: 0,
+          y: 20,
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          }
+        },
+        categories: category,
+        tickmarkPlacement: 'on',
+      },
+      yAxis: {
+        title: {
+          text: undefined
+        },
+        min: 0,
+        tickInterval: 10,
+        gridLineColor: '#E5E9ED',
+        labels: {
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          },
+          format: '{value:,.0f}'
+        }
+      },
+      colors: ['#69C5B2','#FF638D','#4E76D4'],
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          fillOpacity: 0.2,
+          marker: {
+            symbol: 'circle',
+            fillColor: '#FFFFFF',
+            lineWidth: 1,
+            radius: 2,
+            lineColor: null // inherit from series
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      tooltip: {
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: {fontSize: '10px', color: '#fff'},
+          headerFormat: '',
+          pointFormat: '<span>- <%= __("wirelessRadar|Count") %>: {point.y}</span>'
+      },
+      series: [{
+        name: 'AP',
+        data: graphDataAP,
+        fillColor: {
+          linearGradient: {
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0.7
+          },
+          stops: [
+            [0, Highcharts.color('#69C5B2').setOpacity(0.5).get('rgba')],
+            [1, Highcharts.color('#69C5B2').setOpacity(0).get('rgba')]
+          ]
+        },
+      },
+      {
+        name: 'Stationary',
+        data: graphDataStationary,
+        fillColor: {
+          linearGradient: {
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0.7
+          },
+          stops: [
+            [0, Highcharts.color('#FF638D').setOpacity(0.5).get('rgba')],
+            [1, Highcharts.color('#FF638D').setOpacity(0).get('rgba')]
+          ]
+        },
+      },
+      {
+        name: 'Bluetooth',
+        data: graphDataBluetooth,
+        fillColor: {
+          linearGradient: {
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0.7
+          },
+          stops: [
+            [0, Highcharts.color('#4E76D4').setOpacity(0.5).get('rgba')],
+            [1, Highcharts.color('#4E76D4').setOpacity(0).get('rgba')]
+          ]
+        },
+      }]
+    });
+
+    return { isLoading : true }
+  };
+  var setWireless1daytrends = (data) => {
+
+    logdata('/wireless/radarDetection/wireless1dayTrends', data);
+
+    const sensor_name = $(`[data-sensor_id="${sensor_id}"]`).find('.item-text').text().trim();
+
+    const ObjView = data.ObjView;
+
+    const originGraphDataAP = ObjView.filter(function(element){
+      return element.asset_type == 'ap'
+    }).map(function(element, index){
+      return {x: index, y: element.power, name: element.asset_name, mac: element.mac}
+    });
+
+    const originGraphDataStationary = ObjView.filter(function(element){
+      return element.asset_type == 'stationary'
+    }).map(function(element, index){
+      return {x: index, y: element.power, name: element.asset_name, mac: element.mac}
+    });
+
+    const originGraphDataBluetooth = ObjView.filter(function(element){
+      return element.asset_type == 'bluetooth'
+    }).map(function(element, index){
+      return {x: index, y: element.power, name: element.asset_name, mac: element.mac}
+    });
+
+    (function(){
+      const deepCopy = (obj) => {
+        return $.extend(true, [], obj);
+      };
+      const setABS = (obj) => {
+        return deepCopy(obj).map((element, index, arr) => {
+          return {...element, y: element.y*-1}
+        });
+      };
+      const rangeFilter = (obj, standard = -100) => {
+        return deepCopy(obj).filter(element => element.y >= standard);
+      };
+
+      const drawGraph = (instanceGraph, originData, standard = -100) => {
+
+        // draw graph
+        const graphDataAP = setABS(rangeFilter(originData.ap, standard));
+        const graphDataStationary = setABS(rangeFilter(originData.stationary, standard));
+        const graphDataBluetooth = setABS(rangeFilter(originData.bluetooth, standard));
+        const max = standard*-1;
+
+        instanceGraph.yAxis[0].setExtremes(0, max);
+        instanceGraph.update({
+          series: [{
+            name: '<%= __("wirelessRadar|AP") %>',
+            data: graphDataAP
+          },
+          {
+            name: '<%= __("wirelessRadar|Stationary") %>',
+            data: graphDataStationary
+          },
+          {
+            name: '<%= __("wirelessRadar|Bluetooth") %>',
+            data: graphDataBluetooth
+          }]
+        });
+      }
+      const drawLine = (standard) => {
+        // draw line
+        $('#myPolarHighChartLine .chart-line.vertical-style').each(function(index){
+          const length = $('#myPolarHighChartLine .chart-line.vertical-style').length;
+          let text = 0;
+          switch(index){
+            case 0: text = standard; break;
+            case 1: text = standard/2; break;
+            case 2: text = 0; break;
+            case 3: text = standard/2; break;
+            case 4: text = standard; break;
+            default: text = 0; break;
+          }
+          $(this).attr('data-text', text);
+        });
+      }
+
+      $('#myPolarRange').off('change.range').on('change.range', function(){
+        const standard = $(this).val();
+        const originData = {ap: originGraphDataAP, stationary: originGraphDataStationary, bluetooth: originGraphDataBluetooth};
+        drawGraph(myPolarHighChart, originData,standard);
+        drawLine(standard);
+      });
+
+      const myPolarHighChart = Highcharts.chart('myPolarHighChart', {
+        credits: {
+          enabled: false
+        },
+        chart: {
+            polar: true,
+            type: 'scatter',
+            backgroundColor: 'transparent'
+        },
+
+        title: {
+            text: sensor_name,
+            verticalAlign: 'middle',
+            y: 20,
+            style: {'fontSize': '10px', 'color': '#4D4F5C'},
+        },
+
+        pane: {
+            size: '450px',
+        },
+
+        plotOptions: {
+            scatter: {
+                marker: { symbol: 'diamond' },
+
+            }
+        },
+
+        colors: ['#69C5B2', '#FF638D', '#4E76D4'],
+
+        xAxis: [{
+            labels: { enabled: false },
+            gridLineWidth: 0,
+            lineWidth: 0.5,
+            lineColor: '#B1B1B0',
+            category: []
+        }],
+
+        yAxis: {
+            labels: { enabled: false },
+            gridLineInterpolation: 'circle',
+            lineWidth: 0,
+            min: 0,
+            max: 100,
+            showLastLabel:true,
+            startOnTick :true,
+            endOnTick :false
+        },
+        tooltip: {
+            backgroundColor: 'rgba(177, 177 ,176, .7)',
+            borderColor: 'transparent',
+            shadow: false,
+            style: {fontSize: '10px', color: '#fff'},
+            headerFormat: '',
+            pointFormat: '<span>- {point.name}<br>- <%= __("wirelessRadar|Distance") %>: -{point.y}<br>- <%= __("wirelessRadar|MAC") %>:{point.mac}</span>'
+        },
+
+        legend: {
+            enabled: false,
+            floating: true,
+            align: 'right',
+            verticalAlign: 'top',
+            layout: 'vertical',
+            x: 0,
+            y: 0,
+            padding: 10,
+            backgroundColor: 'rgba(255,255,255,.8)',
+            borderWidth: 1,
+            borderRadius: 2,
+            borderColor: 'rgba(177,177,176,.8)',
+            itemStyle: {'fontSize': '12px', 'color': '#4D4F5C', 'fontWeight': 'normal'},
+            width: '128px'
+        },
+
+        series: [{
+          name: '<%= __("wirelessRadar|AP") %>',
+          data: []
+        },
+        {
+          name: '<%= __("wirelessRadar|Stationary") %>',
+          data: []
+        },
+        {
+          name: '<%= __("wirelessRadar|Bluetooth") %>',
+          data: []
+        }]
+      });
+
+      const originData = {ap: originGraphDataAP, stationary: originGraphDataStationary, bluetooth: originGraphDataBluetooth};
+      drawGraph(myPolarHighChart, originData);
+
+    })();
+
+    return { isLoading : true }
+  };
+</script>
+<script>
+  var sensor_id = getState().sensor_id || null;
+
+  if(sensor_id){
+    var wirelesstrendsData = requestWirelesstrends(sensor_id);
+
+    wirelesstrendsData
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data;
+    })
+    .then(setWirelessTrends)
+    .then((data)=>{
+      if(data.isLoading){
+        const $loadingParent = $('#wirelesstrends');
+        removeLoading($loadingParent);
+      }
+    });
+
+    // var wireless1daytrendsData = requestWireless1daytrends(sensor_id);
+    // wireless1daytrendsData
+    // .then((data)=>{
+    //   data.loading.setLoaded(true);
+    //   return data.data;
+    // })
+    // .then(setWireless1daytrends)
+    // .then((data)=>{
+    //   if(data.isLoading){
+    //     const $loadingParent = $('#wireless1daytrends');
+    //     removeLoading($loadingParent);
+    //   }
+    // });
+
+    requestWireless1daytrendsDataStopper = myInterval(() => {
+      const requestWireless1daytrendsData = requestWireless1daytrends(sensor_id);
+      return requestWireless1daytrendsData.then((data)=>{
+          data.loading.setLoaded(true);
+          return data.data;
+        })
+        .then(setWireless1daytrends)
+        .then((data)=>{
+          if(data.isLoading){
+            const $loadingParent = $('#wireless1daytrends');
+            removeLoading($loadingParent);
+
+            // maintain current range value
+            const currentVal = $('#myPolarRange').val();
+            $('#myPolarRange').val(currentVal).change()
+          }
+        });
+    }, TIME)
+
+    removePick($('#wireless1daytrends'));
+    removePick($('#wirelesstrends'));
+  }
+  else{
+    addPick($('#wireless1daytrends'),{mainMsg: "<%= __("wirelessRadar|Please select 'Sensor' in sensor tree") %>", subMsg: "<%= __("wirelessRadar|There is no data to show you right now.") %>"});
+    addPick($('#wirelesstrends'),{mainMsg: "<%= __("wirelessRadar|Please select 'Sensor' in sensor tree") %>", subMsg: "<%= __("wirelessRadar|There is no data to show you right now.") %>"});
+  }
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    formWidth();
+  });
+</script>
+<% } %>

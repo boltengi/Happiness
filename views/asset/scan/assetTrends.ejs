@@ -1,0 +1,176 @@
+<!-- card-box -->
+<article class="card-box">
+  <div class="card-header bottom-space">
+    <h2 class="card-title"><%= __("assetScan|Trends") %></h2>
+  </div>
+  <div class="card-body">
+    <!-- card-content -->
+    <div class="card-content">
+      <div class="pack">
+        <!-- cart-box -->
+        <div class="chart-box line-chart">
+          <div class="chart-title"><%= __("assetScan|Detected discover") %></div>
+          <div class="chart-change">
+            <div class="ui-select default-style medium-size" data-width="200px">
+              <select name="" id="trendsTime">
+                <option value="1" selected><%= __("assetScan|24 hour") %></option>
+                <option value="7"><%= __("assetScan|Last 7day") %></option>
+                <option value="30"><%= __("assetScan|Last 30day") %></option>
+              </select>
+            </div>
+          </div>
+          <div class="chart">
+            <div id="myLineHighChart"></div>
+          </div>
+        </div>
+        <!-- //chart-box -->
+      </div>
+    </div>
+    <!-- //card-content -->
+  </div>
+</article>
+<!-- //card-box -->
+
+<style>
+  #myLineHighChart {
+    width: 1450px;
+    height: 250px;
+  }
+</style>
+<script>
+  maintainState();
+</script>
+<script>
+  selectDropdown('.ui-select');
+  formWidth();
+</script>
+<script>
+  var aid = location.href.split('/')[location.href.split('/').length-1];
+  var time = getState().trendsTime || 1;
+  requestTrends(aid, time);
+</script>
+<script>
+  var drawGraphTrends = (data, time) => {
+
+    logdata('/asset/scan/assetTrends', data);
+
+    const ObjView = data.ObjView;
+
+    const graphData = $.map(ObjView, function(element, index){
+      const count = Number(element.count);
+      return [{name: element.status, y: count}]
+    });
+
+    const category = $.map(graphData, function(element, index){
+      if(time != 1) return Highcharts.dateFormat('%Y-%m-%d', new Date(element.name));
+      return Highcharts.dateFormat('%m-%d %H:%M', new Date(element.name));
+    });
+
+    Highcharts.chart('myLineHighChart', {
+      credits: {
+        enabled: false
+      },
+      chart: {
+        zoomType: 'x'
+      },
+      title: {
+        text: undefined
+      },
+      xAxis: {
+        title: {
+          text: undefined
+        },
+        tickWidth: 0,
+        gridLineColor: '#E5E9ED',
+        gridLineWidth: 1,
+        labels: {
+          align: 'center',
+          x: 0,
+          y: 20,
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          }
+        },
+        categories: category,
+        tickmarkPlacement: 'on'
+      },
+      yAxis: {
+        title: {
+          text: undefined
+        },
+        min: 0,
+        tickInterval: 10,
+        gridLineColor: '#E5E9ED',
+        labels: {
+          style: {
+            fontSize: '13px',
+            color: '#636461'
+          }
+        }
+      },
+      colors: ['#FF507C'],
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        pointFormat: '<span>{point.y}</span>',
+        padding: 4
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 0.7
+            },
+            stops: [
+              [0, Highcharts.color('#FF507C').setOpacity(0.5).get('rgba')],
+              [1, Highcharts.color('#FF507C').setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            radius: 2,
+            lineColor: '#FF507C',
+            fillColor: '#ffffff'
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      series: [{
+        type: 'area',
+        data: graphData,
+        states: {
+          hover: false
+        },
+        lineWidth: 1,
+        marker: {
+          radius: 3, lineColor: '#FF507C',lineWidth: 1, fillColor: '#ffffff', states: {hover: {enabled: false}}
+        }
+      }]
+    });
+  }
+</script>
+
+<script>
+  // time 변경
+  $('#trendsTime').off('change.trendsTime').on('change.trendsTime', function(){
+    const aid = location.href.split('/')[location.href.split('/').length-1];
+    const time = $(this).find('option:selected').val() || 1;
+    setState({trendsTime: time});
+    requestTrends(aid, time);
+  });
+</script>

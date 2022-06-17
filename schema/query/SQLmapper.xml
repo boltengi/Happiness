@@ -1,0 +1,1933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="searchMapper">
+  <select id="searchProbe">
+    SELECT read_time, firsttimeseen, lasttimeseen,
+      probe.sensorid, coalesce(sensorname.name, 'N/A') AS sensorname, stationmac, power, packets, bssid
+    FROM
+      probe LEFT OUTER JOIN (SELECT sensor_id, name FROM sensor) sensorname on (sensorname.sensor_id = probe.sensorid)
+    WHERE <![CDATA[ read_time >= #{startTime}::timestamp and read_time < #{endTime}::timestamp ]]>
+  </select>
+</mapper>
+
+<mapper namespace="API">
+  <select id="assetList">
+    SELECT aid, gid, sensor_id, group_name, sensor_name, name, ip, status, allowed, model, manufacturer, type, mac, os, count(idx) OVER() FROM (
+    SELECT distinct aid, sensor_id, sensor_name, gid, name, ip, status, allowed, model, manufacturer, type, mac, os FROM (
+    SELECT a.idx AS aid, s.sensor_id AS sensor_id, s.sensor_name, a.gid AS gid, a.name, a.ip, a.status, a.allowed, a.model, a.manufacturer, a.type, a.mac, a.os
+    FROM asset AS a
+    JOIN sensor AS s ON s.sensor_id = a.sensor_id) AS a,
+    sensor_group AS g) AS s,
+    sensor_group AS g WHERE g.idx=s.gid
+    <if test="strFilter != null and strFilter != ''"> AND (${strFilter}) </if>
+    <if test='limit != null'>ORDER BY aid DESC LIMIT ${limit} OFFSET ${offset} </if>
+  </select>
+</mapper>
+
+<!-- Column Size Check -->
+<mapper namespace="input">
+  <select id="columnSize">
+    SELECT column_name, data_type, character_maximum_length
+    FROM information_schema.columns
+    WHERE table_name = #{table_name}
+  </select>
+</mapper>
+
+<mapper namespace="threat">
+  <insert id="threatInsert">
+    INSERT INTO event_comp_threat(read_time, end_time, category, asset_ip, sensor_id, severity, solution, contraction_count)
+    VALUES
+    (#{read_time}, #{end_time}, ${category}, '-', #{sensor_id}, 3, #{data}, 1)
+  </insert>
+</mapper>
+
+<mapper namespace="audit">
+  <insert id="audit_history">
+    INSERT INTO audit_history(time, title, subtitle, action, email, ip, result, note)
+    VALUES
+    (#{today}, #{title}, #{subtitle}, #{action}, #{email}, #{ip}, #{result}, #{note})
+  </insert>
+</mapper>
+
+<!-- Administration -->
+<mapper namespace="admin">
+  <!-- VULN -->
+  <select id="vulnerabilityCodeCount">
+    SELECT codetype, count(*) FROM vulnerability WHERE codetype NOT LIKE 'CNVD' AND codetype NOT LIKE 'CNNVD' GROUP BY codetype
+  </select>
+  <!-- VULN END -->
+
+  <!-- USERS -->
+  <select id="userList">
+    SELECT *, count(*) OVER() FROM users WHERE idx=idx
+    <if test='role > 0'>AND idx = ${uid}</if>
+    <if test="strFilter != null and strFilter != ''"> AND ${strFilter} </if>
+    <if test='limit != null'><![CDATA[ ORDER BY idx < ${uid}, idx ASC LIMIT ${limit} OFFSET ${offset} ]]></if>
+  </select>
+
+  <select id="userSearch">
+    SELECT * FROM users
+    <if test='role > 0'>WHERE
+      <if test='email != null'>email = #{email}</if>
+      <if test='uid != null'>uid = #{uid}</if>
+    </if>
+  </select>
+
+  <select id="useridSearch">
+    SELECT * FROM users WHERE name = #{name}
+  </select>
+
+  <insert id="userInsert">
+    INSERT INTO users( name, email, password, salt, company, role, notification )
+    VALUES( #{name}, #{email}, #{password}, #{salt}, #{company}, #{role}, ARRAY[${notification}] )
+  </insert>
+
+  <delete id="userDelete">
+	   DELETE FROM users WHERE idx IN ('${uid}');
+  </delete>
+
+  <update id="userHistory">
+    UPDATE users SET last_login = #{last_login} WHERE email = #{email}
+  </update>
+
+  <update id="userUpdate">
+    UPDATE users SET idx=idx
+    <if test='company != null'>, company = #{company} </if>
+    <if test='name != null'>, name = #{name} </if>
+    <!-- <if test='email != null'>, email = #{email} </if> -->
+    <if test='password != null'>, password = #{password} </if>
+    <if test='notification != null'>, notification = ARRAY[${notification}] </if>
+    <if test='salt != null'>, salt = #{salt} </if>
+    <if test='role != null'>, role = #{role} </if>
+    WHERE idx = ${uid}
+  </update>
+  <!-- USERS END -->
+
+  <!-- USERS_GROUP -->
+  <insert id="groupTableInsert">
+    INSERT INTO users_group ( user_id, group_id, role ) VALUES (
+    ${uid},
+    <if test='group_name != null'>(SELECT idx FROM sensor_group WHERE group_name = #{group_name} AND parent = #{parent}),</if>
+    <if test='group_name == null'>1,</if>
+	  (SELECT role FROM users WHERE idx = ${uid}))
+  </insert>
+
+  <select id="groupTableList">
+    SELECT * FROM users_group WHERE user_id = #{user_id} ORDER BY idx ASC
+  </select>
+
+  <select id="usersGroupList">
+    SELECT distinct u.idx, u.name, u.role, ug.group_id FROM
+    users_group AS ug, users AS u WHERE u.idx = ug.user_id
+  </select>
+  <!-- USERS_GROUP END -->
+
+  <!-- SENSOR -->
+  <select id="sensorSearch">
+      SELECT * FROM sensor
+      <if test='strQuery == null'> WHERE sensor_id = #{sensor_id}</if>
+      <if test='strQuery != null'> ${strQuery}</if>
+  </select>
+
+  <select id="sensorVersion">
+      SELECT * FROM sensor ORDER BY "version" DESC limit 1
+  </select>
+
+  <select id="sensorStatus">
+    SELECT status, count(*) count FROM sensor GROUP BY status
+  </select>
+
+  <select id="sensorGroupSearch">
+      SELECT
+          s.idx,
+          s.sensor_id,
+          s.sensor_ip,
+          s.sensor_name,
+          s.sensor_type,   /* 2020-09-16 추가 */
+          s.desc,
+          s.iso,
+          s.local_time_setting,
+          s.include,
+          s.exclude,
+          s.status,
+          s.version,
+          s.regtime,
+          s.uptime,
+          s.last_connected_time,
+          s.cest,
+          s.location,
+          s.serial_number,
+          g.group_name
+        FROM sensor AS s
+        JOIN sensor_group g
+          ON s.gid=g.idx
+       WHERE s.sensor_id = #{sensor_id}
+  </select>
+
+  <select id="sensorRecordSearch">
+    SELECT *, count(idx) OVER() FROM sensor_record
+    <if test='sensor_id != null'>WHERE sensor_id = #{sensor_id}</if>
+    <if test='sensor_id == null'>ORDER BY status, idx ASC LIMIT ${limit} OFFSET ${offset}</if>
+  </select>
+
+  <select id="sensorAllList">
+    SELECT * FROM sensor
+    <if test='sensor_type != null'>WHERE sensor_type = #{sensor_type}</if>
+  </select>
+
+  <select id="sensorRecordAllList">
+    SELECT * FROM sensor_record
+    <if test='sensor_type != null'>WHERE sensor_type = #{sensor_type}</if>
+  </select>
+
+  <select id="sensorList">
+    SELECT idx, sensor_id, gid, sensor_name, status, unauthorised_block FROM sensor WHERE gid = 0 ${group_id}
+  </select>
+
+  <insert id="sensorInsert">
+    INSERT INTO sensor
+    (
+      idx, sensor_id, sensor_ip, sensor_name, sensor_type, gid, version, regtime, uptime, status, last_connected_time, last_update_time,
+      asset_schedule, bluetooth_schedule, wireless_schedule, vulnerability_schedule, asset_detection_status, bluetooth_detection_status, wireless_detection_status,
+      vulnerability_detection_status, vulnerability_block, vulnerability_block_level, unauthorised_block, iso, local_time_setting, cest, include, exclude, "desc", location,
+      serial_number
+    ) VALUES (
+      default, #{sensor_id}, #{sensor_ip}, #{sensor_name}, ${sensor_type}, ${gid}, '', #{regtime}, 0, 0, #{regtime}, #{regtime},
+      10, 10, 10, 12, false, false, false,
+      false, false, 3, false, #{iso}, #{local_time_setting}, #{cest}, #{include}, #{exclude}, #{desc}, #{location},
+      <if test='sensor_type == 1'> #{sensor_id}</if>
+      <if test='sensor_type == 0'>(SELECT serial_number FROM serial_number WHERE sensor_id = #{sensor_id})</if>
+    )
+  </insert>
+
+  <delete id="sensorDelete">
+	   DELETE FROM sensor WHERE sensor_id IN ('${sensor_id}');
+  </delete>
+
+  <delete id="dataDeleteAsset">
+    <if test='sensor_id != ""'>DELETE FROM asset WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM asset WHERE idx IN ('${asset_idx}');</if>
+  </delete>
+  <delete id="dataDeleteAssetUrl">
+    <if test='sensor_id != ""'>DELETE FROM url_asset_list WHERE sensor_id IN ('${sensor_id}');</if>
+  </delete>
+  <delete id="dataDeleteBlock">
+    <if test='sensor_id != ""'>DELETE FROM block_asset_list WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM block_asset_list WHERE asset_mac IN (SELECT bal.asset_mac FROM block_asset_list as bal, asset as ass WHERE bal.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteBlue">
+    <if test='sensor_id != ""'>DELETE FROM bluetooth WHERE sensor_id IN ('${sensor_id}');</if>
+  </delete>
+  <delete id="dataDeleteDiff">
+    <if test='sensor_id != ""'>DELETE FROM diffscan WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM diffscan WHERE mac IN (SELECT dif.mac FROM diffscan as dif, asset as ass WHERE dif.mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteDis">
+    <if test='sensor_id != ""'>DELETE FROM discover WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM discover WHERE mac IN (SELECT dis.mac FROM discover as dis, asset as ass WHERE dis.mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteEventAsset">
+    <if test='sensor_id != ""'>DELETE FROM event_asset WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_asset WHERE asset_mac IN (SELECT ea.asset_mac FROM event_asset as ea, asset as ass WHERE ea.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteEventThreat">
+    <if test='sensor_id != ""'>DELETE FROM event_threat WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_threat WHERE asset_mac IN (SELECT et.asset_mac FROM event_threat as et, asset as ass WHERE et.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteEventVuln">
+    <if test='sensor_id != ""'>DELETE FROM event_vulnerability WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_vulnerability WHERE asset_mac IN (SELECT ev.asset_mac FROM event_vulnerability as ev, asset as ass WHERE ev.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteCompAsset">
+    <if test='sensor_id != ""'>DELETE FROM event_comp_asset WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_comp_asset WHERE asset_mac IN (SELECT eca.asset_mac FROM event_comp_asset as eca, asset as ass WHERE eca.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteCompThreat">
+    <if test='sensor_id != ""'>DELETE FROM event_comp_threat WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_comp_threat WHERE asset_mac IN (SELECT ect.asset_mac FROM event_comp_threat as ect, asset as ass WHERE ect.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteCompVuln">
+    <if test='sensor_id != ""'>DELETE FROM event_comp_vulnerability WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM event_comp_vulnerability WHERE asset_mac IN (SELECT ecv.asset_mac FROM event_comp_vulnerability as ecv, asset as ass WHERE ecv.asset_mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteFuzz">
+    <if test='sensor_id != ""'>DELETE FROM fuzz WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM fuzz WHERE mac IN (SELECT fuz.mac FROM fuzz as fuz, asset as ass WHERE fuz.mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeleteMal">
+    <if test='sensor_id != ""'>DELETE FROM malware WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM malware WHERE mac IN (SELECT mal.mac FROM malware as mal, asset as ass WHERE mal.mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+  <delete id="dataDeletePro">
+    <if test='sensor_id != ""'>DELETE FROM probe WHERE sensor_id IN ('${sensor_id}');</if>
+  </delete>
+  <delete id="dataDeleteSta">
+    <if test='sensor_id != ""'>DELETE FROM station WHERE sensor_id IN ('${sensor_id}');</if>
+  </delete>
+  <delete id="dataDeleteVuln">
+    <if test='sensor_id != ""'>DELETE FROM vulnscan WHERE sensor_id IN ('${sensor_id}');</if>
+    <if test='asset_idx != ""'>DELETE FROM vulnscan WHERE mac IN (SELECT vul.mac FROM vulnscan as vul, asset as ass WHERE vul.mac = ass.mac AND ass.idx IN ('${asset_idx}'))</if>
+  </delete>
+
+  <insert id="sensorRecordInsert">
+    INSERT INTO sensor_record ( sensor_id, status, gid, regtime, cest, sensor_type, serial_number
+    <if test='sensor_ip != null'>, sensor_ip</if>
+    )
+    VALUES ( #{sensor_id}, -1, 1, #{connection_time}, false, ${sensor_type}, (SELECT serial_number FROM serial_number WHERE sensor_id = #{sensor_id})
+    <if test='sensor_ip != null'>, #{sensor_ip}</if>
+    )
+  </insert>
+
+  <delete id="sensorRecordDelete">
+	   DELETE FROM sensor_record WHERE sensor_id IN ('${sensor_id}');
+  </delete>
+
+  <update id="sensorRecordUpdate">
+    UPDATE sensor_record SET regtime = #{connection_time} WHERE sensor_id = #{sensor_id}
+  </update>
+
+  <update id="sensorUpdate">
+    UPDATE sensor AS s
+    <if test='group_name == null'>SET idx=idx</if>
+    <if test='group_name != null'>SET idx=s.idx, gid = g.idx </if>
+
+    <if test='sensor_name != null'>, sensor_name = #{sensor_name} </if>
+    <if test='sensor_type != null'>, sensor_type = ${sensor_type}</if>
+    <if test='gid != null'>, gid = #{gid} </if>
+    <if test='version != null'>, version = #{version} </if>
+    <if test='sensor_status != null'>, sensor_status = ${sensor_status} </if>
+    <if test='regtime != null'>, regtime = #{regtime} </if>
+    <if test='last_connected_time != null'>, last_connected_time = #{last_connected_time} </if>
+    <if test='last_update_time != null'>, last_update_time = #{last_update_time} </if>
+    <if test='asset_schedule != null'>, asset_schedule = #{asset_schedule} </if>
+    <if test='wireless_schedule != null'>, wireless_schedule = #{wireless_schedule} </if>
+    <if test='bluetooth_schedule != null'>, bluetooth_schedule = #{bluetooth_schedule} </if>
+    <if test='asset_detection_status != null'>, asset_detection_status = #{asset_detection_status} </if>
+    <if test='bluetooth_detection_status != null'>, bluetooth_detection_status = #{bluetooth_detection_status} </if>
+    <if test='vulnerability_detection_status != null'>, vulnerability_detection_status = #{vulnerability_detection_status} </if>
+    <if test='wireless_detection_status != null'>, wireless_detection_status = #{wireless_detection_status} </if>
+    <if test='vulnerability_schedule != null'>, vulnerability_schedule = #{vulnerability_schedule} </if>
+    <if test='vulnerability_block != null'>, vulnerability_block = #{vulnerability_block} </if>
+    <if test='vulnerability_block_level != null'>, vulnerability_block_level = #{vulnerability_block_level} </if>
+    <if test='unauthorised_block != null'>, unauthorised_block = #{unauthorised_block} </if>
+    <if test='local_time_setting != null'>, local_time_setting = #{local_time_setting} </if>
+    <if test='cest != null'>, cest = #{cest} </if>
+    <if test='iso != null'>, iso = #{iso} </if>
+    <if test='include != null'>, include = #{include} </if>
+    <if test='exclude != null'>, exclude = #{exclude} </if>
+    <if test='desc != null'>, "desc" = #{desc} </if>
+    <if test='location != null'>, "location" = #{location} </if>
+
+    <if test='group_name == null'>WHERE ${strQuery} </if>
+    <if test='group_name != null'> FROM sensor_group AS g WHERE g.group_name = #{group_name} AND ${strQuery} </if>
+  </update>
+
+  <delete id="sensorBlockVulnDelete">
+    DELETE FROM block_asset_list WHERE idx IN
+    (SELECT bal.idx FROM sensor AS sen, block_asset_list AS bal WHERE sen.vulnerability_block = false AND sen.sensor_id = bal.sensor_id AND bal.rules = 1)
+  </delete>
+
+  <update id="sensorStatusUpdate">
+    UPDATE sensor
+    SET version = #{version}, uptime = #{uptime}, last_update_time = #{last_update_time}, status=1, last_connected_time = #{last_connected_time}
+    <if test='sensor_ip != null'>
+      , sensor_ip = #{sensor_ip}
+    </if>
+    WHERE sensor_id = #{sensor_id}
+  </update>
+
+  <select id="sensorPolicySelect">
+    SELECT asset_schedule, wireless_schedule, bluetooth_schedule, vulnerability_schedule,
+    asset_detection_status, bluetooth_detection_status, wireless_detection_status, vulnerability_detection_status,
+    vulnerability_block, vulnerability_block_level, unauthorised_block, include, exclude, sensor_type
+    FROM sensor
+    WHERE sensor_id = #{sensor_id}
+  </select>
+  <!-- SENSOR END -->
+
+  <!-- SENSOR BLOCK -->
+  <select id="sensorBlockList">
+    SELECT *, count(idx) OVER()
+    FROM block_asset_list
+    WHERE sensor_id = #{sensor_id}
+    <if test='limit != null'>
+      ORDER BY idx DESC LIMIT ${limit} OFFSET ${offset}
+    </if>
+  </select>
+  <!-- SENSOR BLOCK END -->
+
+  <!-- SENSOR_GROUP -->
+  <select id="groupSearch">
+    SELECT * FROM sensor_group WHERE
+    <if test='group_name != null'>group_name = #{group_name}</if>
+    <if test='gid != null'> idx = ${gid}</if>
+  </select>
+
+  <update id="groupUpdate">
+    UPDATE sensor_group SET parent =  ${parent}, group_name =  #{group_name}, "desc" = #{desc}
+    WHERE idx = ${gid}
+  </update>
+
+  <select id="groupList">
+      SELECT distinct on(s.idx)
+           s.idx
+          ,s.parent
+          ,s.group_name
+          ,s.desc
+          <if test='role > 0'>
+          , u.user_id
+          , u.group_id
+          , u.role
+          </if>
+         FROM sensor_group AS s
+      <if test='role > 0'>
+         JOIN users_group AS u
+         ON  s.idx = u.group_id
+         AND u.user_id = #{user_id}
+      </if>
+       ORDER BY s.idx ASC
+  </select>
+
+  <update id="groupAddUserid">
+    UPDATE sensor SET version = #{version}, uptime = #{uptime}, last_update_time = #{last_update_time}, status=1, last_connected_time = #{last_connected_time}
+    WHERE sensor_id = #{sensor_id}
+  </update>
+
+  <insert id="groupDefaultInsert">
+    INSERT INTO sensor_group values (1, 0, 'IoT Care', null)
+  </insert>
+
+  <select id="groupGidList">
+    <if test='role == 0 or sensor_idx != ""'>
+      SELECT idx, parent_name, group_name, "desc", count FROM (
+      SELECT g2.idx, g1.parent_name AS parent_name, g2.group_name, g2.desc, count(g1.idx) OVER()
+      FROM
+      (SELECT idx, group_name as parent_name FROM sensor_group) AS g1,
+      (SELECT idx, group_name, parent, "desc" FROM sensor_group WHERE idx = idx
+      <if test="sensor_idx != null and sensor_idx != ''"> AND idx IN (SELECT gid FROM sensor WHERE idx IN ('${sensor_idx}')) </if>
+      <if test="group_idx != null and group_idx != ''"> OR idx IN ('${group_idx}') </if>
+      ) AS g2
+      WHERE g1.idx = g2.parent ORDER BY idx ASC
+      <if test='limit != null'>LIMIT ${limit} OFFSET ${offset}</if>
+      ) AS sen_group
+      <if test="strFilter != null and strFilter != ''"> WHERE ${strFilter} </if>
+    </if>
+  </select>
+
+  <delete id="groupDelete">
+    DELETE FROM sensor_group WHERE ${strQuery}
+  </delete>
+
+  <delete id="userGroupDelete">
+    DELETE FROM users_group WHERE ${strQuery}
+  </delete>
+
+  <insert id="groupInsert">
+    INSERT INTO sensor_group (parent, group_name, "desc") VALUES( #{parent}, #{group_name}, #{desc} )
+  </insert>
+
+  <select id="treeList">
+    WITH recursive cte (idx, parent, group_name) AS (SELECT idx, parent, group_name FROM sensor_group
+    <if test='role > 0'>WHERE parent = #{group_id} or idx = #{group_id}</if>
+    <if test='role == 0'>WHERE parent = 1 or idx = 1</if>
+    union SELECT r.idx, r.parent, r.group_name FROM sensor_group r
+    INNER JOIN cte on r.parent = cte.idx) SELECT * FROM cte
+  </select>
+
+  <select id="treeGidList">
+    WITH recursive cte (idx, parent, group_name) AS
+    (SELECT idx, parent, group_name FROM sensor_group
+    WHERE parent = 0 ${group_id}
+    UNION
+    SELECT r.idx, r.parent, r.group_name FROM sensor_group r
+    INNER JOIN cte on cte.parent = r.idx) SELECT * FROM cte ORDER BY parent ASC
+  </select>
+
+  <select id="sensorGidList">
+    <if test='role == 0 or sensor_idx != "" or gid != ""'>
+        SELECT s.idx,s.status,s.sensor_id,s.sensor_ip,s.sensor_name,s.sensor_type,s.gid,group_name,s.regtime,s.uptime,
+            s.last_connected_time,s.asset_schedule,s.wireless_schedule,s.bluetooth_schedule,s.vulnerability_schedule,
+            s.asset_detection_status,s.bluetooth_detection_status,s.wireless_detection_status,s.vulnerability_detection_status,
+            s.vulnerability_block,s.vulnerability_block_level,s.unauthorised_block,s.serial_number,count(s.idx) OVER()
+          FROM (
+                SELECT s.idx,s.status,s.sensor_id,s.sensor_ip,s.sensor_name,s.sensor_type,s.gid,g.group_name,s.regtime,s.uptime,
+                      s.last_connected_time,s.asset_schedule,s.wireless_schedule,s.bluetooth_schedule,s.vulnerability_schedule,
+                      s.asset_detection_status,s.bluetooth_detection_status,s.wireless_detection_status,s.vulnerability_detection_status,
+                      s.vulnerability_block,s.vulnerability_block_level,s.unauthorised_block,s.serial_number
+                  FROM sensor AS s
+                  JOIN sensor_group AS g
+                    ON g.idx = s.gid
+                    <if test='sensor_type != null and sensor_type != ""'>
+                      AND s.sensor_type = ${sensor_type}
+                    </if>
+                    <if test='sensor_idx != ""'>AND s.idx IN ('${sensor_idx}')</if>
+                    <if test='gid != ""'>AND s.gid IN ('${gid}')</if>
+                    <if test='fromDate != "" and toDate != ""'><![CDATA[ AND regtime >= timestamp #{fromDate} AND regtime < timestamp #{toDate} ]]></if>
+                    <if test='role == 0'>
+                UNION ALL
+                SELECT   s.idx,s.status,s.sensor_id,s.sensor_ip,s.sensor_name,s.sensor_type,s.gid,g.group_name,s.regtime,s.uptime,
+                      s.last_connected_time,s.asset_schedule,s.wireless_schedule,s.bluetooth_schedule,s.vulnerability_schedule,
+                      s.asset_detection_status,s.bluetooth_detection_status,s.wireless_detection_status,s.vulnerability_detection_status,
+                      s.vulnerability_block,s.vulnerability_block_level,s.unauthorised_block,s.serial_number
+                  FROM sensor_record AS s
+                  JOIN sensor_group AS g
+                    ON g.idx = s.gid
+                    <if test='sensor_type != null and sensor_type != ""'>
+                      AND s.sensor_type = ${sensor_type}
+                    </if>
+                    </if>) AS s
+                    <if test="strFilter != null and strFilter != ''"> WHERE ${strFilter} </if>
+                 ORDER BY
+                  CASE
+                    WHEN status = '-1' THEN 1
+                    ELSE 2
+                  END, idx ASC
+                  LIMIT ${limit} OFFSET ${offset}
+    </if>
+  </select>
+
+  <select id="sensorTargetList">
+    SELECT sg.group_name, sen.sensor_name, sen.sensor_id
+    FROM sensor AS sen, sensor_group AS sg
+    WHERE sensor_type = ${sensor_type} AND sen.gid = sg.idx
+    <if test='role > 0'> AND sen.sensor_id in ('${sensor_id}')</if>
+  </select>
+
+  <select id="assetTargetList">
+    SELECT sg.group_name, ass.name, ass.ip, ass.mac
+    FROM asset AS ass, sensor AS sen, sensor_group AS sg
+    WHERE sen.sensor_id = ass.sensor_id AND sensor_type = ${sensor_type}
+    AND ass.gid = sg.idx
+    <if test='role > 0'> AND sen.sensor_id in ('${sensor_id}')</if>
+  </select>
+
+  <!-- <select id="sensorDetailList">
+    SELECT (select count(*) from asset where sensor_id = s.sensor_id) as asset,
+    s.idx, s.sensor_id, s.sensor_name,s.gid, g.group_name, s.version,
+    s.regtime,s.uptime,s.status, s.last_connected_time,s.last_update_time,
+    s.asset_schedule,s.wireless_schedule,s.bluetooth_schedule,
+    s.asset_detection_status, s.bluetooth_detection_status, s.wireless_detection_status,
+    s.vulnerability_detection_status,s.vulnerability_schedule,s.vulnerability_block,
+    s.vulnerability_block_level,s.unauthorised_block,s.local_time_setting,
+    s.include,s.exclude,s.desc,
+    count(s.idx) OVER()
+    FROM sensor AS s
+    JOIN sensor_group AS g ON g.idx = s.gid ${strQuery}
+    ORDER BY s.idx DESC LIMIT ${limit} OFFSET ${offset}
+  </select> -->
+  <!-- SENSOR_GROUP END -->
+
+  <!-- ASSET -->
+  <select id="assetSearch">
+    SELECT * FROM asset WHERE mac = #{asset_mac} AND sensor_id = #{sensor_id}
+  </select>
+
+  <select id="assetStatus">
+    <!-- SELECT ass.status, count(ass.*) count
+    FROM asset AS ass, (SELECT idx, gid, sensor_id, sensor_name from sensor) AS sen, sensor_group AS g
+    WHERE sen.sensor_id = ass.sensor_id AND g.idx=sen.gid
+    <if test='sensor_idx != ""'> AND sen.idx IN ('${sensor_idx}') </if>
+    <if test='gid != ""'>AND sen.gid IN ('${gid}')</if>
+    <if test="strFilter != null and strFilter != ''"> AND (${strFilter}) </if>
+    GROUP BY ass.status -->
+    SELECT status, count(*) count FROM (
+    SELECT distinct sensor_name, aid, gid, status, ip, name, allowed, mac FROM (
+    SELECT s.sensor_name, a.idx AS aid, a.gid AS gid, a.status, a.ip, a.name, a.allowed, a.mac
+    FROM asset AS a
+    JOIN sensor AS s ON s.sensor_id = a.sensor_id
+    <if test='sensor_idx != ""'> AND s.idx IN ('${sensor_idx}') </if>
+    ) AS a,
+    sensor_group AS g
+    <if test='gid != ""'>where a.gid IN ('${gid}')</if>
+    ) AS s,
+    sensor_group AS g WHERE g.idx=s.gid
+    <if test="strFilter != null and strFilter != ''"> AND (${strFilter}) </if>
+    GROUP BY status
+  </select>
+
+  <select id="assetStatusList">
+    SELECT name, status FROM asset WHERE sensor_id = #{sensor_id}
+  </select>
+
+  <select id="assetPrinterSearch">
+    SELECT * FROM asset WHERE type='Printer' AND sensor_id = #{sensor_id}
+  </select>
+
+  <select id="assetBlockSearch">
+    SELECT bal.* FROM block_asset_list AS bal, sensor AS sen
+    WHERE bal.sensor_id = #{sensor_id} AND bal.asset_ip IS NOT NULL and bal.asset_mac IS NOT NULL
+    AND (sen.unauthorised_block = true AND bal.rules = 2 OR sen.vulnerability_block = true AND bal.rules = 1) AND bal.sensor_id = sen.sensor_id
+  </select>
+
+  <update id="assetIpUpdate">
+    UPDATE asset SET ip = ass.afterip FROM (
+    SELECT distinct dis.mac AS aftermac, ass.sensor_id, ass.mac, dis.ip AS afterip, ass.ip  FROM discover AS dis, asset AS ass
+    WHERE dis.read_time > now() - interval '10 minute' AND ass.mac = dis.mac AND ass.ip != dis.ip AND dis.sensor_id = ass.sensor_id ) AS ass
+    WHERE asset.mac = ass.aftermac AND asset.sensor_id = ass.sensor_id
+  </update>
+
+  <update id="assetUpdate">
+    UPDATE asset SET idx=idx
+    <if test='sensorupdate == 0'>, regstatus = 0 </if>
+    <if test='gid != null'>, gid = #{gid} </if>
+    <if test='sensorupdate == 0'>
+      <if test='sensor_id != null'>, sensor_id = #{sensor_id} </if>
+    </if>
+
+    <if test='sensorupdate != 1'>
+      <if test='asset_name != null'>, name = #{asset_name} </if>
+      <if test='asset_ip != null'>, ip = #{asset_ip} </if>
+      <if test='asset_mac != null'>, mac = #{asset_mac} </if>
+      <if test='asset_type != null'>, type = #{asset_type} </if>
+      <if test='asset_manufacturer != null'>, manufacturer = #{asset_manufacturer} </if>
+      <if test='asset_model != null'>, model = #{asset_model} </if>
+      <if test='asset_allowed != null'>, allowed = ${asset_allowed} </if>
+      WHERE idx = ${aid} </if>
+    <if test='sensorupdate == 1'> WHERE sensor_id = #{sensor_id} </if>
+  </update>
+
+  <delete id="assetBlockUnauthDelete">
+    DELETE FROM block_asset_list WHERE idx IN
+    (SELECT bal.idx FROM asset AS ass, block_asset_list AS bal WHERE ass.allowed = 1 AND ass.mac = bal.asset_mac AND ass.sensor_id = bal.sensor_id AND bal.rules = 2)
+  </delete>
+
+  <select id="assetDetail">
+     SELECT * FROM asset WHERE idx = #{aid}
+  </select>
+
+  <insert id="assetInsert">
+    INSERT INTO asset (gid, sensor_id, ip, mac, name, manufacturer, "type", model, allowed, status, os, regtime, regtype, regstatus)
+    <if test='schedule == 0'> VALUES ( ${gid}, #{sensor_id}, #{asset_ip}, #{asset_mac}, #{asset_name}, #{asset_manufacturer}, #{asset_type}, #{asset_model}, 1, 1, 'Unknown', #{regtime}, 1, 0);</if>
+    <if test='schedule > 0'> SELECT gid, sensor_id, ip, mac, name, manuf, type, 'Unknown' AS model, allowed, 1 AS status, os,
+      to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS regtime, 0 AS regtype, 1 AS regstatus FROM (
+      SELECT distinct on (mac) *, row_number() over (partition by mac, type) AS row FROM (
+      SELECT distinct on (mac, type) dis.sensor_id, max(dis.ip) AS ip, max(dis.ip) AS name, dis.mac, dis.port AS port, max(dis.manufacturer) AS manuf,
+      CASE WHEN dis.port between 9099 AND 9107 OR dis.port = 35 OR dis.port = 515 OR dis.port = 631 OR dis.port = 2081
+      OR dis.port = 2291 OR dis.port = 3396 OR dis.port = 3910 OR dis.port = 3911
+      OR dis.port = 4007 OR dis.port = 5309 OR dis.port = 5548 OR dis.port = 7777
+      OR dis.port = 8609 OR dis.port = 9100 OR dis.port = 22370 THEN 'Printer'
+      ELSE 'Unknown' END AS "type", sen.gid AS gid,
+      1 AS allowed, dis.os FROM discover dis LEFT OUTER JOIN
+      (SELECT sensor_id, mac FROM asset) ass on (ass.mac = dis.mac AND ass.sensor_id = dis.sensor_id),
+      (SELECT sensor_id, gid FROM sensor) AS sen
+      WHERE dis.read_time > now() - interval '10 minute' AND ass.mac is null AND sen.sensor_id = dis.sensor_id
+      GROUP BY gid, dis.sensor_id, dis.mac, dis.port, dis.os) AS a) AS b GROUP BY gid,sensor_id, mac, ip, name, manuf, model, type, allowed, os</if>
+  </insert>
+
+  <insert id="assetUrlInsert">
+    INSERT INTO asset (gid, sensor_id, ip, mac, name, manufacturer, "type", model, allowed, status, os, regtime, regtype, regstatus)
+    SELECT sen.gid, ual.sensor_id, split_part(list.asset_unset, ',', 1) AS asset_ip, split_part(list.asset_unset, ',', 2) AS asset_mac,
+    split_part(list.asset_unset, ',', 1) AS asset_name, 'Unknown' AS manufacturer, 'Unknown' AS type, 'Unknown' AS model, 1 AS allowed,
+    1 AS status, 'Unknown' AS os, ual.regtime, 0 AS regtype, 1 AS regstatus FROM url_asset_list AS ual, sensor AS sen,
+    (SELECT unnest(string_to_array(asset_list, '|')) as asset_unset FROM url_asset_list) AS list
+    WHERE sen.sensor_id = ual.sensor_id AND split_part(list.asset_unset, ',', 1) != '' AND split_part(list.asset_unset, ',', 2) != ''
+    AND ual.regtime > now() - interval '10 minute'
+    AND NOT EXISTS (SELECT mac FROM asset WHERE mac = split_part(list.asset_unset, ',', 2))
+  </insert>
+
+  <select id="assetCount">
+    SELECT distinct aid, sid,sensor_name, gid, name, ip, status, allowed, manufacturer, type, mac FROM (
+    SELECT a.idx AS aid, s.idx AS sid, s.sensor_name, a.gid AS gid, a.name, a.ip, a.status, a.allowed, a.manufacturer, a.type, a.mac
+    FROM asset AS a
+    JOIN sensor AS s ON s.sensor_id = a.sensor_id) AS a,
+    sensor_group AS g
+    ${strQuery}
+  </select>
+
+  <select id="assetGidList">
+    SELECT aid, gid, sid, group_name, sensor_name, name, ip, status, allowed, model, manufacturer, type, mac, regstatus, count(idx) OVER() FROM (
+    SELECT distinct aid, sid,sensor_name, gid, name, ip, status, allowed, model, manufacturer, type, mac, regstatus FROM (
+    SELECT a.idx AS aid, s.idx AS sid, s.sensor_name, a.gid AS gid, a.name, a.ip, a.status, a.allowed, a.model, a.manufacturer, a.type, a.mac, a.regstatus
+    FROM asset AS a
+    JOIN sensor AS s ON s.sensor_id = a.sensor_id
+    <if test='fromDate != "" and toDate != ""'><![CDATA[ AND a.regtime >= timestamp #{fromDate} AND a.regtime < timestamp #{toDate} ]]></if>
+    ) AS a,
+    sensor_group AS g
+    <if test='aid != ""'>where a.aid IN ('${aid}')</if>
+    <if test='gid != ""'>where a.gid IN ('${gid}')</if>
+    <if test='sensor_idx != ""'>AND a.sid IN ('${sensor_idx}')</if>
+    ) AS s,
+    sensor_group AS g WHERE g.idx=s.gid
+    <if test="strFilter != null and strFilter != ''"> AND (${strFilter}) </if>
+    <if test='limit != null'>ORDER BY aid, sid DESC LIMIT ${limit} OFFSET ${offset} </if>
+  </select>
+
+  <select id="assetMacDBUpdate_type">
+    UPDATE asset SET type = mc.type
+    FROM (SELECT * FROM mac_db) AS mc WHERE substring(asset.mac, 0, 13) = substring(mc.mac, 0, 13)
+    AND asset.type = 'Unknown'
+  </select>
+
+  <select id="assetMacDBUpdate_model">
+    UPDATE asset SET model = mc.model
+    FROM (SELECT * FROM mac_db) AS mc WHERE substring(asset.mac, 0, 13) = substring(mc.mac, 0, 13)
+    AND asset.model = 'Unknown'
+  </select>
+
+  <select id="assetMacDBUpdate_manu">
+    UPDATE asset SET manufacturer = mc.manufacturer
+    FROM (SELECT * FROM mac_db) AS mc WHERE substring(asset.mac, 0, 13) = substring(mc.mac, 0, 13)
+    and asset.manufacturer = 'Unknown'
+  </select>
+
+  <select id="assetOUIUpdate">
+    UPDATE asset SET manufacturer = ou.manufacturer
+    FROM (SELECT * FROM oui_db) AS ou WHERE substring(asset.mac, 0, 9) = ou.mac
+    AND asset.manufacturer = 'Unknown'
+  </select>
+<!--
+  <update id="assetTypeUpdate">
+    UPDATE asset SET
+    type=CASE
+    WHEN mac='4A:8D:A3:3D:60:8C' THEN 'CCTV'
+    WHEN mac='70:5D:CC:9B:12:52' THEN 'AP'
+    WHEN mac='E4:30:22:0A:F4:8F' THEN 'CCTV'
+    WHEN mac='C0:F4:E6:56:45:36' THEN 'AP'
+    WHEN mac='50:D2:F5:72:87:94' THEN 'AP'
+    WHEN mac='54:CD:EE:06:1D:9B' THEN 'CCTV'
+    WHEN mac='88:36:6C:FE:D5:45' THEN 'Laptop'
+    WHEN mac='96:90:68:E2:EB:F3' THEN 'Sensor'
+    WHEN mac='00:48:E1:1C:61:A1' THEN 'CCTV'
+    WHEN mac='7C:2A:31:8B:7F:A4' THEN 'Laptop'
+    WHEN mac='88:36:6C:89:89:80' THEN 'AP'
+    WHEN mac='B4:B6:76:C0:32:CB' THEN 'Laptop'
+    WHEN mac='2E:28:6D:1F:54:DE' THEN 'Sensor'
+    ELSE 'Unknown' END
+  </update> -->
+
+  <select id="assetRegtime">
+    SELECT * FROM asset WHERE type='Printer' AND sensor_id = #{sensor_id}
+  </select>
+  <!-- ASSET END -->
+
+  <!-- AUDIT -->
+  <select id="auditList">
+    SELECT *, count(*) OVER() FROM audit_history WHERE idx=idx
+    <if test='role > 0'>AND email = #{email}</if>
+    <if test="strFilter != null and strFilter != ''"> AND ${strFilter} </if>
+    <![CDATA[ AND time >= timestamp #{fromDate} AND time < timestamp #{toDate} ]]>
+    <if test='limit != null'>ORDER BY idx DESC LIMIT ${limit} OFFSET ${offset}</if>
+  </select>
+  <!-- AUDIT END -->
+</mapper>
+<!-- Administration END -->
+
+<!-- Report -->
+<mapper namespace="report">
+  <select id="assetTypeTotal">
+    SELECT assTotal.type, assTotal.count AS totalCount, assreg.count AS regCount FROM (
+    SELECT type, count(type)
+    FROM asset
+    WHERE sensor_id in ('${sensor_id}')
+    GROUP BY type, type ORDER BY count desc) AS assTotal LEFT OUTER JOIN
+    (SELECT type, count(type)
+    FROM asset
+    <![CDATA[ where regtime >= timestamp #{from} AND regtime < timestamp #{to} ]]>
+    AND sensor_id in ('${sensor_id}')
+    GROUP BY type, type ORDER BY count desc) AS assreg
+    on assTotal.type = assreg.type
+  </select>
+
+  <select id="assetTypeDate">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    asset_type,
+    case when ass.count > 0 then ass.count else 0 end AS count
+    FROM date_series AS ds LEFT OUTER JOIN
+    (SELECT COUNT(*) AS count,
+     case when type IN ('${asset_type}') then type else 'ETC' end AS asset_type,
+     to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD') AS regtime
+    FROM asset
+     WHERE sensor_id in ('${sensor_id}')
+    GROUP BY to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD'), asset_type) AS ass
+    on (ds.date = ass.regtime)
+    GROUP BY date, ass.asset_type, ass.count ORDER BY date asc
+  </select>
+
+  <select id="threatCategoryDate">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    case when ect.category > 0 then ect.category else 0 end AS category,
+    case when ect.count > 0 then ect.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime, category, COUNT(*) AS count
+    FROM event_comp_threat WHERE <![CDATA[ category > 2 ]]>
+    AND sensor_id in ('${sensor_id}')
+    GROUP BY category, endtime ORDER BY endtime DESC ) AS ect
+    on (ds.date = ect.endtime)
+    GROUP BY date, ect.count, ect.category ORDER BY date asc
+  </select>
+
+  <select id="threatList">
+    <!-- SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime,
+    category, sen.sensor_name, '-' as asset_type, '-' as asset_name, '-' as asset_ip, action, count(*) FROM event_comp_threat AS ect, sensor AS sen
+    WHERE <![CDATA[ end_time >= timestamp #{from} AND end_time < timestamp #{to} ]]>
+    AND <![CDATA[ category > 2 ]]> AND ect.sensor_id = sen.sensor_id
+    AND ect.sensor_id in ('${sensor_id}')
+    GROUP BY endtime, category, sen.sensor_name, asset_type, asset_name, asset_ip, action
+    ORDER BY endtime asc -->
+
+    SELECT distinct category, endtime, ect_sen.sensor_name,
+    CASE WHEN ect_sen.asset_ip = '-' THEN 'Unknown' ELSE ass.type END AS asset_type,
+    CASE WHEN ect_sen.asset_ip = '-' THEN '-' ELSE ass.name END AS asset_name,
+    asset_ip, action, count FROM (
+    SELECT ect.asset_ip, sen.sensor_name, to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime, category, ect.action, count(ect.asset_ip) FROM event_comp_threat AS ect, sensor AS sen
+       WHERE <![CDATA[ end_time >= timestamp #{from} AND end_time < timestamp #{to} ]]>
+        AND ect.sensor_id = sen.sensor_id
+        AND ect.sensor_id in ('${sensor_id}')
+        GROUP BY ect.asset_ip, sen.sensor_name, endtime, ect.action, category ORDER BY endtime ASC
+    ) AS ect_sen, asset AS ass
+    WHERE (ect_sen.asset_ip = ass.ip OR ect_sen.asset_ip = '-')
+  </select>
+
+  <select id="vulnSeverityDate">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    case when ev.severity > 0 then ev.severity else 0 end AS severity,
+    case when ev.count > 0 then ev.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime, severity, COUNT(*) AS count
+    FROM event_comp_threat WHERE <![CDATA[ category < 3 ]]>
+     AND sensor_id in ('${sensor_id}')
+    GROUP BY severity, endtime ORDER BY endtime DESC ) AS ev
+    on (ds.date = ev.endtime)
+    GROUP BY date, ev.count, ev.severity ORDER BY date asc
+  </select>
+
+  <select id="vulnCodeList">
+    SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime,
+    vulnerability_code, severity,
+    category, sen.sensor_name, asset_name, action, count(*) FROM event_comp_vulnerability AS ecv, sensor AS sen
+    WHERE <![CDATA[ end_time >= timestamp #{from} AND end_time < timestamp #{to} ]]>
+    AND <![CDATA[ category < 3 ]]> AND ecv.sensor_id = sen.sensor_id
+     AND ecv.sensor_id in ('${sensor_id}')
+    GROUP BY endtime, vulnerability_code, severity, category, sen.sensor_name, asset_name, action
+    ORDER BY endtime asc
+  </select>
+</mapper>
+<!-- Report END -->
+
+<!-- Dashboard -->
+<mapper namespace="dashboard">
+  <select id="assetActivity">
+    WITH date_series AS
+  	(SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    case when ass.regtype > 0 then ass.regtype else 0 end AS regtype,
+    case when ass.count > 0 then ass.count else 0 end AS count
+    FROM date_series AS ds LEFT OUTER JOIN
+    (SELECT COUNT(*) AS count, regtype,to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD') AS regtime
+    FROM asset
+    <if test='role > 0'> WHERE gid in ('${gid}')</if>
+    GROUP BY to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD'),regtype) AS ass
+    on (ds.date = ass.regtime)
+    GROUP BY date, ass.regtype, ass.count ORDER BY date asc
+  </select>
+
+  <select id="sensorDisconnection">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date, case when sen.count > 0 then sen.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT COUNT(*) AS count, readtime FROM(
+    select ea.sensor_id, to_timestamp(to_char(read_time,'YYYY-MM-DD'), 'YYYY-MM-DD') as readtime from event_asset as ea, sensor as sen
+    WHERE category = 2
+    AND ea.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    AND <![CDATA[ read_time >= timestamp #{daysAgo} AND read_time < timestamp #{today} ]]> GROUP BY ea.sensor_id, readtime) AS s GROUP BY readtime) AS sen
+    on (ds.date = sen.readtime)
+    GROUP BY date, sen.count ORDER BY date asc
+  </select>
+
+  <select id="sensorRegistration">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date, case when sen.count > 0 then sen.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT COUNT(*) AS count, to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD') AS regtime
+    FROM sensor
+    <if test='role > 0'> WHERE gid in ('${gid}')</if>
+    GROUP BY to_timestamp(to_char(regtime,'YYYY-MM-DD'), 'YYYY-MM-DD')) AS sen
+    on (ds.date = sen.regtime)
+    GROUP BY date, sen.count ORDER BY date asc
+  </select>
+
+  <select id="sensorTotal">
+    SELECT count(*) FROM sensor WHERE <![CDATA[ regtime < #{daysAgo} ]]>
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+  </select>
+
+  <select id="assetList">
+    SELECT ass.idx AS aid, sen.idx AS sid, ass.name, ass.status FROM asset AS ass, sensor AS sen WHERE ass.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND sen.sensor_id in ('${sensor_id}')</if>
+  </select>
+
+  <select id="vulnSeverity">
+    WITH date_series AS
+  	(SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today},'1 day')) AS date)
+    SELECT date,
+    case when ev.severity > 0 then ev.severity else 0 end AS severity,
+    case when ev.count > 0 then ev.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime, severity, COUNT(*) AS count
+    FROM event_comp_vulnerability as ecv, sensor as sen
+    WHERE <![CDATA[ category < 3 ]]>
+    AND ecv.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    GROUP BY severity, endtime ORDER BY endtime DESC ) AS ev
+    on (ds.date = ev.endtime)
+    GROUP BY date, ev.count, ev.severity ORDER BY date asc
+  </select>
+
+  <select id="vulnAssetSeverity">
+    SELECT severity, count(asset_mac) FROM (
+    SELECT distinct asset_mac, severity FROM event_comp_vulnerability as ecv, sensor as sen
+    WHERE <![CDATA[ end_time >= timestamp #{daysAgo} AND end_time < timestamp #{today} ]]>
+    AND ecv.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    ) AS ss GROUP BY severity ORDER BY severity asc
+  </select>
+
+  <select id="vulnAssetTotal">
+    SELECT asset_mac, COUNT(*) AS count
+    FROM event_comp_vulnerability as ecv, sensor as sen
+    WHERE end_time > now() - interval '7 day'
+    AND asset_mac IS NOT NULL
+    AND ecv.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    GROUP BY asset_mac ORDER BY count DESC limit 5
+  </select>
+
+  <select id="vulnAssetSeverityTop">
+    SELECT ev.severity, ass.name, count FROM asset AS ass, (
+    SELECT sensor_id, severity, asset_mac, COUNT(*) AS count
+    FROM event_comp_vulnerability WHERE end_time > now() - interval '7 day'
+    AND asset_mac in ('${asset_mac}')
+    GROUP BY sensor_id, severity, asset_mac ) AS ev
+    WHERE ev.asset_mac = ass.mac AND ev.sensor_id = ass.sensor_id
+  </select>
+
+  <select id="vulnAssetTop">
+    SELECT vulnerability_code, "desc", count(name) FROM (
+    SELECT vulnerability_code, "desc", ass.name
+    FROM event_comp_vulnerability AS ecv, asset AS ass
+    WHERE ecv.asset_mac = ass.mac AND end_time > now() - interval '7 day'
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    GROUP BY vulnerability_code, "desc", asset_mac, ass.name) AS vuln
+    GROUP BY vulnerability_code, "desc"
+    ORDER BY count DESC limit 5
+  </select>
+
+  <select id="vulnServiceTotal">
+    SELECT service_name, count(*) FROM vulnscan as vul, sensor as sen
+    WHERE service_name NOT LIKE 'unknown' AND service_name NOT LIKE 'Unknown'
+    AND end_time > now() - interval '7 day'
+    AND vul.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    GROUP BY service_name
+    ORDER BY count DESC limit 5
+  </select>
+
+  <select id="vulnServiceTop">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    vuln.service_name,
+    case when vuln.count > 0 then vuln.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT to_timestamp(to_char(end_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS endtime, service_name, COUNT(*)
+    FROM vulnscan WHERE service_name NOT LIKE 'unknown' AND service_name NOT LIKE 'Unknown'
+    AND service_name in ('${service_name}')
+    GROUP BY to_char(end_time,'YYYY-MM-DD'), service_name ORDER BY endtime DESC) AS vuln
+    on (ds.date = vuln.endtime)
+    GROUP BY date, vuln.service_name, vuln.count ORDER BY date asc
+  </select>
+
+  <select id="threatLasted">
+    SELECT * FROM
+    (SELECT DISTINCT ON(sensor_name, sensor_id, category) max(end_time) AS endtime, sen.sensor_name, ecv.sensor_id, category
+    FROM event_comp_threat as ecv, sensor as sen
+    WHERE category > 2 and ecv.sensor_id = sen.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    AND ecv.sensor_id = sen.sensor_id
+    GROUP BY sen.sensor_name, ecv.sensor_id, category) AS ecv
+    ORDER BY endtime DESC LIMIT 5
+  </select>
+
+  <select id="threatLastedTime">
+    WITH date_series AS
+    (SELECT DATE(generate_series(DATE #{daysAgo}, DATE #{today}, '1 day')) AS date)
+    SELECT date,
+    et.sensor_name,
+    case when et.category > 0 then et.category else 0 end AS category,
+    case when et.count > 0 then et.count else 0 end AS count
+    FROM
+    date_series AS ds LEFT OUTER JOIN
+    (SELECT to_timestamp(to_char(read_time,'YYYY-MM-DD'), 'YYYY-MM-DD') AS readtime, category, sen.sensor_name, COUNT(*) AS count
+    FROM event_comp_threat AS ect, sensor AS sen WHERE category > 2 AND ect.sensor_id in ('${sensor_id}')
+    AND ect.sensor_id = sen.sensor_id
+    GROUP BY category, readtime, sen.sensor_name ORDER BY readtime DESC ) AS et
+    on (ds.date = et.readtime)
+    GROUP BY date, et.count, et.category, et.sensor_name ORDER BY date asc
+  </select>
+
+  <select id="blockLasted">
+    SELECT bal.rules, ass.name, bal.regtime FROM block_asset_list AS bal, asset AS ass
+    WHERE bal.asset_mac = ass.mac AND bal.sensor_id = ass.sensor_id
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    ORDER BY bal.regtime DESC limit 5
+  </select>
+</mapper>
+<!-- Dashboard END-->
+
+<!-- Feedbar START -->
+<mapper namespace="feedbar">
+  <select id="assetFeedbar">
+    WITH num_series AS
+    (SELECT generate_series(0, 1) AS categorys)
+    SELECT ds.categorys,
+    case when count is null then 0 else count end AS count
+    FROM num_series AS ds LEFT OUTER JOIN
+    (SELECT category, count(*) FROM
+    (SELECT *, count(*) OVER() FROM event_comp_asset AS eca, sensor AS sen WHERE action is null
+    and eca.sensor_id = sen.sensor_id AND end_time > now() - interval '7 day'
+    <if test='role > 0'> AND sen.gid in ('${gid}')</if>
+    ) AS eca GROUP BY category) AS eca2
+    on (eca2.category = ds.categorys)
+  </select>
+
+  <!-- <select id="sensorDiscover">
+    select *, count(*) OVER() from (
+    select idx, sensor_id, status, regtime from sensor
+    where regtime > now() - interval '1 day'
+    <if test='role > 0'> and sensor_id in ('${sensor_id}')</if>
+    union all
+    select idx, sensor_id, status, regtime from sensor_record) as sen
+  </select> -->
+
+  <select id="sensorDiscover">
+    SELECT count(*) FROM sensor
+    WHERE regtime > now() - interval '7 day'
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+  </select>
+
+  <select id="sensorDisconnected">
+    SELECT *, count(*) OVER() FROM event_comp_asset AS eca, sensor AS sen
+    WHERE action is null AND category = 2 AND eca.sensor_id = sen.sensor_id
+    AND end_time > now() - interval '7 day'
+    <if test='role > 0'> AND gid in ('${gid}')</if>
+    ORDER BY end_time DESC
+  </select>
+
+  <select id="vulnFeedbar">
+    WITH num_series AS
+    (SELECT generate_series(0, 2) AS categorys)
+    SELECT ds.categorys,
+    case when count is null then 0 else count end AS count
+    FROM num_series AS ds LEFT OUTER JOIN
+    (SELECT category, count(*) FROM
+    (SELECT *, count(*) OVER() FROM event_comp_vulnerability AS ecv, sensor AS sen WHERE action is null
+    and ecv.sensor_id = sen.sensor_id AND end_time > now() - interval '7 day'
+    <if test='role > 0'> AND sen.gid in ('${gid}')</if>
+    ) AS ecv GROUP BY category) AS ecv2
+    on (ecv2.category = ds.categorys)
+  </select>
+
+  <select id="threatFeedbar">
+    WITH num_series AS
+    (SELECT generate_series(3, 7) AS categorys)
+    SELECT ds.categorys,
+    case when count is null then 0 else count end AS count
+    FROM num_series AS ds LEFT OUTER JOIN
+    (SELECT category, count(*) FROM
+    (SELECT *, count(*) OVER() FROM event_comp_threat AS ect, sensor AS sen WHERE action is null
+    and ect.sensor_id = sen.sensor_id AND end_time > now() - interval '7 day'
+    <if test='role > 0'> AND sen.gid in ('${gid}')</if>
+    ) AS ect GROUP BY category) AS ect2
+    on (ect2.category = ds.categorys)
+  </select>
+</mapper>
+<!-- Feedbar END-->
+
+<!-- Event START -->
+<mapper namespace="event">
+  <insert id="eventDisAssetInsert">
+    INSERT INTO event_asset
+    (sensor_id, read_time, end_time, asset_ip, asset_mac, asset_name, asset_type, asset_model, asset_manufacturer, category, severity, allowed, solution, note, contraction_count)
+    SELECT distinct sen.sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+  	to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time, ass.ip,
+  	ass.mac, ass.name, ass.type, ass.model, ass.manufacturer, 1 AS category,
+  	0 AS severity, ass.allowed, 'Please check the device.' AS solution, 'Disconnection' as note, 1 AS contraction_count
+  	FROM asset AS ass, sensor AS sen WHERE ass.status = 0 AND ass.sensor_id = sen.sensor_id
+  </insert>
+
+  <insert id="eventNewAssetInsert">
+    INSERT INTO event_asset
+    (sensor_id, read_time, end_time, asset_ip, asset_mac, asset_name, asset_type, asset_model, asset_manufacturer, category, severity, allowed, solution, contraction_count)
+    SELECT distinct on (asset_mac) * FROM (
+    SELECT distinct on (asset_mac, type) sen.sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+    to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time,
+    max(dis.ip) AS asset_ip, dis.mac AS asset_mac, max(dis.ip) AS asset_name,
+    CASE WHEN dis.port between 9099 AND 9107 OR dis.port = 35 OR dis.port = 515 OR dis.port = 631 OR dis.port = 2081
+    OR dis.port = 2291 OR dis.port = 3396 OR dis.port = 3910 OR dis.port = 3911
+    OR dis.port = 4007 OR dis.port = 5309 OR dis.port = 5548 OR dis.port = 7777
+    OR dis.port = 8609 OR dis.port = 9100 OR dis.port = 22370 THEN 'Printer'
+    ELSE 'Unknown' END AS "type", '-' AS asset_model, max(dis.manufacturer) AS asset_manufacturer,
+    0 AS category, 0 AS severity, 1 AS allowed, 'New device discover' AS solution, 1 AS contraction_count
+    FROM discover dis LEFT OUTER JOIN
+    (SELECT sensor_id, mac FROM asset) ass on (ass.mac = dis.mac AND ass.sensor_id = dis.sensor_id),
+    (SELECT sensor_id, sensor_name, gid, local_time_setting FROM sensor) AS sen
+    WHERE dis.read_time > now() - interval '10 minute' AND ass.mac is  null AND sen.sensor_id = dis.sensor_id
+    GROUP BY sen.sensor_id, asset_mac, dis.port, dis.os, local_time_setting) AS a
+  </insert>
+
+  <insert id="eventDisSensorInsert">
+    INSERT INTO event_asset
+    (sensor_id, read_time, end_time, asset_ip, asset_mac, asset_name, asset_type, asset_model, asset_manufacturer, category, severity, allowed, solution, note, contraction_count)
+    SELECT distinct sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+    to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time, '-' AS asset_ip,
+    '-' AS asset_mac, '-' AS asset_name, '-' AS asset_type, '-' AS asset_model, '-' AS asset_manufacturer, 2 AS category,
+    0 AS severity, 1 AS allowed, 'Please check the Sensor.' AS solution, 'Disconnection' as note, 1 AS contraction_count
+    FROM sensor WHERE status = 0
+  </insert>
+
+  <select id="sensorEventUpdate">
+    UPDATE event_comp_asset SET note = null
+    WHERE sensor_id = #{sensor_id} AND asset_ip ='-' AND read_time > now() - interval '10 minute'
+  </select>
+
+  <select id="assetEventUpdate">
+    <!-- UPDATE event_comp_asset SET note = null
+    WHERE sensor_id in (select sensor_id from asset where status = 1)
+    AND asset_ip in (select ip from asset where status = 1)
+    AND asset_mac in (select mac from asset where status = 1)
+    AND read_time > now() - interval '10 minute' -->
+
+    UPDATE event_comp_asset AS eca set note = null FROM discover AS dis
+    WHERE eca.sensor_id = dis.sensor_id AND eca.asset_mac = dis.mac
+    AND eca.read_time > now() - interval '10 minute'
+    AND dis.read_time > now() - interval '10 minute'
+  </select>
+
+  <insert id="eventVulnInsert">
+    INSERT INTO event_comp_vulnerability
+    (sensor_id, read_time, end_time, category, vulnerability_code, vulnerability_type, vulnerability_manufacturer, asset_name, asset_ip, asset_type, asset_mac, severity, "desc",  solution, contraction_count, note)
+    SELECT distinct sen.sensor_id, read_time, fuzz.end_time,
+    (case vuln.codetype
+    when 'ZeroDay' then 0
+    when 'CVE' then 1
+    when 'OneDay' then 2 end) AS category,
+    fuzz.cve_name AS vulnerability_code,
+    vulnp.type AS vulnerability_type, vulnp.manuf AS vulnerability_manufacturer,
+    ass.name AS asset_name, ass.ip AS asset_ip, ass.type AS asset_type, ass.mac AS asset_mac,
+    vuln.severity, vuln.desc, vuln.response AS solution, 1 AS contraction_count, vulnp.firmware_version AS note
+    FROM
+    (SELECT * FROM fuzz WHERE read_time > now() - interval '10 minute' AND response IS NOT NULL AND response NOT LIKE '%Not%' AND response NOT LIKE '%Unknown%' AND response NOT LIKE '%method%' AND response NOT LIKE '%wifi%') AS fuzz, asset AS ass, sensor AS sen, vulnerability AS vuln,
+    (SELECT code,
+    array_to_string(array_agg(distinct(type)), ',') AS type,
+    array_to_string(array_agg(distinct(firmware_version)), ',') AS firmware_version,
+    array_to_string(array_agg(distinct(manuf)), ',') AS manuf FROM vulnerability_product, (SELECT * FROM fuzz
+    WHERE read_time > now() - interval '10 minute' AND response IS NOT NULL AND response NOT LIKE '%Not%' AND response NOT LIKE '%Unknown%' AND response NOT LIKE '%method%' AND response NOT LIKE '%wifi%' ) AS fuzz
+    WHERE code = fuzz.cve_name GROUP BY code) AS vulnp
+    WHERE fuzz.mac = ass.mac AND vulnp.code = fuzz.cve_name AND vuln.code = fuzz.cve_name AND fuzz.sensor_id = sen.sensor_id
+  </insert>
+
+  <select id="eventAssetList">
+    <!-- SELECT sen.sensor_name, eca.*, count(*) OVER() FROM event_comp_asset AS eca, sensor AS sen WHERE
+    <if test="strQuery != null and strQuery != ''">(${strQuery}) AND </if>
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    <if test='gid != null or role > 0'>AND gid IN ('${gid}')</if>
+    AND eca.sensor_id = sen.sensor_id
+    <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+    <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset} -->
+
+    SELECT eca2.idx, eca2.sensor_id, eca2.asset_mac, ass.name as asset_name, eca2.read_time, eca2.end_time, eca2.sensor_name, eca2.category, eca2.allowed, eca2.severity, eca2.action, count(*) OVER()  FROM (
+    SELECT sen.sensor_name, eca.* FROM (
+    SELECT * from event_comp_asset WHERE
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    	) AS eca, sensor AS sen
+    	WHERE eca.sensor_id = sen.sensor_id
+      <if test='gid != null or role > 0'>AND gid IN ('${gid}')</if>) as eca2
+    	LEFT OUTER JOIN (SELECT sensor_id, mac, name FROM asset) ass ON (ass.sensor_id = eca2.sensor_id AND eca2.asset_mac = ass.mac)
+      WHERE (ass.mac IS NOT NULL or eca2.category = 2)
+      <if test="strQuery != null and strQuery != ''">AND (${strQuery}) </if>
+    	GROUP BY eca2.idx, eca2.sensor_id, eca2.asset_mac, ass.name, eca2.read_time, eca2.end_time, eca2.sensor_name, eca2.category, eca2.allowed, eca2.severity, eca2.action
+      <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+      <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset}
+  </select>
+
+  <select id="eventVulnList">
+    <!-- SELECT sen.sensor_name, ecv.*, count(*) OVER() FROM event_comp_vulnerability AS ecv, sensor AS sen WHERE
+    <if test="strQuery != null and strQuery != ''">(${strQuery}) AND </if>
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    <if test='gid != null or role > 0'>AND sen.gid IN ('${gid}')</if>
+    AND ecv.sensor_id = sen.sensor_id
+    <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+    <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset} -->
+
+    SELECT ecv2.idx, ecv2.category, ecv2.vulnerability_code, ecv2.sensor_id, ecv2.asset_mac, ass.name as asset_name, ecv2.read_time, ecv2.end_time, ecv2.sensor_name, ecv2.category,
+    ecv2.severity, ecv2.action, count(*) OVER()  FROM (
+    SELECT sen.sensor_name, ecv.* FROM (
+    SELECT * from event_comp_vulnerability WHERE
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+      ) AS ecv, sensor AS sen
+      WHERE ecv.sensor_id = sen.sensor_id
+      <if test='gid != null or role > 0'>AND gid IN ('${gid}')</if>) as ecv2
+      LEFT OUTER JOIN (SELECT sensor_id, mac, name FROM asset) ass ON (ass.sensor_id = ecv2.sensor_id AND ecv2.asset_mac = ass.mac)
+      WHERE ass.mac IS NOT NULL
+      <if test="strQuery != null and strQuery != ''">AND (${strQuery}) </if>
+      GROUP BY ecv2.idx, ecv2.category, ecv2.vulnerability_code, ecv2.sensor_id, ecv2.asset_mac, ass.name, ecv2.read_time, ecv2.end_time, ecv2.sensor_name, ecv2.category,
+      ecv2.severity, ecv2.action
+      <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+      <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset}
+  </select>
+
+  <select id="eventThreatList">
+    <!-- SELECT ect.idx, ect.sensor_name, ass.name, ass.ip, ect.read_time, ect.end_time, ect.category, ect.severity, ect.action, ect.solution, count(*) OVER() from (
+    SELECT sen.sensor_name, ect.* from event_comp_threat AS ect, sensor AS sen
+    WHERE ect.sensor_id = sen.sensor_id
+    AND
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    <if test='gid != null or role > 0'>AND sen.gid IN ('${gid}')</if>
+    <if test="strQuery != null and strQuery != ''"> AND (${strQuery}) </if>
+    ) as ect
+    LEFT OUTER JOIN (SELECT * FROM asset) AS ass
+    ON ect.asset_ip = ass.ip AND ect.sensor_id = ass.sensor_id
+    WHERE ass.mac IS NOT NULL
+    GROUP BY ect.idx, ect.sensor_name, ass.name, ass.ip, ect.read_time, ect.end_time, ect.category, ect.severity, ect.action, ect.solution
+    <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+    <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset} -->
+
+    SELECT ect.idx, ect.sensor_name, ass.name, ass.ip, ect.read_time, ect.end_time, ect.category, ect.severity, ect.action, ect.solution, count(*) OVER() from (
+    SELECT sen.sensor_name, ect.* from event_comp_threat AS ect, sensor AS sen
+    WHERE ect.sensor_id = sen.sensor_id
+    AND
+    <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    <if test='gid != null or role > 0'>AND sen.gid IN ('${gid}')</if>
+    ) as ect
+    LEFT OUTER JOIN (SELECT * FROM asset) AS ass
+    ON ect.asset_ip = ass.ip AND ect.sensor_id = ass.sensor_id
+    WHERE (ass.mac IS NOT NULL or category in (3,4,5,6,7))
+    <if test="strQuery != null and strQuery != ''"> AND (${strQuery}) </if>
+    GROUP BY ect.idx, ect.sensor_name, ass.name, ass.ip, ect.read_time, ect.end_time, ect.category, ect.severity, ect.action, ect.solution
+    <if test="type == 'diagnosis_time'"> ORDER BY read_time DESC, idx  </if>
+    <if test="type == 'detection_time'"> ORDER BY end_time DESC, idx  </if>
+    LIMIT ${limit} OFFSET ${offset}
+  </select>
+
+  <insert id="eventAssetCompInsert">
+    INSERT INTO event_comp_asset
+    (sensor_id, read_time, end_time, asset_ip, asset_mac, asset_name, asset_type, asset_model, asset_manufacturer, category, severity, allowed, solution, note, contraction_count)
+    SELECT distinct bea.sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+    to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time,
+    bea.asset_ip, bea.asset_mac, bea.asset_name, bea.asset_type, bea.asset_model, bea.asset_manufacturer, bea.category,
+    bea.severity, 1, bea.solution, aea.note, bea.contraction_count FROM event_asset AS bea,
+	  (SELECT sensor_id, local_time_setting FROM sensor) AS sen,
+    (SELECT distinct sensor_id, asset_mac, category, note FROM event_asset
+    WHERE read_time > now() - interval '10 minute'
+    EXCEPT
+    SELECT distinct sensor_id, asset_mac, category, note FROM event_comp_asset WHERE action is null) AS aea
+    WHERE bea.sensor_id = aea.sensor_id AND bea.asset_mac = aea.asset_mac AND bea.category = aea.category AND bea.sensor_id = sen.sensor_id
+    AND aea.note = 'Disconnection' AND read_time > now() - interval '10 minute'
+  </insert>
+
+  <update id="eventAssetCompUpdate">
+    UPDATE event_comp_asset AS eca SET read_time = to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'),
+    end_time = to_timestamp(to_char(now(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL,
+    contraction_count = contraction_count+1,
+    allowed = ea.allowed
+    FROM
+    (SELECT distinct allowed, sensor_id, asset_mac, category FROM event_asset AS ea
+    WHERE read_time > now() - interval '10 minute') AS ea,
+    (SELECT sensor_id, local_time_setting FROM sensor) AS sen
+    WHERE eca.sensor_id = ea.sensor_id
+    AND eca.asset_mac = ea.asset_mac AND eca.category = ea.category AND eca.action is null
+    AND eca.sensor_id = sen.sensor_id
+  </update>
+
+  <insert id="eventVulnCompInsert">
+    INSERT INTO event_comp_vulnerability
+    (sensor_id, read_time, end_time, category, vulnerability_code, vulnerability_type, vulnerability_manufacturer, asset_name, asset_ip, asset_type, asset_mac, severity, "desc",  solution, contraction_count, note)
+    SELECT distinct ev.sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+  	to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time,
+  	ev.category, ev.vulnerability_code, ev.vulnerability_type, ev.vulnerability_manufacturer,
+  	ev.asset_name, ev.asset_ip, ev.asset_type, ev.asset_mac, ev.severity, ev.desc, ev.solution, ev.contraction_count, ev.note FROM event_vulnerability AS ev,
+  	(select sensor_id, local_time_setting from sensor) as sen,
+  	(SELECT distinct sensor_id, asset_mac, category FROM event_vulnerability
+  	WHERE read_time > now() - interval '10 minute'
+  	EXCEPT
+  	SELECT distinct sensor_id, asset_mac, category FROM event_comp_vulnerability WHERE action is null) AS ecv
+  	WHERE ev.sensor_id = ecv.sensor_id AND ev.asset_mac = ecv.asset_mac AND ev.category = ecv.category AND ev.sensor_id = sen.sensor_id
+    AND read_time > now() - interval '10 minute'
+  </insert>
+
+  <update id="eventVulnCompUpdate">
+    UPDATE event_comp_vulnerability AS ecv SET read_time = to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'),
+    end_time = to_timestamp(to_char(now(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL,
+    contraction_count = contraction_count+1
+    FROM
+    (SELECT distinct sensor_id, asset_mac, category FROM event_vulnerability AS ev
+    WHERE read_time > now() - interval '10 minute') AS ev,
+	  (SELECT sensor_id, local_time_setting FROM sensor) AS sen
+    WHERE ecv.sensor_id = ev.sensor_id
+    AND ecv.asset_mac = ev.asset_mac AND ecv.category = ev.category AND
+    ecv.action is null AND ecv.sensor_id = sen.sensor_id
+  </update>
+
+  <insert id="eventThreatCompInsert">
+    INSERT INTO event_comp_threat
+    (sensor_id, read_time, end_time, category,asset_ip, severity, solution, contraction_count, note)
+    SELECT distinct bea.sensor_id, to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS read_time,
+    to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL AS end_time, bea.category,
+    bea.asset_ip, bea.severity, bea.solution, bea.contraction_count, bea.note FROM event_threat AS bea,
+	  (SELECT sensor_id, local_time_setting FROM sensor) AS sen,
+    (SELECT distinct sensor_id, asset_ip, category FROM event_threat
+    WHERE read_time > now() - interval '10 minute'
+    EXCEPT
+    SELECT distinct sensor_id, asset_ip, category FROM event_comp_threat WHERE action is null) AS aea
+    WHERE bea.sensor_id = aea.sensor_id AND bea.asset_ip = aea.asset_ip AND bea.category = aea.category AND bea.sensor_id = sen.sensor_id
+    AND read_time > now() - interval '10 minute'
+  </insert>
+
+  <select id="eventSelectUser">
+    SELECT distinct u.idx, u.email, u.name, u.notification, u.role, ug.group_id FROM
+    users_group AS ug, users AS u WHERE u.idx = ug.user_id and group_id in (
+      SELECT gid FROM sensor WHERE sensor_id IN
+        (SELECT distinct sensor_id FROM ${tableName}
+        WHERE action is null AND read_time > now() - interval '10 minute'))
+  </select>
+
+  <update id="eventThreatCompUpdate">
+    UPDATE event_comp_threat AS ect SET read_time = to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'),
+    end_time = to_timestamp(to_char(now(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AT time zone local_time_setting::INTERVAL,
+    contraction_count = contraction_count+1
+    FROM
+    (SELECT distinct sensor_id, asset_ip, category FROM event_threat AS et
+    WHERE read_time > now() - interval '10 minute') AS et,
+	  (SELECT sensor_id, local_time_setting FROM sensor) AS sen
+    WHERE ect.sensor_id = et.sensor_id
+    AND ect.asset_ip = et.asset_ip AND ect.category = et.category AND
+    ect.action is null AND ect.sensor_id = sen.sensor_id
+  </update>
+
+  <select id="assetListDetail">
+    SELECT eca2.idx, sensor_name, ass.ip AS asset_ip, ass.type AS asset_type, ass.manufacturer AS asset_manufacturer, ass.mac AS asset_mac, ass.allowed as allowed, eca2.response FROM (
+    SELECT sen.sensor_name, eca.*  FROM event_comp_asset AS eca, sensor AS sen
+    WHERE eca.sensor_id = sen.sensor_id and eca.idx =  ${idx})AS eca2
+    LEFT OUTER JOIN (SELECT * FROM asset) ass ON (ass.sensor_id = eca2.sensor_id AND eca2.asset_mac = ass.mac)
+    LIMIT 1
+  </select>
+
+  <!-- Asset이 변경됐을때 반영하기위해 수정 -->
+  <select id="vulnListDetail">
+    <!-- SELECT sen.sensor_name, ecv.*  FROM event_comp_vulnerability AS ecv, sensor AS sen
+    WHERE ecv.sensor_id = sen.sensor_id and ecv.idx = ${idx} -->
+
+    SELECT ass.ip AS asset_ip, ass.type AS asset_type, ass.mac AS asset_mac, ecv2.sensor_name, ecv2.vulnerability_type, ecv2.vulnerability_manufacturer, ecv2.desc, ecv2.response FROM (
+    SELECT sen.sensor_name, ecv.*  FROM event_comp_vulnerability AS ecv, sensor AS sen
+    WHERE ecv.sensor_id = sen.sensor_id and ecv.idx = ${idx})AS ecv2
+    LEFT OUTER JOIN (SELECT * FROM asset) ass ON (ass.sensor_id = ecv2.sensor_id AND ecv2.asset_mac = ass.mac)
+    LIMIT 1
+
+  </select>
+
+  <select id="threatListDetail">
+    SELECT sen.sensor_name, et.* FROM event_comp_threat AS et, sensor AS sen
+    WHERE et.sensor_id = sen.sensor_id and et.idx = ${idx}
+  </select>
+
+  <select id="vulnInfo">
+    SELECT distinct idx, read_time, asset_name, vulnerability_code, category, severity, solution, "desc",
+    'type='||vulnerability_type||', firmware_version='||note||', manuf='||vulnerability_manufacturer AS note
+    FROM event_comp_vulnerability WHERE idx = ${idx}
+  </select>
+
+  <select id="assetListProcessing">
+     SELECT * FROM event_comp_asset ${strQuery}
+  </select>
+
+  <select id="vulnListProcessing">
+     SELECT *, 'type='||vulnerability_type||', firmware_version='||note||', manuf='||vulnerability_manufacturer AS etcnote FROM event_comp_vulnerability WHERE ${strQuery}
+  </select>
+
+  <select id="threatListProcessing">
+    SELECT ass.name as asset_name, et.* FROM event_comp_threat as et, asset AS ass WHERE (${strQuery}) AND et.asset_ip = ass.ip AND et.sensor_id = ass.sensor_id
+  </select>
+
+  <update id="assetEventProcessing">
+    UPDATE event_comp_asset SET action=${action}, response=#{response}, action_time=#{action_time} WHERE ${strQuery}
+  </update>
+
+  <update id="vulnEventProcessing">
+    UPDATE event_comp_vulnerability SET action=${action}, response=#{response}, action_time=#{action_time} WHERE ${strQuery}
+  </update>
+
+  <update id="threatEventProcessing">
+    UPDATE event_comp_threat SET action=${action}, response=#{response}, action_time=#{action_time} WHERE ${strQuery}
+  </update>
+
+  <update id="sensorAlive">
+    <![CDATA[ UPDATE sensor SET status=0, uptime=0 WHERE last_Connected_Time < (now() - interval '${time} minute') ]]>
+  </update>
+
+  <update id="assetSensorAlive">
+    UPDATE asset SET status=0 WHERE sensor_id IN
+    (SELECT sensor_id FROM sensor where status=0)
+  </update>
+
+  <update id="assetAliveDisconn">
+    UPDATE asset SET status=0 WHERE mac IN
+    (SELECT mac FROM (SELECT distinct ass.mac, ass.sensor_id, max(read_time) AS read_time FROM discover AS dis, asset AS ass WHERE dis.mac = ass.mac
+    AND ass.sensor_id in (select sensor_id from sensor where asset_schedule = ${time} ) GROUP BY ass.mac, ass.sensor_id ) AS di
+    <![CDATA[ WHERE read_time < (now() - interval '${interval} minute')) ]]>
+  </update>
+
+  <update id="assetAliveConn">
+    UPDATE asset SET status=1 WHERE mac IN
+    (SELECT mac FROM (SELECT distinct ass.mac, ass.sensor_id, max(read_time) AS read_time FROM discover AS dis, asset AS ass WHERE dis.mac = ass.mac
+    AND ass.sensor_id in (select sensor_id from sensor where asset_schedule = ${time} ) GROUP BY ass.mac, ass.sensor_id ) AS di
+    <![CDATA[ WHERE read_time > (now() - interval '${interval} minute')) ]]>
+  </update>
+
+  <insert id="assetBlockVuln">
+    INSERT INTO block_asset_list (regtime, sensor_id, asset_ip, asset_mac, rules)
+    SELECT to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS regtime, sensor_id, asset_ip, asset_mac, 1 AS rules
+    FROM (
+    SELECT distinct sen.sensor_id, ecv.asset_mac, ecv.asset_ip FROM event_comp_vulnerability AS ecv,
+    (SELECT * FROM sensor WHERE vulnerability_block = true ) AS sen
+    WHERE ecv.read_time > now() - interval '10 minute' AND sen.sensor_id = ecv.sensor_id AND ecv.asset_mac IS NOT NULL
+    AND sen.vulnerability_block_level = ${severity} AND ecv.severity >= ${severity}
+    except
+    SELECT sensor_id, asset_mac, asset_ip FROM block_asset_list) AS bsl
+  </insert>
+
+  <insert id="assetBlockUnauth">
+    INSERT INTO block_asset_list (regtime, sensor_id, asset_ip, asset_mac, rules)
+    SELECT to_timestamp(to_char(NOW(),'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS') AS regtime, sensor_id, ip, mac, 2 AS rules FROM asset WHERE idx = ${aid}
+  </insert>
+
+  <select id="assetThreatTop">
+    SELECT distinct case when ect_sen.asset_ip = '-' then '-' else ass.name end as name, asset_ip, category, count from (
+      SELECT ect.asset_ip, category, count(ect.asset_ip) from event_comp_threat AS ect, sensor AS sen
+         WHERE
+         <if test="type == 'diagnosis_time'"> <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+         <if test="type == 'detection_time'"> <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+         AND sen.gid in ('${gid}')
+          AND ect.sensor_id = sen.sensor_id
+          GROUP BY ect.asset_ip, category ORDER BY count DESC LIMIT 5
+      ) AS ect_sen LEFT JOIN asset AS ass
+    ON (ect_sen.asset_ip = ass.ip OR ect_sen.asset_ip = '-')
+
+    <!-- SELECT ass.name, category, count(ass.name) from event_comp_threat AS et, asset AS ass, sensor AS sen
+    WHERE et.sensor_id = sen.sensor_id AND et.asset_ip = ass.ip AND sen.sensor_id = ass.sensor_id
+    <if test="type == 'diagnosis_time'"> AND <![CDATA[ read_time >= timestamp #{fromDate} AND read_time < timestamp #{toDate} ]]></if>
+    <if test="type == 'detection_time'"> AND <![CDATA[ end_time >= timestamp #{fromDate} AND end_time < timestamp #{toDate} ]]></if>
+    AND sen.gid in ('${gid}')
+    GROUP BY ass.name, category ORDER BY count DESC LIMIT 5 -->
+  </select>
+</mapper>
+<!-- Event END -->
+
+<!-- Asset START-->
+<mapper namespace="asset">
+    <select id="assetDetectedList">
+        SELECT
+            main.*,
+            COUNT(main.idx) OVER() FROM (
+                    SELECT
+                        ff.idx,
+                        MAX(ff.read_time) AS diagnosis_time,
+                    	ff.name AS asset_name,
+                    	(SELECT sensor_name FROM sensor s WHERE s.sensor_id = ff.sensor_id ) AS sensor_name,
+                    	ff.STATUS,
+                    	SUM(CASE
+                            WHEN ff.response IS NULL
+                                THEN 0
+                            WHEN ff.response LIKE '%Not%'
+                                THEN 0
+                            WHEN ff.response LIKE '%Unknown%'
+                                THEN 0
+                            WHEN ff.response LIKE '%method%'
+                                THEN 0
+							              WHEN ff.response LIKE '%wifi%'
+                                THEN 0
+                            ELSE 1
+                            END) AS detection_count,
+                    	MAX(ff.end_time) AS detection_time,
+                    	ff.allowed
+                    FROM (
+                    	SELECT
+                            f.sensor_id, f.cve_name,
+                    		f.ip, f.mac,
+                    		f.response,
+                    		to_char(f.read_time, 'yyyy-mm-dd') AS DATE,
+                            a.idx,
+                    		a.name,
+                    		a.status,
+                    		a.allowed,
+                    		MAX(read_time) AS read_time,
+                    		MAX(end_time) AS end_time
+                    	FROM asset a,
+                    		(SELECT * FROM fuzz WHERE 1=1 ${strQuery})f
+                      <where>
+                        AND a.sensor_id = f.sensor_id
+                        AND a.mac = f.mac
+                      <if test="type == 'detection_time'"> <![CDATA[ AND f.end_time >= timestamp #{from} AND f.end_time <= timestamp #{to} ]]></if>
+                      <if test="type == 'diagnosis_time'"> <![CDATA[ AND f.read_time >= timestamp #{from} AND f.read_time <= timestamp #{to} ]]></if>
+                      </where>
+                      GROUP BY f.sensor_id,
+                      f.cve_name,
+                      f.ip,
+                      f.mac,
+                      f.response,
+                      to_char(f.read_time, 'yyyy-mm-dd'),
+                      a.idx,
+                      a.name,
+                      a.status,
+                      a.allowed
+            ) ff
+            GROUP BY ff.DATE,
+            ff.idx,
+            ff.name,
+            sensor_name,
+            ff.status,
+            ff.allowed
+            ORDER BY MAX(ff.read_time) DESC
+       ) AS main
+      <where>
+        ${mappedQuery}
+      </where>
+       ORDER BY main.diagnosis_time DESC
+       LIMIT ${limit} OFFSET ${offset}
+    </select>
+  <select id='assetDetectedDetail'>
+      SELECT
+          a.idx,
+          a.name AS asset_name,
+          a.sensor_id,
+          (SELECT sensor_name FROM sensor s WHERE s.sensor_id = a.sensor_id) AS sensor_name,
+          a.status,
+          f.detection_count,
+          f.diagnosis_time,
+          f.detection_time,
+          a.allowed,
+          a.ip  AS asset_ip,
+          a.mac	AS asset_mac,
+          a.manufacturer AS asset_manufacturer,
+          a.type    AS asset_type,
+          a.os
+        FROM asset AS a
+        LEFT OUTER JOIN (
+            SELECT
+                    f.sensor_id,
+                    f.mac,
+                    f.read_date,
+                    max(f.diagnosis_time) AS diagnosis_time,
+                    MAX(f.detection_time) AS detection_time,
+                    count(f.cve_name) AS detection_count
+                FROM (
+                    SELECT
+                        sensor_id,
+                        mac,
+                        cve_name,
+                        response,
+                        TO_CHAR(read_time, 'YYYY-MM-DD') AS read_date,
+                        MAX(read_time) AS diagnosis_time,
+                        MAX(end_time) AS detection_time
+                    FROM fuzz
+                            <where>
+                                AND mac = (SELECT mac FROM asset WHERE idx = #{asset_id})
+                                AND response IS NOT NULL
+                                AND response NOT LIKE '%Not%'
+                                AND response NOT LIKE '%Unknown%'
+                                AND response NOT LIKE '%method%'
+                                AND response NOT LIKE '%wifi%'
+                            </where>
+                            GROUP BY sensor_id, mac, cve_name, response, TO_CHAR(read_time, 'YYYY-MM-DD')
+                        ) AS f
+                       GROUP BY f.sensor_id, f.mac,	f.read_date) AS f
+               ON a.sensor_id = f.sensor_id
+          AND a.mac = f.mac
+        <where>
+          AND a.idx = #{asset_id}
+        </where>
+        ORDER BY f.diagnosis_time DESC
+        LIMIT 1
+  </select>
+  <select id='detectedVulnerabilityList'>
+        SELECT
+          main.*,
+          COUNT(main.idx) OVER() FROM (
+                SELECT
+                    v.idx,
+                    tmp.sensor_id,
+                    v.codetype AS vulnerability_type,
+                    v.code AS vulnerability_code,
+                    tmp.end_time AS detection_time,
+                    v.severity
+                FROM vulnerability AS v,
+                (
+                    SELECT
+                        DISTINCT
+                        a.type,
+                        f.mac,
+                        f.cve_name,
+                        f.sensor_id,
+                        f.end_time
+                    FROM fuzz f, asset a
+                  <where>
+                    AND a.mac = f.mac
+                    AND a.sensor_id = f.sensor_id
+                    AND a.idx = #{asset_id}
+                    AND (<![CDATA[ f.end_time >= timestamp #{today}::date+${days} AND f.end_time <= concat(#{today},' 23:59:59')::timestamp ]]>)
+                    AND f.response IS NOT NULL
+                    AND f.response NOT LIKE '%Not%'
+                    AND f.response NOT LIKE '%Unknown%'
+                    AND f.response NOT LIKE '%method%'
+                    AND f.response NOT LIKE '%wifi%'
+                    AND f.mac != 'Unknown'
+                  </where>
+                    ) AS tmp
+                WHERE v.code = tmp.cve_name
+          ) AS main
+        ORDER BY main.detection_time DESC
+        LIMIT ${limit} OFFSET ${offset}
+  </select>
+
+  <select id="assetScanInfomation">
+    SELECT dis.end_time, sen.sensor_name, ass.* FROM asset AS ass,
+    (SELECT * FROM discover WHERE mac=(SELECT mac FROM asset WHERE idx = #{aid}) AND sensor_id = (SELECT sensor_id FROM asset WHERE idx = #{aid}) ORDER BY idx DESC LIMIT 1) AS dis,
+    (SELECT sensor_name, sensor_id FROM sensor) AS sen
+    WHERE dis.mac = ass.mac AND dis.sensor_id = ass.sensor_id AND ass.sensor_id = sen.sensor_id
+  </select>
+
+  <select id="vulnscan">
+    SELECT end_time, port, protocol, service_name, service_product, service_version, count(*) OVER()
+    FROM vulnscan
+    WHERE <![CDATA[ end_time >= timestamp #{daysAgo} AND end_time < timestamp #{today} ]]>
+    AND mac = (SELECT mac FROM asset WHERE idx = #{aid}) AND port != 0
+    ORDER BY end_time DESC
+    LIMIT ${limit} OFFSET ${offset}
+  </select>
+</mapper>
+<!-- Asset END-->
+<!-- Vulnerability START -->
+<mapper namespace="vulnerability">
+  <select id="vulnerabilityDetectedList">
+    SELECT
+      main.*,
+      COUNT(main.idx) OVER() FROM (
+        SELECT
+            v.idx,
+            v.codetype  AS vulnerability_type,
+            v.code AS vulnerability_code,
+            v.severity AS severity,
+            tmp.sensor_id,
+            tmp.sensor_name,
+            TO_CHAR(tmp.detection_time,'yyyy-MM-dd hh:mm:ss') AS detection_time,
+            TO_CHAR(tmp.diagnosis_time,'yyyy-MM-dd hh:mm:ss') AS diagnosis_time,
+            tmp.detection_count
+        FROM vulnerability AS v,
+          (
+        SELECT
+            fuzz.sensor_id,
+            fuzz.cve_name,
+            fuzz.sensor_name,
+            MAX(fuzz.end_time) AS detection_time,
+            MAX(fuzz.read_time) AS diagnosis_time,
+            COUNT(fuzz.mac) AS detection_count
+        FROM (
+            SELECT DISTINCT ON (f.cve_name, f.mac)
+                f.sensor_id,
+                f.cve_name,
+                f.mac,
+                f.end_time,
+                f.read_time,
+                s.sensor_name
+            FROM fuzz f, asset a, sensor s
+            <where>
+            f.sensor_id = a.sensor_id AND f.sensor_id = s.sensor_id
+            AND f.mac = a.mac
+            <if test='strQuery != null'> ${strQuery} </if>
+                <if test="type == 'detection_time'"> AND (<![CDATA[ end_time >= timestamp #{from} AND end_time <= timestamp #{to} ]]>)</if>
+                <if test="type == 'diagnosis_time'"> AND (<![CDATA[ read_time >= timestamp #{from} AND read_time <= timestamp #{to} ]]>)</if>
+                AND f.response IS NOT NULL
+                AND f.response NOT LIKE '%Not%'
+                AND f.response NOT LIKE '%Unknown%'
+                AND f.response NOT LIKE '%method%'
+                AND f.response NOT LIKE '%wifi%'
+              </where>
+              ) AS fuzz GROUP BY fuzz.sensor_id, fuzz.cve_name, fuzz.sensor_name
+          ) AS tmp
+        WHERE v.code = tmp.cve_name
+      ) AS main
+    <where>
+      ${mappedQuery}
+    </where>
+    ORDER BY main.detection_time DESC
+    <if test='limit != null'> LIMIT ${limit} OFFSET ${offset} </if>
+  </select>
+  <select id='vulnerabilityDiagnosisedDetail'>
+    SELECT
+        v.idx,
+        v.code AS vulnerability_code,
+        v.codetype AS vulnerability_type,
+        v.severity,
+        v.desc,
+        v.response,
+        TO_CHAR(TO_DATE(v.create_time,'YYYYMMDD'),'YYYY-MM-DD') AS created_date,
+        MAX(p.type) AS product_type,
+        MAX(p.firmware_version) AS firmware_version,
+        MAX(p.manuf) AS manufacturer
+    FROM vulnerability v, vulnerability_product p
+    WHERE v.code = p.code
+    AND v.idx = #{vulnerability_id}
+    GROUP BY v.idx,	v.code,	v.codetype,	v.severity,	v.desc,	v.response,	v.create_time
+  </select>
+  <select id='diagnosisedAssetList'>
+      SELECT
+        main.*,
+        count(main.idx) OVER() FROM (
+                SELECT
+                    a.idx,
+                    tmp.sensor_id AS sensor_id,
+                    tmp.read_time AS diagnosis_time,
+                    a.name AS asset_name,
+                    a.ip AS asset_ip,
+                    a.mac AS asset_mac,
+                    a.type AS asset_type,
+                    a.manufacturer AS asset_manufacturer,
+                    (SELECT sensor_name FROM sensor s WHERE tmp.sensor_id = s.sensor_id ) AS sensor_name,
+                    tmp.end_time AS detection_time,
+                    a.allowed AS allowed
+                FROM asset a, (
+                    SELECT DISTINCT ON (f.cve_name, f.mac)
+                        f.sensor_id,
+                        f.cve_name,
+                        f.mac,
+                        f.end_time,
+                        f.read_time
+                    FROM fuzz f, asset a
+                    <where>
+                      AND f.sensor_id = a.sensor_id
+                      AND f.mac = a.mac
+                      AND cve_name = ( SELECT code FROM vulnerability WHERE idx = #{vulnerability_id} )
+                      AND (<![CDATA[ end_time >= timestamp #{today}::date+${days} AND end_time <= concat(#{today},' 23:59:59')::timestamp ]]>)
+                      AND f.response IS NOT NULL
+                      AND f.response NOT LIKE '%Not%'
+                      AND f.response NOT LIKE '%Unknown%'
+                      AND f.response NOT LIKE '%method%'
+                      AND f.response NOT LIKE '%wifi%'
+                      <if test="sensor_id != ''">AND f.sensor_id = #{sensor_id}</if>
+                    </where>
+                ) AS tmp
+              WHERE a.mac = tmp.mac <if test="sensor_id == ''">AND a.gid IN ('${gid}')</if>
+        ) main
+      ORDER BY main.detection_time DESC
+      LIMIT ${limit} OFFSET ${offset}
+  </select>
+</mapper>
+<!-- Vulnerability END -->
+<!-- Wireless START -->
+<mapper namespace="wireless">
+  <select id="apList">
+    SELECT
+      main.*,
+      COUNT(main.idx) OVER() FROM(
+          SELECT
+            s.idx,
+		  	    s.sensor_id,
+            s.read_time AS diagnosis_time,
+            (SELECT a.name FROM asset a WHERE s.bssid = a.mac LIMIT 1) AS asset_name,
+            s.bssid AS mac,
+            COALESCE(essid,'-') AS essid,
+            CASE
+            	WHEN privacy LIKE 'WPA2%' THEN
+             		CASE
+                  WHEN  authentication LIKE '%MGT' THEN '0'
+                  ELSE '1'
+                END
+            	ELSE '2'
+            END AS severity,
+            privacy,
+            COALESCE(s.authentication, '-') AS auth,
+            cipher,
+            s.channel AS ch,
+            power,
+            end_time AS detection_time
+          FROM station s
+      <where>
+        ${strQuery}
+      </where>
+    ) main
+    <where>
+      ${mappedQuery}
+      <if test="type == 'diagnosis_time'"> AND (<![CDATA[ diagnosis_time >= timestamp #{from} AND diagnosis_time <= timestamp #{to} ]]> )</if>
+      <if test="type == 'detection_time'"> AND (<![CDATA[ detection_time >= timestamp #{from} AND detection_time <= timestamp #{to} ]]> )</if>
+    </where>
+   ORDER BY main.detection_time DESC
+   LIMIT ${limit} OFFSET ${offset}
+  </select>
+  <select id='stationaryList'>
+      SELECT
+          main.*,
+          COUNT(main.idx) OVER() FROM (
+            SELECT
+            p.idx,
+            p.sensor_id,
+            p.read_time AS diagnosis_time,
+            (SELECT a.name FROM asset a WHERE p.sensor_id = a.sensor_id AND p.bssid = a.mac) AS asset_name,
+            p.bssid AS ap_mac,
+            p.stationmac AS mac,
+            p.end_time AS detection_time,
+            power
+          FROM probe p
+       <where>
+        ${strQuery}
+      </where>
+      ) main
+      <where>
+        ${mappedQuery}
+         <if test="type == 'diagnosis_time'"> AND (<![CDATA[  diagnosis_time >= timestamp #{from} AND diagnosis_time <= timestamp #{to} ]]>)</if>
+         <if test="type == 'detection_time'"> AND (<![CDATA[  detection_time >= timestamp #{from} AND detection_time <= timestamp #{to} ]]>)</if>
+      </where>
+      ORDER BY main.detection_time DESC
+      LIMIT ${limit} OFFSET ${offset}
+  </select>
+  <select id='bluetoothList'>
+        SELECT
+          main.*,
+          COUNT(main.idx) OVER() FROM (
+              SELECT
+                  idx,
+                  sensor_id,
+                  read_time::timestamp AS detection_time,
+                  CASE
+                    WHEN icon != '(null)' THEN icon
+                    WHEN icon = '(null)' AND appearance !=0 THEN appearance_str
+                    ELSE COALESCE(COALESCE(icon,appearance_str),'')
+                  END AS asset_type,
+                  name AS asset_name,
+                  address AS asset_mac,
+                  device_type AS mode,
+                  address_type AS address_type,
+                  severity AS severity,
+                  rssi AS rssi,
+                  oui AS oui,
+                  b.timestamp::timestamp AS diagnosis_time
+                FROM bluetooth b
+              <where>${strQuery}</where>
+        ) main
+        <where>
+          ${mappedQuery}
+           <if test="type == 'diagnosis_time'"> AND (<![CDATA[ diagnosis_time >= timestamp #{from} AND diagnosis_time <= timestamp #{to} ]]> )</if>
+           <if test="type == 'detection_time'"> AND (<![CDATA[ detection_time >= timestamp #{from} AND detection_time <= timestamp #{to} ]]> )</if>
+        </where>
+        ORDER BY main.detection_time DESC
+        LIMIT ${limit} OFFSET ${offset}
+  </select>
+  <select id='apNameList'>
+   SELECT
+      COALESCE(essid,'hidden') AS name,
+      bssid AS ap_mac
+     FROM station
+     WHERE sensor_id = #{sensor_id}
+      AND (<![CDATA[ end_time >= #{today}::date+${days} and end_time <= #{today} ]]>)
+     GROUP BY essid, bssid
+     ORDER BY name
+  </select>
+  <select id="apWithStationaryList">
+        SELECT
+          main.*,
+          COUNT(main.idx) OVER()
+          FROM (
+                      SELECT
+                        p.idx,
+                        p.sensor_id,
+                        end_time	AS detection_time,
+                        (SELECT distinct essid FROM station s WHERE s.bssid = #{ap_mac} AND s.sensor_id = #{sensor_id} limit 1) AS stationary_name,
+                        p.bssid AS ap_mac,
+                        p.stationmac AS mac,
+                        read_time AS diagnosis_time,
+                        p.power
+                      FROM probe p
+                    <where>
+                      AND sensor_id = #{sensor_id}
+                      AND bssid = (
+                                    SELECT
+                                        DISTINCT bssid
+                                      FROM station
+                                     WHERE bssid = #{ap_mac}
+                                       AND sensor_id = #{sensor_id}
+                                )
+                    </where>
+              ) main
+          <where>
+            ${mappedQuery}
+             <if test="type == 'diagnosis_time'">AND (<![CDATA[  diagnosis_time >= timestamp #{from} AND diagnosis_time <= timestamp #{to} ]]>)</if>
+             <if test="type == 'detection_time'">AND (<![CDATA[ detection_time >= timestamp #{from} AND detection_time <= timestamp #{to} ]]>)</if>
+          </where>
+        ORDER BY main.detection_time DESC
+        LIMIT ${limit} OFFSET ${offset}
+  </select>
+  <select id='bluetoothDetail'>
+      SELECT
+        distinct
+          CASE
+            WHEN severity = 'LOW' THEN '0'
+            WHEN severity = 'MID' THEN '1'
+            WHEN severity = 'HIGH' THEN '2'
+            ELSE severity
+          END AS severity,
+          severity_info,
+          CASE
+            WHEN icon != '(null)' THEN icon
+            WHEN icon = '(null)' AND appearance !=0 THEN appearance_str
+            ELSE COALESCE(COALESCE(icon,appearance_str),'')
+          END AS asset_type,
+          name AS asset_name,
+          b.address AS asset_mac,
+          device_type AS mode,
+          address_type,
+          oui,
+          rssi,
+          tx_power,
+          manufacturer,
+          timestamp AS diagnosis_time,
+          servicedata AS service_data,
+          uuids AS uuid,
+          cod_changed,
+          class,
+          major_class,
+          minor_class,
+          service_class,
+          modalias,
+          advertising_flag AS flags,
+          flag_list
+        FROM bluetooth b
+       WHERE sensor_id = #{sensor_id}
+         AND address = #{asset_mac}
+         AND idx = #{bluetooth_id}
+  </select>
+</mapper>
+<!-- Wireless END -->

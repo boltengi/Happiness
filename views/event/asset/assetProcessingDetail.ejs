@@ -1,0 +1,83 @@
+<div class="accordion-detail">
+  <!-- accordion-detail-content -->
+  <div class="accordion-detail-content">
+    <div class="table-comp">
+      <table class="table detail-style">
+        <caption>DetailInformation</caption>
+          <colgroup>
+            <col style="width: 50%; ">
+            <col style="width: 50%; ">
+          </colgroup>
+        <tbody>
+          <% for (let i = 0; i < ObjView.length; i++) { %>
+          <% const data = ObjView[i] %>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Sensor name") %></dt>
+                  <dd><%= data.sensor_name %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Allow Deny") %></dt>
+                  <dd>
+                    <% if (data.allowed == 0) { %><%= __("eventAsset|Denied") %>
+                    <% } else if (data.allowed == 1) { %><%= __("eventAsset|Allowed") %><% } %>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Asset type") %></dt>
+                  <dd><%= data.asset_type %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Asset MAC") %></dt>
+                  <dd><%= data.asset_mac %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Manufacturer") %></dt>
+                  <dd><%= data.asset_manufacturer %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventAsset|Response") %></dt>
+                  <dd><%= data.response %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- //accordion-detail-content -->
+</div>
+
+<script>
+  logdata('/event/asset/assetprocessingdetail', <%- JSON.stringify(locals) %>);
+</script>

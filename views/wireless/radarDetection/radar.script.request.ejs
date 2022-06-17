@@ -1,0 +1,204 @@
+<script>
+  const requestTree = () => {
+    fetch('/wireless/radarDetection/treelist')
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (data) {
+      const $tree = $('#tree').html(data);
+    });
+  }
+
+  const requestGraph = () => {
+    return fetch(`/wireless/radarDetection/graph`)
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      const $tab = $('#graph').html(data);
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestWirelesstrends = (sensor_id) => {
+
+    const loading = openLoading($('#wirelesstrends'));
+
+    const condition = {
+      sensor_id: sensor_id
+    }
+
+    return fetch(`/wireless/radarDetection/wirelessTrends`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return {
+        data: response.json(),
+        loading: loading
+      };
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestWireless1daytrends = (sensor_id) => {
+
+    const loading = openLoading($('#wireless1daytrends'));
+
+    const condition = {
+      sensor_id: sensor_id
+    }
+
+    return fetch(`/wireless/radarDetection/wireless1dayTrends`, {
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return {
+        data: response.json(),
+        loading: loading
+      };
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestTab = (sensor_id, selectedTab) => {
+    const condition = {
+      sensor_id: sensor_id,
+      selectedTab: selectedTab
+    };
+
+    return fetch(`/wireless/radarDetection/tab`,{
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      const $tab = $('#tab').html(data);
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestList = (page = 1, entries = 10, sensor_id = null, selectedTab = 'AP', time = null, filter = null) => {
+
+    function validFromToTime(time){
+      let valid = { isValid : true, from : true, to : true };
+
+      if (!time) return valid;
+
+      if(time.from !== '' && !moment(time.from)._isValid) valid.from = false;
+      if(time.to !== '' && !moment(time.to)._isValid) valid.to = false;
+      if(!valid.from || !valid.to) valid.isValid = null;
+
+      // if(time.from === '' && time.to === '') {} // for admin regtime
+      if(time.from !== '' && time.to !== '') {}
+      else {
+        valid.isValid = false;
+        if (!time.from) valid.from = false;
+        if (!time.to) valid.to = false;
+      }
+
+      if( new Date(time.from).getTime() > new Date(time.to).getTime() ){
+        valid.from = false;
+        valid.to = false;
+        valid.isValid = null;
+      }
+
+      return valid;
+    }
+    function checkFromToTime(validTime){
+      if(validTime.isValid === true) return true;
+      if(!validTime.isValid){
+        alertModalControl('open', 'alertError', '<%= __("wirelessRadar|Check again") %>', {
+          closeCallback: function(){
+            const sensorTabType = getState().selectedTab || 'AP';
+            $(`#${sensorTabType.toLowerCase()}_from-datepicker`).focus();
+          }
+        });
+        return validTime.isValid;
+      }
+    }
+    function checkRangeTime(time){
+      const isvalidFromToTime = validFromToTime(time);
+      return checkFromToTime(isvalidFromToTime);
+    }
+
+    if(!checkRangeTime(time)) time = null;
+
+    const loading = openLoading($('#wirelessRadar' + selectedTab),{size:'large', template: $('#wirelessRadar' + selectedTab + ' .search-area').length ? undefined: 'tableList'});
+
+    const requestTab = selectedTab == 'AP' ? 'ap' : selectedTab == 'Stationary' ? 'stationary' : 'bluetooth';
+
+    const condition = {
+      sensor_id: sensor_id,
+      entries: entries
+    };
+
+    if(time) condition.time = time;
+    if(filter) condition.filter = filter;
+
+    return fetch(`/wireless/radarDetection/${requestTab}List/${page}`,{
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return {
+        data: response.text(),
+        loading: loading
+      };
+    })
+    .then((data)=>{
+      data.loading.setLoaded(true);
+      return data.data
+    })
+    .then(function(data){
+      const $tab = $('#wirelessRadar' + selectedTab + ' .html-container').html(data);
+      return {isLoading: true};
+    })
+    .then((data)=>{
+      if(data.isLoading){
+        const $loadingParent = $('#wirelessRadar' + selectedTab);
+        removeLoading($loadingParent);
+      }
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  const requestBluetoothdetail = (asset_mac, bluetooth_id) => {
+    const sensor_id = getState().sensor_id;
+    const condition = {
+      sensor_id: sensor_id,
+      asset_mac: asset_mac,
+      bluetooth_id: bluetooth_id
+    };
+
+    return fetch(`/wireless/radarDetection/bluetoothDetail`,{
+      method: 'POST',
+      body: JSON.stringify(condition),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      const $bluetoothDetail = $('#modal-bluetooth').html(data);
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+</script>

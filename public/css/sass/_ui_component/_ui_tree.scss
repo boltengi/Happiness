@@ -1,0 +1,509 @@
+/**********************************
+ ********** 공통 트리 영역 **************
+ **********************************/
+.tree-comp
+{
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+.tree-comp .tree-header
+{
+    position: relative;
+
+    box-sizing: border-box;
+    height: 43px;
+    padding: 9px 16px 12px 14px;
+
+    border-bottom: 1px solid var(--tree-header-border-color);
+}
+
+.tree-comp .tree-header .tree-title
+{
+    font-family: var(--font-family-title);
+    font-size: 15px;
+
+    padding-left: 35px;
+
+    color: var(--tree-header-color);
+    background: url('../img/component/tree/tree-icon-header.svg') 0 center no-repeat;
+}
+
+.tree-search
+{
+    padding-top: 14px;
+    padding-bottom: 15px;
+}
+
+.tree-search .ui-search
+{
+    display: -webkit-flex;
+    display:     -ms-flex;
+    display:         flex;
+
+    width: 100%;
+}
+
+.tree-search .ui-search .ui-input
+{
+    flex: 1;
+}
+
+.tree
+{
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    // height: 658px;
+
+    min-height: 655px;
+    // min-height: 0;
+
+    background: var(--tree-bg);
+
+    flex: 1;
+}
+
+.btn-tree-all
+{
+    font-size: 12px;
+
+    position: relative;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 27px;
+    padding-left: 24px;
+
+    cursor: pointer;
+    text-align: left;
+
+    color: var(--tree-btn-all-color);
+    border: none;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background: var(--tree-btn-all-bg);
+}
+
+.btn-tree-all:focus
+{
+    outline: none;
+}
+
+.btn-tree-all:before
+{
+    position: absolute;
+    top: 50%;
+    left: 10px;
+
+    display: block;
+
+    width: 10px;
+    height: 11px;
+    margin-top: -5.5px;
+
+    content: '';
+    transform: rotate(0);
+
+    background: url('../img/component/tree/tree-icon-open-fold.svg') center center no-repeat;
+}
+
+.btn-tree-all.on:before
+{
+    transform: rotate(180deg);
+}
+
+.tree > .tree-list
+{
+    overflow-y: scroll;
+
+    box-sizing: border-box;
+    min-height: 0;
+
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+
+    flex: 1;
+}
+
+.tree.high-size
+{
+    // height: 1263px;
+}
+
+.tree > .tree-empty
+{
+    position: absolute;
+    top: 27px;
+    bottom: 0;
+    left: 0;
+
+    display: none;
+    overflow-y: scroll;
+
+    box-sizing: border-box;
+    width: 100%;
+
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+
+    flex: 1;
+}
+
+.tree-list > li
+{
+    display: block;
+}
+
+.tree-list > li .tree-item.tree-type.on
+{
+    background: var(--tree-item-bg-tree);
+}
+
+.tree-list > li .tree-item.sensor-type .tree-ele
+{
+    background: var(--tree-item-bg-sensor);
+}
+
+.tree-list > li .tree-item.sensor-type.selected .tree-ele
+{
+    background: var(--tree-item-bg-sensor-selected);
+}
+
+.tree-btn-accordion
+{
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 46px;
+    height: 44px;
+
+    cursor: pointer;
+    transform: rotate(0);
+
+    border: none;
+    background: url('../img/component/tree/icon-tree-arrow.svg') center center no-repeat;
+}
+
+.tree-list > li li .tree-item .tree-btn-accordion
+{
+    background: url('../img/component/tree/icon-tree-arrow-small.svg') center center no-repeat;
+}
+
+.tree-list > li .tree-item.on .tree-btn-accordion
+{
+    transform: rotate(180deg);
+}
+
+.tree-btn-accordion:focus
+{
+    outline: none;
+}
+
+.tree-list > li .tree-item .tree-btn-accordion
+{
+    position: absolute;
+    top: 50%;
+    right: 0;
+
+    margin-top: -22px;
+}
+
+.tree-list > li .tree-item
+{
+    position: relative;
+
+    box-sizing: border-box;
+    height: 44px;
+    padding-top: 7px;
+    padding-right: 5px;
+    padding-bottom: 6px;
+    padding-left: 6px;
+
+    border-bottom: 1px solid var(--tree-item-border-color);
+}
+
+.tree-list > li li .tree-item
+{
+    border-bottom: none;
+}
+
+/**********************************
+ ********** 다중 선택 트리 **************
+ **********************************/
+.tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item .tree-ele
+{
+    padding-left: 51px;
+}
+
+.tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item .tree-ele
+{
+    padding-left: 82px;
+}
+
+.tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item .tree-ele
+{
+    padding-left: 113px;
+}
+
+.tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item + .tree-list > li > .tree-item .tree-ele
+{
+    padding-left: 144px;
+}
+
+.tree > .tree-list > li > .tree-item .tree-ele .item-text
+{
+    font-family: var(--font-family-title);
+    font-size: 15px;
+
+    padding-left: 15px;
+}
+
+.tree .tree-item > .tree-ele
+{
+    position: relative;
+
+    display: flex;
+
+    align-items: flex-start;
+}
+
+.tree .tree-item > .tree-ele .tree-checkbox
+{
+    position: relative;
+    top: 3px;
+}
+
+.tree .tree-item > .tree-ele
+{
+    box-sizing: border-box;
+    height: 30px;
+    padding-top: 4px;
+    padding-left: 14px;
+
+    white-space: nowrap;
+
+    border-radius: 4px;
+}
+
+.tree .tree-item > .tree-ele .item-text
+{
+    font-size: 14px;
+
+    position: relative;
+
+    padding-left: 44px;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    color: var(--tree-item-color);
+}
+.tree-comp.is-ellipsis .tree .tree-item > .tree-ele .item-text
+{
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.tree .tree-item.tree-type .tree-ele
+{
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 40px;
+}
+
+.tree .tree-item.tree-type > .tree-ele > .item-text
+{
+    overflow: hidden;
+
+    max-width: 100%;
+
+    text-overflow: ellipsis;
+}
+
+.tree-item .icon
+{
+    position: absolute;
+    left: 15px;
+
+    display: inline-block;
+
+    width: 17px;
+    height: 17px;
+
+    vertical-align: top;
+}
+
+.tree-item .icon-tree
+{
+    top: 50%;
+
+    height: 14px;
+    margin-top: -8px;
+
+    background: url('../img/component/tree/icon-tree-tree-off.svg') center center no-repeat;
+}
+
+.tree-item.checked .icon-tree
+{
+    background: var(--tree-icon-folder-on-color);
+
+    mask: url('../img/component/tree/icon-tree-tree-on.svg') center center no-repeat;
+}
+
+.tree-item .icon-sensor
+{
+    top: -1px;
+
+    background: url('../img/component/tree/icon-tree-sensor-off.svg') center center no-repeat;
+}
+
+.tree-item.checked .icon-sensor
+{
+    background: var(--tree-icon-sensor-on-color);
+
+    mask: url('../img/component/tree/icon-tree-sensor-on.svg') center center no-repeat;
+}
+
+/**********************************
+ ********** 댠일 선택 트리 **************
+ **********************************/
+.tree-comp.no-multi .tree .tree-item > .item-text
+{
+    padding-left: 38px;
+}
+
+.tree-comp.no-multi .tree .tree-item > .item-text .icon
+{
+    left: 9px;
+}
+
+.tree-comp.no-multi .tree > .tree-list > li > .tree-item .tree-ele > .item-text
+{
+    padding-left: 10px;
+}
+
+.tree-comp.no-multi .tree-item.selected .icon-sensor
+{
+    background: var(--tree-icon-sensor-on-color);
+
+    mask: url('../img/component/tree/icon-tree-sensor-on.svg') center center no-repeat;
+}
+
+/**********************************
+  ********** checkbox **************
+  **********************************/
+.tree-checkbox
+{
+    position: relative;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    height: 14px;
+
+    vertical-align: top;
+}
+
+.tree-checkbox input[type='checkbox']
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: inline-block;
+    overflow: hidden;
+
+    width: 0;
+    height: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+}
+
+.tree-checkbox input[type='checkbox'] + label
+{
+    font-size: 16px;
+    font-size: 0;
+    line-height: 0;
+
+    position: relative;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 14px;
+    height: 14px;
+    padding-top: 1px;
+    padding-left: 24px;
+    padding-left: 0;
+
+    cursor: pointer;
+    vertical-align: middle;
+    vertical-align: top;
+}
+
+.tree-checkbox input[type='checkbox'] + label:before
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 14px;
+    height: 14px;
+
+    content: '';
+    vertical-align: middle;
+
+    border: 1px solid var(--tree-check-border-color);
+    border-radius: 2px;
+    background: var(--tree-check-bg);
+}
+
+.tree-checkbox input[type='checkbox'] + label:hover:before
+{
+    border-color: var(--tree-check-border-color-hover);
+}
+
+.tree-checkbox input[type='checkbox']:checked + label:before
+{
+    border: 1px solid var(--tree-check-border-color-checked);
+    background: var(--tree-check-bg-checked);
+}
+
+.tree-checkbox input[type='checkbox']:checked + label:after
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: block;
+
+    width: 14px;
+    height: 14px;
+
+    content: '';
+
+    background: url('../img/component/form/form-checkbox-on.svg') center 4px no-repeat;
+}
+
+.tree-checkbox input[type='checkbox']:disabled + label:before
+{
+    border: 1px solid var(--tree-check-border-color-disabled);
+    background: var(--tree-check-bg-disabled);
+}
+
+.tree-checkbox input[type='checkbox']:disabled:checked + label:after
+{
+    background: url('../img/component/form/form-checkbox-disabled.svg') center 4px no-repeat;
+}

@@ -1,0 +1,597 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("administrationSensor|Sensor") %></h2>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+			<div class="search-area">
+			</div>
+			<!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+				<div class="table-comp table-check table-accordion">
+					<div class="table-scroll default-style">
+						<div class="thead-scroll">
+							<table class="table default-style multi-thead">
+								<caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 5%; " />
+                  <col style="width: 12%; " /><!-- Sensor group -->
+                  <col style="width: 12%; " /><!-- Sensor name -->
+                  <col style="width: 11%; " /><!-- Asset -->
+                  <col style="width: 11%; " /><!-- Bluetooth -->
+                  <col style="width: 11%; " /><!-- Wireless -->
+                  <col style="width: 11%; " /><!-- Diagnosis -->
+                  <col style="width: 10%; " /><!-- Blocking vulnerability -->
+                  <col style="width: 8%; " /><!-- Blocking Unauthorized -->
+                  <col style="width: 6%; " /><!-- Edit -->
+								</colgroup>
+								<thead>
+                  <tr>
+  				          <th scope="col" class="cell-check" rowspan="2">
+                      <div class="ui-checkbox default-style empty-type">
+										    <input type="checkbox" name="checkbox1" id="checkbox0_1">
+										    <label for="checkbox0_1"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+											</div>
+                    </th>
+  				          <th scope="col" class="cell-accordion" rowspan="2">
+                      <span class="accordion-empty"></span>
+                    </th>
+  				          <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor group") %></th>
+  				          <th scope="col" rowspan="2"><%= __("administrationSensor|Sensor name") %></th>
+                    <th scope="col" colspan="3"><%= __("administrationSensor|Detection interval") %> <span class="unit">(<%= __("administrationSensor|min") %>)</span></th>
+  				          <th scope="col" rowspan="2"><%= __("administrationSensor|Diagnosis schedule") %> <br> <span class="unit">(<%= __("administrationSensor|HR 24") %>)</span></th>
+  				          <th scope="col" colspan="2"><%= __("administrationSensor|Assets blocking policies") %></th>
+  				          <th scope="col" rowspan="2"><%= __("administrationSensor|Edit") %></th>
+  				        </tr>
+                  <tr>
+                    <th scope="col"><%= __("administrationSensor|Asset") %></th>
+                    <th scope="col"><%= __("administrationSensor|Bluetooth") %></th>
+  				          <th scope="col"><%= __("administrationSensor|Wireless") %></th>
+                    <th scope="col"><%= __("administrationSensor|Vulnerability") %></th>
+                    <th scope="col"><%= __("administrationSensor|Unauthorized") %></th>
+                  </tr>
+								</thead>
+							</table>
+						</div>
+					  <div class="tbody-scroll">
+				  		<table class="table default-style">
+								<caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+                <colgroup>
+                  <col style="width: 3%; " />
+                  <col style="width: 5%; " />
+                  <col style="width: 12%; " /><!-- Sensor group -->
+                  <col style="width: 12%; " /><!-- Sensor name -->
+                  <col style="width: 11%; " /><!-- Asset -->
+                  <col style="width: 11%; " /><!-- Bluetooth -->
+                  <col style="width: 11%; " /><!-- Wireless -->
+                  <col style="width: 11%; " /><!-- Diagnosis -->
+                  <col style="width: 10%; " /><!-- Blocking vulnerability -->
+                  <col style="width: 8%; " /><!-- Blocking Unauthorized -->
+                  <col style="width: 6%; " /><!-- Edit -->
+								</colgroup>
+								<tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <!-- accordion-content-title -->
+									<tr class="accordion-content-title<%= (data.status) == -1 ? " is-detected" : ""%>" data-sid="<%= data.idx %>"  data-sensor_id="<%= data.sensor_id %>">
+                    <td class="cell-check">
+                      <div class="ui-checkbox default-style empty-type">
+										    <input type="checkbox" name="sensor<%= i %>-check" id="sensor<%= i %>-check">
+										    <label for="sensor<%= i %>-check"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+											</div>
+                    </td>
+                    <td class="cell-accordion">
+                      <button type="button" class="btn btn-icon btn-accordion"<%= (data.status) == -1 ? " disabled" : ""%>>
+            						<span class="icon icon-accordion"><span class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+            					</button>
+                    </td>
+                    <td>
+                      <% if(data.status == -1){ %><span data-btn="detected" class="registred-color">-</span>
+                      <% } else { %><span class="ellipsis"><%= data.group_name %></span><% } %>
+                    </td>
+                    <td>
+                      <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= __("administrationSensor|Not Registred") %></span>
+                      <% } else { %><span class="ellipsis"><%= data.sensor_name %></span><% } %>
+                    </td>
+                    <td class="cell-center">
+                      <div class="ui-select default-style" data-width="54px" data-asset_schedule="<%= data.sensor_id %>">
+            						<select name="" id=""<%= (data.status) == -1 || !(data.asset_detection_status) ? " disabled" : undefined%>>
+            							<option value="10"<% if (data.asset_schedule == 10 || (data.status) == -1) { %> selected<% } %>>10</option>
+                          <option value="20"<% if (data.asset_schedule == 20) { %> selected<% } %>>20</option>
+                          <option value="30"<% if (data.asset_schedule == 30) { %> selected<% } %>>30</option>
+                          <option value="40"<% if (data.asset_schedule == 40) { %> selected<% } %>>40</option>
+                          <option value="50"<% if (data.asset_schedule == 50) { %> selected<% } %>>50</option>
+                          <option value="60"<% if (data.asset_schedule == 60) { %> selected<% } %>>60</option>
+            						</select>
+            					</div>
+                      <div class="ui-switch default-style" data-asset_detection_status="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>0" id="switch<%= i %>0"<% if (data.asset_detection_status) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>0"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <div class="ui-select default-style" data-width="54px" data-bluetooth_schedule="<%= data.sensor_id %>">
+            						<select name="" id=""<%= (data.status) == -1 || !(data.bluetooth_detection_status) ? " disabled" : undefined%>>
+                          <option value="10"<% if (data.bluetooth_schedule == 10 || (data.status) == -1) { %> selected<% } %>>10</option>
+                          <option value="20"<% if (data.bluetooth_schedule == 20) { %> selected<% } %>>20</option>
+                          <option value="30"<% if (data.bluetooth_schedule == 30) { %> selected<% } %>>30</option>
+                          <option value="40"<% if (data.bluetooth_schedule == 40) { %> selected<% } %>>40</option>
+                          <option value="50"<% if (data.bluetooth_schedule == 50) { %> selected<% } %>>50</option>
+                          <option value="60"<% if (data.bluetooth_schedule == 60) { %> selected<% } %>>60</option>
+            						</select>
+            					</div>
+                      <div class="ui-switch default-style" data-bluetooth_detection_status="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>1" id="switch<%= i %>1"<% if (data.bluetooth_detection_status) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>1"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <div class="ui-select default-style" data-width="54px" data-wireless_schedule="<%= data.sensor_id %>">
+            						<select name="" id=""<%= (data.status) == -1 || !(data.wireless_detection_status) ? " disabled" : undefined%>>
+                          <option value="3"<% if (data.wireless_schedule == 3 || (data.status) == -1) { %> selected<% } %>>3</option>
+                          <option value="4"<% if (data.wireless_schedule == 4) { %> selected<% } %>>4</option>
+                          <option value="5"<% if (data.wireless_schedule == 5) { %> selected<% } %>>5</option>
+                          <option value="6"<% if (data.wireless_schedule == 6) { %> selected<% } %>>6</option>
+                          <option value="7"<% if (data.wireless_schedule == 7) { %> selected<% } %>>7</option>
+                          <option value="8"<% if (data.wireless_schedule == 8) { %> selected<% } %>>8</option>
+                          <option value="9"<% if (data.wireless_schedule == 9) { %> selected<% } %>>9</option>
+                          <option value="10"<% if (data.wireless_schedule == 10) { %> selected<% } %>>10</option>
+            						</select>
+            					</div>
+                      <div class="ui-switch default-style" data-wireless_detection_status="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>2" id="switch<%= i %>2"<% if (data.wireless_detection_status) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>2"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <div class="ui-select default-style" data-width="54px" data-vulnerability_schedule="<%= data.sensor_id %>">
+            						<select name="" id=""<%= (data.status) == -1 || !(data.vulnerability_detection_status) ? " disabled" : undefined%>>
+            							<option value="1"<% if (data.vulnerability_schedule == 1) { %> selected<% } %>>1</option>
+                          <option value="2"<% if (data.vulnerability_schedule == 2) { %> selected<% } %>>2</option>
+                          <option value="3"<% if (data.vulnerability_schedule == 3) { %> selected<% } %>>3</option>
+                          <option value="4"<% if (data.vulnerability_schedule == 4) { %> selected<% } %>>4</option>
+                          <option value="5"<% if (data.vulnerability_schedule == 5) { %> selected<% } %>>5</option>
+                          <option value="6"<% if (data.vulnerability_schedule == 6) { %> selected<% } %>>6</option>
+                          <option value="7"<% if (data.vulnerability_schedule == 7) { %> selected<% } %>>7</option>
+                          <option value="8"<% if (data.vulnerability_schedule == 8) { %> selected<% } %>>8</option>
+                          <option value="9"<% if (data.vulnerability_schedule == 9) { %> selected<% } %>>9</option>
+                          <option value="10"<% if (data.vulnerability_schedule == 10) { %> selected<% } %>>10</option>
+                          <option value="11"<% if (data.vulnerability_schedule == 11) { %> selected<% } %>>11</option>
+                          <option value="12"<% if (data.vulnerability_schedule == 12 || (data.status) == -1) { %> selected<% } %>>12</option>
+                          <option value="13"<% if (data.vulnerability_schedule == 13) { %> selected<% } %>>13</option>
+                          <option value="14"<% if (data.vulnerability_schedule == 14) { %> selected<% } %>>14</option>
+                          <option value="15"<% if (data.vulnerability_schedule == 15) { %> selected<% } %>>15</option>
+                          <option value="16"<% if (data.vulnerability_schedule == 16) { %> selected<% } %>>16</option>
+                          <option value="17"<% if (data.vulnerability_schedule == 17) { %> selected<% } %>>17</option>
+                          <option value="18"<% if (data.vulnerability_schedule == 18) { %> selected<% } %>>18</option>
+                          <option value="19"<% if (data.vulnerability_schedule == 19) { %> selected<% } %>>19</option>
+                          <option value="20"<% if (data.vulnerability_schedule == 20) { %> selected<% } %>>20</option>
+                          <option value="21"<% if (data.vulnerability_schedule == 21) { %> selected<% } %>>21</option>
+                          <option value="22"<% if (data.vulnerability_schedule == 22) { %> selected<% } %>>22</option>
+                          <option value="23"<% if (data.vulnerability_schedule == 23) { %> selected<% } %>>23</option>
+                          <option value="24"<% if (data.vulnerability_schedule == 24) { %> selected<% } %>>24</option>
+            						</select>
+            					</div>
+                      <div class="ui-switch default-style" data-vulnerability_detection_status="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>3" id="switch<%= i %>3"<% if (data.vulnerability_detection_status) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>3"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <div class="ui-select default-style icon-text-type" data-vulnerability_block_level="<%= data.sensor_id %>">
+            						<select name="" id=""<%= (data.status) == -1 || !(data.vulnerability_block) ? " disabled" : undefined%>>
+            							<option value="0" data-val="severity-low"<% if (data.vulnerability_block_level == 0) { %> selected<% } %>><%= __("administrationSensor|low") %></option>
+            							<option value="1" data-val="severity-medium"<% if (data.vulnerability_block_level == 1) { %> selected<% } %>><%= __("administrationSensor|medium") %></option>
+            							<option value="2" data-val="severity-high"<% if (data.vulnerability_block_level == 2) { %> selected<% } %>><%= __("administrationSensor|high") %></option>
+                          <option value="3" data-val="severity-critical"<% if (data.vulnerability_block_level == 3 || (data.status) == -1) { %> selected<% } %>><%= __("administrationSensor|critical") %></option>
+            						</select>
+            					</div>
+                      <div class="ui-switch default-style" data-vulnerability_block="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>4" id="switch<%= i %>4"<% if (data.vulnerability_block) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>4"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <button type="button" data-btn="blocklist" class="btn btn-icon btn-list"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                        <span class="icon icon-list"><span class="sr-only"><%= __("administrationSensor|list") %></span></span>
+                      </button>
+                      <div class="ui-switch default-style" data-unauthorised_block="<%= data.sensor_id %>">
+                        <input type="checkbox" name="switch<%= i %>5" id="switch<%= i %>5"<% if (data.unauthorised_block) { %> checked<% } %>
+                          <%= (data.status) == -1 ? " disabled" : undefined%>
+                        >
+                        <label for="switch<%= i %>5"><span class="sr-only"><%= __("administrationSensor|switch") %></span></label>
+                      </div>
+                    </td>
+                    <td class="cell-center">
+                      <button type="button" class="btn btn-icon btn-edit" data-btn="edit"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                        <span class="icon icon-edit"><span class="sr-only"><%= __("administrationSensor|edit") %></span></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- //accordion-content-title -->
+                  <!-- accordion-content -->
+                  <tr class="accordion-content">
+                    <td colspan="11">
+                      <div class="accordion-content-box">
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- //accordion-content -->
+                  <% } %>
+                </tbody>
+					    </table>
+              <% if (ObjView.length == 0) { %>
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+                  <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+					  </div>
+					</div>
+				</div>
+				<!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="btn-table-box">
+          <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationSensor|Delete") %></button>
+          <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|New sensor") %></button>
+          <button type="button" class="btn btn-normal point-style" data-btn="setting"><%= __("administrationSensor|Setting") %></button>
+        </div>
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+  			    <select name="" id="listEntries">
+  		        <option value="10" selected><%= __("administrationSensor|Show 10 entries") %></option>
+  		        <option value="20"><%= __("administrationSensor|Show 20 entries") %></option>
+  		        <option value="30"><%= __("administrationSensor|Show 30 entries") %></option>
+  			    </select>
+  				</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<script>
+  var ObjView = <%- JSON.stringify(ObjView) %>;
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  console.log(ObjView);
+
+  tableCheck('.table-check');
+  tableAccordion('.table-accordion', {
+    beforeSlideDown : function(obj){
+      const sensor_id = obj.btnEle.closest('tr').data('sensor_id');
+      return fetch(`/admin/sensor/sensordetail/${sensor_id}`)
+      .then(function(response){
+        return response.text();
+      })
+      .then(function(data){
+        obj.btnEle.closest('tr').next('.accordion-content').find('.accordion-content-box').html(data);
+      })
+      .catch(function(errors){console.error('Error:', errors)});
+    },
+    afterSlideUp: function(obj){
+      obj.btnEle.closest('tr').prev('.accordion-content').find('.accordion-content-box').html('');
+    }
+  })
+  selectDropdown('.ui-select');
+  setTime('.ui-time');
+  dateTime('.ui-time');
+  formWidth();
+</script>
+
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+    const sid = $.map($('#tree').find('.tree-item.sensor-type.checked'), function(e){
+      return $(e).data('sid');
+    });
+    setState({page: page, entries: entries});
+    requestList(page, entries, sid);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sid = $.map($('#tree').find('.tree-item.sensor-type.checked'), function(e){
+      return $(e).data('sid');
+    });
+    setState({page: page});
+    requestList(page, entries, sid);
+  });
+</script>
+<script>
+  // new sensor
+  $('[data-btn="new"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+    const dataValue = {
+      status: 2
+    }
+    fetch(`/admin/sensor/newsensor`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      $('#modal-new').html(data);
+      $('#modalNew').data('status',{status:2});
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+  $('[data-btn="detected"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    const dataValue = {
+      status: -1,
+      sensor_id: sensor_id
+    }
+    fetch(`/admin/sensor/newsensor`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text()
+    })
+    .then(function(data){
+      $('#modalNew').data('status',{status:-1, sensor_id: sensor_id});
+      $('#modal-new').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+</script>
+<script>
+  // setting 수정
+  $('[data-btn="setting"]').off('click.setting').on('click.setting', function(){
+    const sid = $.map($('#listTable td.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sid')
+    });
+
+    const detected_id = $.map($('#listTable .is-detected td.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id')
+    });
+
+    if (!sid.length) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select one more.") %>');
+
+    if (detected_id.length) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select sensor that not registred.") %>');
+
+    const dataValue = {
+      sid: sid
+    }
+
+    fetch(`/admin/sensor/sensorsetting`,{
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-setting').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+
+  // edit 수정
+  $('[data-btn="edit"]').off('click.edit').on('click.edit', function(){
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    $('#modal-edit').html('');
+
+    fetch(`/admin/sensor/sensoredit/${sensor_id}`,{
+      method: 'POST'
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-edit').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+
+  // 설정 update
+  var updateSensorSetting = (id, body) => {
+    console.log('id : ', id, 'body : ', body);
+    body.sensor_id = [id];
+
+    fetch(`/admin/sensor/sensorupdate`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      if(response.status == 500){ alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>'); }
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  }
+
+  $('#listTable .accordion-content-title').each(function(){
+    const $sensor = $(this);
+    const sensor_id = $sensor.data('sensor_id');
+
+    if($sensor.hasClass('is-detected')) return;
+
+    // asset
+    $sensor.find('[data-asset_schedule] select').on('change', function(){
+      const dataValue = { "asset_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-asset_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "asset_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-asset_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // bluetooth
+    $sensor.find('[data-bluetooth_schedule] select').on('change', function(){
+      const dataValue = { "bluetooth_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-bluetooth_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "bluetooth_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-bluetooth_schedule] select')
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // wireless
+    $sensor.find('[data-wireless_schedule] select').on('change', function(){
+      const dataValue = { "wireless_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-wireless_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "wireless_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-wireless_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // diagnosis
+    $sensor.find('[data-vulnerability_schedule] select').on('change', function(){
+      const dataValue = { "vulnerability_schedule": $(this).find("option:selected").val() }
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-vulnerability_detection_status] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "vulnerability_detection_status": isChecked };
+      const $select = $(this).closest('tr').find('[data-vulnerability_schedule] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+
+      // on 으로 변경시에만 asset 상태가 on으로 함께 변함
+      if (isChecked) $(this).closest('tr').find('[data-asset_detection_status] input').prop('checked', true).trigger('change');
+
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // block-vulnerability
+    $sensor.find('[data-vulnerability_block_level] select').on('change', function(){
+      const dataValue = { "vulnerability_block_level": $(this).find("option:selected").val() };
+      updateSensorSetting(sensor_id, dataValue);
+    });
+    $sensor.find('[data-vulnerability_block] input').on('change', function(){
+      const isChecked = $(this).is(":checked");
+      const dataValue = { "vulnerability_block": isChecked };
+      const $select = $(this).closest('tr').find('[data-vulnerability_block_level] select');
+      if (isChecked) $select.prop('disabled',false);
+      else $select.prop('disabled',true);
+      updateSensorSetting(sensor_id, dataValue);
+    });
+
+    // block-unauthorized
+    $sensor.find('[data-unauthorised_block] input').on('change', function(){
+      const dataValue = { "unauthorised_block": $(this).is(":checked") };
+      updateSensorSetting(sensor_id, dataValue);
+    });
+  });
+</script>
+<script>
+  $('[data-btn="blocklist"]').off('click.blocklist').on('click.blocklist', function(){
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    const dataValue = {
+      vulnerability_block_level: $(this).closest('tr').find('[data-vulnerability_block_level] select').find("option:selected").val(),
+      vulnerability_block: $(this).closest('tr').find('[data-vulnerability_block] input').is(':checked')
+    }
+
+    fetch(`/admin/sensor/sensorblock/${sensor_id}`, {
+      method: 'POST',
+      body: JSON.stringify(dataValue),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(response){
+      return response.text();
+    })
+    .then(function(data){
+      $('#modal-blocklist').html(data);
+    })
+    .catch(function(errors){console.error('Error:', errors)});
+  });
+</script>
+<script>
+  $('[data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    const tableCheckedId = $.map($('#listTable').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id');
+    });
+
+    if (tableCheckedId.length == 0) return alertModalControl('open', 'alertError', '<%= __("administrationSensor|Select one more.") %>');
+    else {
+      alertModalControl('open', 'alertConfirm', '<%= __("administrationSensor|Are you sure you want to delete records?") %>', {
+        confirmCallback: function(){
+          const dataValue = {
+            sensor_id: tableCheckedId
+          }
+
+          fetch(`/admin/sensor/sensordelete`, {
+            method: 'POST',
+            body: JSON.stringify(dataValue),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(function(response){
+            if(response.status == 200){ refreshPage(); }
+            if(response.status == 500){ alertModalControl('open', 'alertError', '<%= __("administrationSensor|Error!") %>'); }
+          })
+          .catch(function(errors){console.error('Error:', errors)});
+        }
+      });
+    }
+  });
+</script>

@@ -1,0 +1,183 @@
+<!-- search-area -->
+<!-- <div class="search-area">
+
+</div> -->
+<!-- //.search-area -->
+<div class="pack">
+  <!-- table-comp -->
+  <div class="table-comp table-accordion table-check">
+    <div class="table-scroll default-style">
+      <div class="thead-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " /><!-- checkbox -->
+            <col style="width: 5%; " /><!-- accordion btn -->
+            <col style="width: 18%; " /><!-- Sensor group -->
+            <col style="width: 22%; " /><!-- Sensor name -->
+            <col style="width: 18%; " /><!-- Product IP -->
+            <col style="width: 22%; " /><!-- Sensor ID -->
+            <col style="width: 6%; " /><!-- Status -->
+            <col style="width: 6%; " /><!-- Edit -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox" name="embeddedTypeCheckbox0" id="embeddedTypeCheckbox0">
+                  <label for="embeddedTypeCheckbox0"><span
+                      class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </th>
+              <th scope="col" class="cell-accordion">
+                <span class="accordion-empty"></span>
+              </th>
+              <th scope="col"><%= __("administrationSensor|Sensor group") %></th>
+              <th scope="col"><%= __("administrationSensor|Sensor name") %></th>
+              <th scope="col"><%= __("administrationSensor|Product IP") %></th>
+              <th scope="col"><%= __("administrationSensor|Sensor ID") %></th>
+              <th scope="col"><%= __("administrationSensor|Status") %></th>
+              <th scope="col"><%= __("administrationSensor|Edit") %></th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tbody-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " /><!-- checkbox -->
+            <col style="width: 5%; " /><!-- accordion btn -->
+            <col style="width: 18%; " /><!-- Sensor group -->
+            <col style="width: 22%; " /><!-- Sensor name -->
+            <col style="width: 18%; " /><!-- Product IP -->
+            <col style="width: 22%; " /><!-- Sensor ID -->
+            <col style="width: 6%; " /><!-- Status -->
+            <col style="width: 6%; " /><!-- Edit -->
+          </colgroup>
+          <tbody>
+            <% for (let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <!-- accordion-content-title -->
+            <tr class="accordion-content-title<%= (data.status) == -1 ? " is-detected cursor-pointer" : ""%>" data-sid="<%= data.idx %>"  data-sensor_id="<%= data.sensor_id %>" data-sensor_ip="<%= data.sensor_ip %>">
+              <td class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox"  name="embeddedType<%= i %>-check" id="embeddedType<%= i %>-check"">
+                  <label for="embeddedType<%= i %>-check"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </td>
+              <td class="cell-accordion">
+                <button type="button" class="btn btn-icon btn-accordion"<%= (data.status) == -1 ? " disabled" : ""%>>
+                  <span class="icon icon-accordion"><span class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+                </button>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color">-</span>
+                <% } else { %><span class="ellipsis"><%= data.group_name %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= __("administrationSensor|Not Registred") %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_name %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= data.sensor_ip %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_ip %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= data.sensor_id %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_id %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <% if(data.status == 0 || data.status == -1){ %><span class="status status-disconnected"></span>
+                <% } else { %><span class="status status-connected"></span><% } %>
+              </td>
+              <td class="cell-center">
+                <button type="button" class="btn btn-icon btn-edit" data-btn="edit"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-edit"><span class="sr-only"><%= __("administrationSensor|edit") %></span></span>
+                </button>
+              </td>
+            </tr>
+            <!-- //accordion-content-title -->
+            <!-- accordion-content -->
+            <tr class="accordion-content">
+              <td colspan="8">
+                <div class="accordion-content-box">
+                </div>
+              </td>
+            </tr>
+            <!-- //accordion-content -->
+            <% } %>
+          </tbody>
+        </table>
+        <% if (ObjView.length == 0) { %>
+        <!-- empty -->
+        <div class="empty">
+          <div class="empty-box">
+            <div class="symbol symbol-empty">
+              <span class="symbol-icon question-style"></span>
+              <div class="symbol-figure empty-style"></div>
+            </div>
+            <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+          </div>
+        </div>
+        <!-- //empty -->
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <!-- //table-comp -->
+</div>
+<div class="table-bottom">
+  <div class="btn-table-box">
+    <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationSensor|Delete") %></button>
+    <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|New sensor") %></button>
+  </div>
+  <div class="table-bottom-right">
+    <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current, paginationID: 'embeddedtypePagination'}) %>
+    <div class="ui-select default-style">
+      <select name="" id="embeddedtypeListEntries">
+        <option value="10" selected><%= __("administrationSensor|Show 10 entries") %></option>
+        <option value="20"><%= __("administrationSensor|Show 20 entries") %></option>
+        <option value="30"><%= __("administrationSensor|Show 30 entries") %></option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var ObjView = <%- JSON.stringify(ObjView) %>;
+  var current = <%- current %>;
+  var pages = <%- pages %>;
+  console.log('ObjView', ObjView)
+  console.log('current', current)
+  console.log('pages', pages)
+</script>
+
+<script>
+  // init historyState
+  // history.state에 embedded 키값이 없으면
+  initHistory()
+
+  setHistory({
+    [currentTab]: {
+       current: history.state[currentTab].current ? history.state[currentTab].current : 1,
+       entries: history.state[currentTab].entries ? history.state[currentTab].entries : 10,
+    },
+    currentTab
+  })
+
+  maintainHistory(getHistory({sensorType:currentTab}))
+</script>
+
+<script>
+  selectDropdown(`#${currentTab}TypeList .ui-select`);
+</script>
+
+<script>
+  // pagination 변경시 정보 서버로 전달
+  pagination_f();
+
+  // entries 변경시 정보를 서버로 전달
+  entries_f();
+</script>

@@ -1,0 +1,249 @@
+/**********************************
+ ********** severity **************
+ **********************************/
+.severity
+{
+    font-size: 16px;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    min-width: 100px;
+    padding: 4px 6px;
+
+    cursor: text !important;
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--severity-color);
+    border: none;
+    border-radius: 4px;
+}
+
+.severity.severity-critical
+{
+    background: var(--critical);
+}
+
+.severity.severity-high
+{
+    background: var(--high);
+}
+
+.severity.severity-medium
+{
+    background: var(--medium);
+}
+
+.severity.severity-low
+{
+    background: var(--low);
+}
+
+.severity.severity-default
+{
+    background: var(--low);
+}
+
+.severity.severity-danger
+{
+    background: var(--danger);
+}
+
+.severity.severity-normal
+{
+    background: var(--normal);
+}
+
+.severity.severity-safe
+{
+    background: var(--safe);
+}
+
+/**********************************
+ ********** status **************
+ **********************************/
+.status
+{
+    display: inline-block;
+
+    box-sizing: border-box;
+    width: 10px;
+    height: 10px;
+
+    cursor: text !important;
+    vertical-align: middle;
+
+    border: none;
+    border-radius: 50%;
+}
+
+.status.status-default
+{
+    background: var(--status-default);
+}
+
+.status.status-disconnected
+{
+    background: var(--disconnected);
+}
+
+.status.status-connected
+{
+    background: var(--connected);
+}
+
+.status.small-size
+{
+    width: 8px;
+    height: 8px;
+}
+
+.color-status
+{
+    color: var(--status-default);
+}
+
+.color-connected
+{
+    color: var(--dodger-blue);
+}
+
+.color-disconnected
+{
+    color: var(--disconnected);
+}
+
+/**********************************
+ ********** rule **************
+ **********************************/
+.rule
+{
+    font-size: 7px;
+
+    display: inline-block;
+
+    width: 12px;
+    height: 12px;
+
+    text-align: center;
+    text-indent: -999px;
+
+    color: #fff;
+    border-radius: 50%;
+}
+
+.rule.rule-alpha
+{
+    background: url('../img/component/status/icon-rule-alpha.svg') center center no-repeat;
+    background-color: var(--rule-bg);
+}
+
+.rule.rule-beta
+{
+    background: url('../img/component/status/icon-rule-beta.svg') center center no-repeat;
+    background-color: var(--rule-bg);
+}
+
+/**********************************
+ ********** new **************
+ **********************************/
+.new-status
+{
+    font-family: var(--font-family-title);
+    font-size: 11px;
+    line-height: 1.6363;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    min-width: 38px;
+    height: 18px;
+    padding-right: 6px;
+    padding-left: 6px;
+
+    vertical-align: middle;
+
+    color: var(--new-status-color);
+    border-radius: 3px;
+    background: var(--new-status-bg);
+}
+
+/**********************************
+ ********** rating **************
+ **********************************/
+.rating
+{
+    font-size: 11px;
+
+    display: inline-block;
+
+    box-sizing: border-box;
+    min-width: 100px;
+    height: 26px;
+    padding: 4px 10px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    border-top: 1px solid transparent;
+    border-radius: 4px;
+}
+.rating.rating-default
+{
+    color: var(--rating-color-default);
+    border: 1px solid var(--rating-border-color-default);
+    background: var(--rating-bg-default);
+}
+.rating.rating-highlight
+{
+    color: var(--rating-color-highlight);
+    border: 1px solid var(--rating-border-color-highlight);
+    background: var(--rating-bg-highlight);
+}
+.rating.wide-size
+{
+    min-width: 118px;
+}
+
+/**********************************
+ ********** badges **************
+ **********************************/
+.badge
+{
+    font-size: 11px;
+
+    padding: 2px 5px;
+
+    border-radius: 3px;
+}
+
+.badge.primary-style
+{
+    color: var(--badge-default-color);
+    background-color: var(--badge-primary-bg);
+}
+
+.badge.dark-style
+{
+    color: var(--badge-default-color);
+    background-color: var(--badge-dark-bg);
+}
+
+.badge.danger-style
+{
+    color: var(--badge-default-color);
+    background-color: var(--badge-danger-bg);
+}
+
+.badge.warning-style
+{
+    color: var(--badge-default-color);
+    background-color: var(--badge-warning-bg);
+}
+
+.badge.cool-style
+{
+    color: var(--badge-default-color);
+    background-color: var(--badge-cool-bg);
+}

@@ -1,0 +1,60 @@
+<div class="tree-header">
+  <h2 class="tree-title"><%= __("administrationAsset|Sensor Tree") %></h2>
+</div>
+<div class="tree-search">
+  <div class="ui-search">
+    <div class="ui-input default-style"><input type="text" placeholder="<%= __("administrationAsset|Search") %>"></div>
+    <button type="button" class="btn btn-icon btn-search"><span class="icon icon-search"><span class="sr-only"><%= __("administrationAsset|Search") %></span></span></button>
+  </div>
+</div>
+<div class="tree">
+  <button type="button" class="btn btn-tree-all"><%= __("administrationAsset|Open all") %></button>
+  <!-- tree-empty -->
+  <div class="tree-empty">
+    <!-- empty -->
+    <div class="empty">
+      <div class="empty-box">
+        <div class="symbol symbol-empty">
+          <span class="symbol-icon question-style"></span>
+          <div class="symbol-figure empty-style"></div>
+        </div>
+        <p class="main-msg"><%= __("administrationAsset|No data available") %></p>
+        <p class="sub-msg"><%= __("administrationAsset|There is no data to show you right now.") %></p>
+      </div>
+    </div>
+    <!-- //empty -->
+  </div>
+  <!-- //tree-empty -->
+</div>
+
+<script>
+  var treeData = <%- tree_groups %> || [];
+  var treeCallbackData = null
+
+  logdata('/report/report/treelist', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  var getTypeCheckedSensorKey = (parent, tree_type, sensor_type, sensor_key) => {
+    const checkedTreetypeInputLength = $(`${parent} .tree-item${tree_type} input[type="checkbox"]:checked`).length;
+    const checkedSensortypeInputLength = $(`${parent} .tree-item${sensor_type} input[type="checkbox"]:checked`).length;
+
+    if(checkedTreetypeInputLength > 0 && checkedSensortypeInputLength == 0) {
+      return sensor_key = [-1];
+    }
+
+    return sensor_key;
+  };
+</script>
+<script>
+  const initCheckedDataIDs = getState().initCheckedDataIDs;
+
+  tree('.tree-comp', {
+    data: treeData, checkCallback: function(data){
+      treeCallbackData = data;
+    },
+    initCheckedDataIDs: initCheckedDataIDs
+  });
+
+  var sensor_id = getState().sensor_id || null;
+  createReport(sensor_id);
+</script>

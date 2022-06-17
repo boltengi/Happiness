@@ -1,0 +1,631 @@
+<!-- feedbar -->
+<div id="feedbar">
+  <div class="feedbar-wrap">
+    <div class="feedbar-header">
+      <h1 class="feedbar-title"><span class="icon-title icon-title-feedbar"></span><%= __("feedbar|Event message") %></h1>
+      <button type="button" id="btn-feedbar-refresh" class="btn btn-icon btn-feedbar-refresh"><span class="sr-only"><%= __("feedbar|refresh") %></span></button>
+    </div>
+    <div class="feedbar-container">
+      <!-- feebar-content -->
+      <section class="feedbar-content" data-asset>
+        <div class="feedbar-content-header">
+          <h2 class="feedbar-content-title"><span class="icon-title icon-title-asset"></span> <%= __("feedbar|Asset") %></h2>
+          <div class="feedbar-title-right">
+            <span class="feedbar-time">(<%= __("feedbar|Week") %>)</span>
+          </div>
+        </div>
+        <div class="feedbar-content-box">
+          <div class="feedbar-list">
+            <ul>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-discover>
+                  <span class="icon-feedbar icon-feedbar-new"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Discover") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|New assets detected by network") %>"><%= __("feedbar|New assets detected by network") %>
+                  </p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-disconnected>
+                  <span class="icon-feedbar icon-feedbar-disconnected"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Disconnected") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Network disconnection of registered assets") %>"><%= __("feedbar|Network disconnection of registered assets") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-altered>
+                  <span class="icon-feedbar icon-feedbar-altered"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Altered service") %></span>
+                  <p class="feedbar-item-explain" title="Changes of assets' service "><%= __("feedbar|Changes of assets' service") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- //feebar-content -->
+      <!-- feebar-content -->
+      <section class="feedbar-content" data-sensor>
+        <div class="feedbar-content-header">
+          <h2 class="feedbar-content-title"><span class="icon-title icon-title-sensor"></span><%= __("feedbar|Sensor") %></h2>
+          <div class="feedbar-title-right">
+            <span class="feedbar-time">(<%= __("feedbar|Week") %>)</span>
+          </div>
+        </div>
+        <div class="feedbar-content-box">
+          <div class="feedbar-list">
+            <ul>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-discover>
+                  <span class="icon-feedbar icon-feedbar-new"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Discover") %></span>
+                  <p class="feedbar-item-explain" title="New sensor registration"><%= __("feedbar|New sensor registration") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-disconnected>
+                  <span class="icon-feedbar icon-feedbar-disconnected"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Disconnected") %></span>
+                  <p class="feedbar-item-explain" title="Network disconnection of registered sensor"><%= __("feedbar|Network disconnection of registered sensor") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- //feebar-content -->
+      <!-- feebar-content -->
+      <section class="feedbar-content" data-vulnerability>
+        <div class="feedbar-content-header">
+          <h2 class="feedbar-content-title"><span class="icon-title icon-title-vulnerability"></span><%= __("feedbar|Vulnerability") %></h2>
+          <div class="feedbar-title-right">
+            <span class="feedbar-time">(<%= __("feedbar|Week") %>)</span>
+          </div>
+        </div>
+        <div class="feedbar-content-box">
+          <div class="feedbar-list">
+            <ul>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-zeroday>
+                  <span class="icon-feedbar icon-feedbar-zeroday"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|ZeroDay") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of unknown vulnerabilities") %>"><%= __("feedbar|Detection of unknown vulnerabilities") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-oneday>
+                  <span class="icon-feedbar icon-feedbar-oneday"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|OneDay") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of known vulnerabilities not registered in CVE") %>">
+                    <%= __("feedbar|Detection of known vulnerabilities not registered in CVE") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-cve>
+                  <span class="icon-feedbar icon-feedbar-cve"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|CVE") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of known vulnerabilities") %>"><%= __("feedbar|Detection of known vulnerabilities") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- //feebar-content -->
+      <!-- feebar-content -->
+      <section class="feedbar-content" data-threat>
+        <div class="feedbar-content-header">
+          <h2 class="feedbar-content-title"><span class="icon-title icon-title-threat"></span><%= __("feedbar|Threat") %></h2>
+          <div class="feedbar-title-right">
+            <span class="feedbar-time">(<%= __("feedbar|Week") %>)</span>
+          </div>
+        </div>
+        <div class="feedbar-content-box">
+          <div class="feedbar-list">
+            <ul>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-spoofing>
+                  <span class="icon-feedbar icon-feedbar-spoofing"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Spoofing") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of ARP, DNS bypass attack") %>"><%= __("feedbar|Detection of ARP, DNS bypass attack") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-zombieService>
+                  <span class="icon-feedbar icon-feedbar-zombieservice"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Zombie service") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of Zombie service") %>"><%= __("feedbar|Detection of Zombie service") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-backdoor>
+                  <span class="icon-feedbar icon-feedbar-backdoor"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Backdoor") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Backdoor detection") %>"><%= __("feedbar|Backdoor detection") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-icmpRedirect>
+                  <span class="icon-feedbar icon-feedbar-icmp"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|ICMP Redirect") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of packet bypass attack") %>"><%= __("feedbar|Detection of packet bypass attack") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+              <li>
+                <!-- feedbar-item -->
+                <div class="feedbar-item" data-miningNodes>
+                  <span class="icon-feedbar icon-feedbar-miningnoes"></span>
+                  <span class="feedbar-item-title"><%= __("feedbar|Mining Nodes") %></span>
+                  <p class="feedbar-item-explain" title="<%= __("feedbar|Detection of blockchain coin mining nodes") %>"><%= __("feedbar|Detection of blockchain coin mining nodes") %></p>
+                  <div class="feedbar-item-num"><span class="num">0</span></div>
+                </div>
+                <!-- //feedbar-item -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- //feebar-content -->
+    </div>
+  </div>
+</div>
+<!-- //feedbar -->
+<style>
+  [data-altered] {
+    display: none;
+  }
+</style>
+<script>
+  var serializeCondition = function(obj){
+    return Qs.stringify(obj);
+    const str = [];
+    for(const p in obj){
+      let keyp = encodeURIComponent(p)
+      if(obj.hasOwnProperty(p)){
+        let value = obj[p];
+        if(Array.isArray(value)) {
+          keyp = keyp + '[]';
+          let valueString = '';
+          valueString += '['
+          value.forEach(function(element, index, arr){
+            let str = ''
+            if(typeof element == 'object' && element !== null){
+              str += `{`;
+              Object.entries(element).forEach(function([key, value], i, a){
+                if(typeof value == 'string') str += `"${key}":"${value}"`;
+                else str += `"${key}":${value}`;
+
+                if(i != a.length - 1) str+= ', ';
+              })
+              str += `}`;
+            } else if(typeof element == 'string') {
+              str = `"${value}"`
+            } else {
+              str = `${value}`;
+            }
+            if(index != arr.length - 1) str+= ', ';
+            valueString += str;
+          })
+          valueString += ']';
+
+          value = valueString;
+        };
+        value = encodeURIComponent(value);
+        str.push(`${keyp}=${value}`);
+      }
+    }
+    return str.join('&');
+  }
+  var movePost = function(url, conditions){ // post body
+
+    conditions.filter = JSON.stringify(conditions.filter)
+
+    const form = document.createElement('form');
+    form.setAttribute('method', 'post');
+    form.setAttribute('action', url);
+    document.charset = 'utf-8';
+
+    for (key in conditions){
+      const hiddenField = document.createElement('input');
+      hiddenField.setAttribute('type', 'hidden');
+      hiddenField.setAttribute('name', key);
+      hiddenField.setAttribute('value', conditions[key]);
+      form.appendChild(hiddenField);
+    }
+    document.body.appendChild(form);
+    form.submit();
+  }
+  var moveGet = function(url, conditions, filterConditions){ // get query
+    location.href = url + "?" + serializeCondition(conditions);
+  }
+  var movePage = function(url, conditions){
+    moveGet(url, conditions);
+    // movePost(url, conditions);
+  }
+</script>
+<script>
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',()=>{
+  $('[data-asset] [data-discover].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/asset';
+    const conditions = {
+      filter: [{"category": 0}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-asset] [data-disconnected].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/asset';
+    const conditions = {
+      filter: [{"category": 1}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-sensor] [data-discover].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/admin/sensor';
+    const conditions = {
+      standard: 'selectedTab',
+      selectedTab: 'deviceType',
+      time: [{type: 'regtime', duration: 7}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-sensor] [data-disconnected].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/asset';
+    const conditions = {
+      filter: [{"category": 2}]
+    };
+    movePage(url, conditions);
+  });
+
+  $('[data-vulnerability] [data-zeroday].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/vulnerability';
+    const conditions = {
+      filter: [{"category": 0}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-vulnerability] [data-oneday].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/vulnerability';
+    const conditions = {
+      filter: [{"category": 2}]
+    };
+    movePage(url, conditions);
+  });
+
+  $('[data-vulnerability] [data-cve].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/vulnerability';
+    const conditions = {
+      filter: [{"category": 1}]
+    };
+    movePage(url, conditions);
+  });
+
+  $('[data-threat] [data-spoofing].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/threat';
+    const conditions = {
+      filter: [{"category": 3}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-threat] [data-zombieService].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/threat';
+    const conditions = {
+      filter: [{"category": 4}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-threat] [data-backdoor].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/threat';
+    const conditions = {
+      filter: [{"category": 5}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-threat] [data-icmpRedirect].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/threat';
+    const conditions = {
+      filter: [{"category": 6}]
+    };
+    movePage(url, conditions);
+  });
+  $('[data-threat] [data-miningNodes].feedbar-item').off('click.feedbarlink').on('click.feedbarlink', function(){
+    const url = '/event/threat';
+    const conditions = {
+      filter: [{"category": 7}]
+    };
+    movePage(url, conditions);
+  });
+
+
+});
+/*************************************/
+</script>
+<script>
+  var FEEDBARTIME = 3 * 60 * 1000;
+  var myfeedbarInterval = (cb, TIME) => {
+    let flag = true;
+    const tick = () => {
+      setTimeout(() => {
+        if(!flag) return;
+        cb().then((data)=>{
+          tick();
+        });
+      }, TIME);
+    }
+
+    cb().then((data)=>{
+      tick();
+    });
+    return () => { flag = false; }
+  }
+</script>
+<script>
+  var requestFeedbarStatus = function(type){
+    return fetch(`/header/feedbar/${type}`)
+    .then(function(response){
+      return response.json();
+    })
+  }
+</script>
+<script>
+  var feedSetStatusAsset = (data) => {
+
+    logdata('/header/feedbar/asset', data);
+
+    const ObjView = data.ObjView;
+    const $asset = $('#feedbar [data-asset]');
+    const $discover = $asset.find('[data-discover]');
+    const $disconnected = $asset.find('[data-disconnected]');
+
+    let discover = 0;
+    let disconnected = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      if (element.category == 0) discover = count;
+      if (element.category == 1) disconnected = count;
+    });
+
+    $discover.find('.num').text(discover);
+    $disconnected.find('.num').text(disconnected);
+
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    if(discover) $discover.addClass('is-discover'); else $discover.removeClass('is-discover');
+    if(disconnected) $disconnected.addClass('is-warning'); else $disconnected.removeClass('is-warning');
+    /*************************************/
+
+    const isCount = (discover || disconnected) > 0
+    return isCount
+  }
+  var feedSetStatusSensor = (data) => {
+
+    logdata('/header/feedbar/asset', data);
+
+    const ObjView = data.ObjView;
+    const $sensor = $('#feedbar [data-sensor]');
+    const $discover = $sensor.find('[data-discover]');
+    const $disconnected = $sensor.find('[data-disconnected]');
+
+    let discover = 0;
+    let disconnected = 0;
+
+    $.each(ObjView, function(index, element){
+      discover = element.sensorDiscoverCount;
+      disconnected = element.sensorDisconnectedCount;
+    });
+
+    $discover.find('.num').text(discover);
+    $disconnected.find('.num').text(disconnected);
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    if(discover) $discover.addClass('is-discover'); else $discover.removeClass('is-discover');
+    if(disconnected) $disconnected.addClass('is-warning'); else $disconnected.removeClass('is-warning');
+    /*************************************/
+
+    const isCount = (discover || disconnected) > 0
+    return isCount
+  }
+  var feedSetStatusVulnerability = (data) => {
+
+    logdata('/header/feedbar/vulnerability', data);
+
+    const ObjView = data.ObjView;
+    const $vulnerability = $('#feedbar [data-vulnerability]');
+    const $zeroday = $vulnerability.find('[data-zeroday]');
+    const $cve = $vulnerability.find('[data-cve]');
+    const $oneday = $vulnerability.find('[data-oneday]');
+
+    let zeroday = 0;
+    let cve = 0;
+    let oneday = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      if (element.category == 0) zeroday = count;
+      if (element.category == 1) cve = count;
+      if (element.category == 2) oneday = count;
+    });
+
+    $zeroday.find('.num').text(zeroday);
+    $cve.find('.num').text(cve);
+    $oneday.find('.num').text(oneday);
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    if(zeroday) $zeroday.addClass('is-warning'); else $zeroday.removeClass('is-warning');
+    if(cve) $cve.addClass('is-warning'); else $cve.removeClass('is-warning');
+    if(oneday) $oneday.addClass('is-warning'); else $oneday.removeClass('is-warning');
+    /*************************************/
+
+    const isCount = (zeroday || cve || oneday) > 0
+    return isCount
+  }
+  var feedSetStatusThreat = (data) => {
+
+    logdata('/header/feedbar/threat', data);
+
+    const ObjView = data.ObjView;
+    const $threat = $('#feedbar [data-threat]');
+
+    const $spoofing = $threat.find('[data-spoofing]');
+    const $zombieService = $threat.find('[data-zombieService]');
+    const $backdoor = $threat.find('[data-backdoor]');
+    const $icmpRedirect = $threat.find('[data-icmpRedirect]');
+    const $miningNodes = $threat.find('[data-miningNodes]');
+
+    let spoofing = 0;
+    let zombieService = 0;
+    let backdoor = 0;
+    let icmpRedirect = 0;
+    let miningNodes = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      if(element.category == 3) spoofing = count;
+      if(element.category == 4) zombieService = count;
+      if(element.category == 5) backdoor = count;
+      if(element.category == 6) icmpRedirect = count;
+      /**
+      * @date 2021-04-23
+      * @desc fix bug not working of alarm icon status
+      * @company
+      */
+      if(element.category == 7) miningNodes = count;
+      /*************************************/
+    });
+
+    $spoofing.find('.num').text(spoofing);
+    $zombieService.find('.num').text(zombieService);
+    $backdoor.find('.num').text(backdoor);
+    $icmpRedirect.find('.num').text(icmpRedirect);
+    $miningNodes.find('.num').text(miningNodes);
+
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    if(spoofing) $spoofing.addClass('is-warning'); else $spoofing.removeClass('is-warning');
+    if(zombieService) $zombieService.addClass('is-warning'); else $zombieService.removeClass('is-warning');
+    if(backdoor) $backdoor.addClass('is-warning'); else $backdoor.removeClass('is-warning');
+    if(icmpRedirect) $icmpRedirect.addClass('is-warning'); else $icmpRedirect.removeClass('is-warning');
+    if(miningNodes) $miningNodes.addClass('is-warning'); else $miningNodes.removeClass('is-warning');
+    /*************************************/
+
+    const isCount = (spoofing || zombieService || backdoor || icmpRedirect || miningNodes) > 0;
+    return isCount
+  }
+</script>
+<script>
+  function updateFeedbar(){
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    const feedbarAssetDataStopper = () => {
+      const  assetData = requestFeedbarStatus('asset');
+      return _assetData = assetData.then(feedSetStatusAsset);
+    }
+    const feedbarSensorDataStopper = () => {
+      const sensorData = requestFeedbarStatus('sensor');
+      return _sensorData = sensorData.then(feedSetStatusSensor);
+    }
+    const feedbarVulnerabililtyStopper = () => {
+      const vulnerabililtyData = requestFeedbarStatus('vulnerability');
+      return _vulnerabililtyData = vulnerabililtyData.then(feedSetStatusVulnerability);
+    }
+    const feedbarThreatDataStopper = () => {
+      const threatData = requestFeedbarStatus('threat');
+      return _threatData = threatData.then(feedSetStatusThreat);
+    }
+    /*************************************/
+    return {feedbarAssetDataStopper, feedbarSensorDataStopper, feedbarVulnerabililtyStopper, feedbarThreatDataStopper}
+  }
+</script>
+<script>
+  function updateFeedbarAlarm({feedbarAssetDataStopper, feedbarSensorDataStopper, feedbarVulnerabililtyStopper, feedbarThreatDataStopper}){
+    /**
+    * @date 2021-04-23
+    * @desc fix bug not working of alarm icon status
+    * @company
+    */
+    const urls = [feedbarAssetDataStopper(), feedbarSensorDataStopper(), feedbarVulnerabililtyStopper(), feedbarThreatDataStopper()];
+    return Promise.all(urls).then(datas=>{
+    /*************************************/
+      let isAlarm = false;
+      isAlarm = datas.find(item=>item);
+      return isAlarm;
+    }).then((isAlarm)=>{
+      const $alarmFeedbar = $('#alarm-feedbar').removeClass('is-alarm');
+      if(isAlarm) $alarmFeedbar.addClass('is-alarm');
+    });
+  }
+/**
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+*/
+window.addEventListener('DOMContentLoaded',()=>{
+  /**
+  * @date 2021-04-23
+  * @desc fix bug not working of alarm icon status
+  * @company
+  */
+  myfeedbarInterval(()=>{ return updateFeedbarAlarm(updateFeedbar())}, FEEDBARTIME);
+  /*************************************/
+  $('#btn-feedbar-refresh').off('click.feedbarRefresh').on('click.feedbarRefresh', function(){
+    updateFeedbarAlarm(updateFeedbar());
+  });
+});
+/*************************************/
+</script>

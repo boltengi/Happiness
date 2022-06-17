@@ -1,0 +1,392 @@
+<!-- deck-wrap -->
+<div class="deck-wrap">
+  <div class="deck-graph-devide-wrap">
+    <div class="deck-graph-devide" data-assettype>
+      <!-- deck -->
+      <article class="deck loading-parent" id="assettype-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("assetScan|Total asset types") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("asset|Full period") %>)</span>
+            <span class="deck-total-text" data-total><span class="num">0</span></span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <div class="chart-box title-style">
+            <div class="chart">
+              <div id="myDoughnutHighChart"></div>
+            </div>
+            <div class="chart-legend-list">
+              <div class="chart-legend-list-title"><%= __("assetScan|Asset types Top5") %></div>
+              <ul>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+      <!-- //deck -->
+    </div>
+    <div class="deck-graph-devide" data-operating>
+      <!-- deck -->
+      <article class="deck loading-parent" id="operating-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("assetScan|Status of asset connection") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("asset|Full period") %>)</span>
+            <span class="deck-total-text" data-total><span class="num">0</span></span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <div class="chart-box">
+            <div class="chart">
+              <div id="myPieHighChart"></div>
+            </div>
+            <div class="chart-legend-list">
+              <ul>
+                <li>
+                  <div class="chart-legend" data-connection>
+                    <span class="legend-title">
+                      <span class="icon-graph-legend legend-alpha"></span>
+                      <%= __("assetScan|Connected") %>
+                    </span>
+                    <div class="legend-values">
+                      <span class="legend-value"><span class="num">0</span></span>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="chart-legend" data-disconnection>
+                    <span class="legend-title">
+                      <span class="icon-graph-legend legend-gamma"></span>
+                      <%= __("assetScan|Disconnected") %>
+                    </span>
+                    <div class="legend-values">
+                      <span class="legend-value"><span class="num">0</span></span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+      <!-- //deck -->
+    </div>
+    <div class="deck-bar-devide" data-authorizedstatus>
+      <!-- deck -->
+      <article class="deck loading-parent" id="authorized-graph">
+        <div class="deck-header">
+          <h1 class="deck-title"><%= __("assetScan|Status of authorization") %></h1>
+          <div class="deck-header-right">
+            <span class="deck-term-text">(<%= __("asset|Full period") %>)</span>
+          </div>
+        </div>
+        <div class="deck-body">
+          <div class="deck-bar-wrap">
+            <div class="bar-graph-box" data-authorized>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("assetScan|Authorized") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph alpha-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+            <div class="bar-graph-box" data-unauthorized>
+              <h2 class="bar-graph-title">
+                <span class="title"><%= __("assetScan|Unauthorized") %></span>
+                <span class="value"><span class="num">0</span></span>
+              </h2>
+              <div class="bar-graph beta-style">
+                <span class="bar-graph-bar"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <!-- //deck -->
+    </div>
+  </div>
+</div>
+<!-- //deck-wrap -->
+<style>
+  #myDoughnutHighChart {
+    width: 170px;
+    height: 170px;
+  }
+  #myPieHighChart {
+    width: 200px;
+    height: 200px;
+  }
+</style>
+<% if(typeof rendering == 'undefined') { %>
+<!--
+* @date 2021-05-14
+* @desc front performance improvement by lighthouse
+* @company
+* -->
+<script src="/js/ui-lib.highcharts.min.js"></script>
+<!-- // @date 2021-05-14 -->
+<script>
+  var setStatusAssettype = function(data, maxLegend = 5){
+
+    logdata('/asset/detection/status/assettype', data);
+
+    const ObjView = data.ObjView;
+
+    const $assettype = $('[data-assettype]');
+    const $chartLegendList = $assettype.find('.chart-legend-list ul');
+    let total = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+    });
+
+    $assettype.find('[data-total]').find('.num').html(format.numComma(total));
+
+    $.each(ObjView, function(index, element){
+
+      if (index >= maxLegend) return;
+
+      let style = ''
+      switch(index){
+        case 0 : style = 'alpha'; break;
+        case 1 : style = 'beta'; break;
+        case 2 : style = 'gamma'; break;
+        case 3 : style = 'delta'; break;
+        case 4 : style = 'epsilon'; break;
+        default : style = 'alpha'; break;
+      }
+
+      const htmlli = `<li>
+        <div class="chart-legend">
+          <span class="legend-title">
+            <span class="icon-graph-legend legend-${style}"></span>
+            ${element.status}
+          </span>
+          <div class="legend-values">
+            <span class="legend-value"><span class="num">${format.numComma(element.count)}</span>
+          </div>
+        </div>
+      </li>`
+      $chartLegendList.append(htmlli);
+    });
+
+    const graphData = $.map(ObjView, function(element, index){
+      if (index >= maxLegend) return;
+      return { name: element.status, y: Number(element.count) };
+    });
+
+    // Create the chart
+		Highcharts.chart('myDoughnutHighChart', {
+      credits: {
+        enabled: false
+      },
+	    chart: {
+				type: 'pie',
+				margin: [0, 0, 0, 0],
+				spacingTop: 0,
+				spacingBottom: 0,
+				spacingLeft: 0,
+				spacingRight: 0
+	    },
+			title: {
+				text: undefined
+			},
+	    plotOptions: {
+        pie: {
+					allowPointSelect: true,
+      		cursor: 'pointer',
+          shadow: false,
+          center: ['50%', '50%'],
+					colors: [GRAPH_COLOR.PRIMARY,GRAPH_COLOR.POINT,GRAPH_COLOR.SECONDARY,GRAPH_COLOR.DELTA,GRAPH_COLOR.EPSILON],
+        }
+	    },
+      tooltip: {
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        pointFormat: '<span>- {point.name} : {point.y}</span>',
+        padding: 4
+      },
+	    series: [{
+        data: graphData,
+        size: '170px',
+				innerSize: '50%',
+				states: {
+					hover: false
+				},
+				borderWidth: 0,
+        dataLabels: {
+          formatter: function () {
+            return this.y > 5 ? this.point.name : null;
+          },
+          color: '#ffffff',
+          distance: -30,
+					borderWidth: null
+        }
+	    }]
+		});
+
+    return { isLoading: true };
+  }
+  var setStatusOperating = function(data, maxLegend = 3){
+
+    logdata('/asset/detection/status/operating', data);
+
+    const ObjView = data.ObjView;
+
+    const $operating = $('[data-operating]');
+    let total = 0;
+    let connection = 0;
+    let disconnection = 0;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status == 1) connection = count;
+      if (element.status == 0) disconnection = count;
+    });
+
+    $operating.find('[data-total]').find('.num').html(format.numComma(total));
+    $operating.find('[data-connection]').find('.num').html(format.numComma(connection));
+    $operating.find('[data-connection]').find('.bar-graph-bar').css({width: connection/total*100 + '%'});
+    $operating.find('[data-disconnection]').find('.num').html(format.numComma(disconnection));
+    $operating.find('[data-disconnection]').find('.bar-graph-bar').css({width: disconnection/total*100 + '%'});
+
+    const graphData = [
+      { name: '<%= __("assetScan|Connected") %>', y: 0 },
+      { name: '<%= __("assetScan|Disconnected") %>', y: 0 }
+    ];
+    ObjView.map(function(element, index){
+      const count = Number(element.count);
+      if (element.status == 0) return graphData[1] = { name: '<%= __("assetScan|Disconnected") %>', y: count };
+      if (element.status == 1) return graphData[0] = { name: '<%= __("assetScan|Connected") %>', y: count };
+    });
+
+    Highcharts.chart('myPieHighChart', {
+      credits: {
+        enabled: false
+      },
+	    chart: {
+				type: 'pie',
+				margin: [0, 0, 0, 0],
+				spacingTop: 0,
+				spacingBottom: 0,
+				spacingLeft: 0,
+				spacingRight: 0
+	    },
+			title: {
+				text: undefined
+			},
+	    plotOptions: {
+        pie: {
+					allowPointSelect: true,
+      		cursor: 'pointer',
+          shadow: false,
+          center: ['50%', '50%'],
+					colors: [GRAPH_COLOR.PRIMARY,GRAPH_COLOR.SECONDARY,GRAPH_COLOR.POINT,GRAPH_COLOR.DELTA,GRAPH_COLOR.EPSILON],
+        }
+	    },
+      tooltip: {
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        pointFormat: '<span>- {point.name} : {point.y}</span>',
+        padding: 4
+      },
+	    series: [{
+        data: graphData,
+        size: '170px',
+				states: {
+					hover: false
+				},
+				borderWidth: 0,
+        dataLabels: {
+          formatter: function () {
+            return this.y > 5 ? this.point.name : null;
+          },
+          color: '#ffffff',
+          distance: -30,
+					borderWidth: null
+        }
+	    }]
+		});
+
+    return { isLoading: true };
+  }
+  var setStatusAuthorized = function(data, maxLegend = 3){
+
+    logdata('/asset/detection/status/authorized', data);
+
+    const ObjView = data.ObjView;
+
+    const $authorizedstatus = $('[data-authorizedstatus]');
+    let total = 0;
+    let authorized = 0;
+    let unauthorized = 0;;
+
+    $.each(ObjView, function(index, element){
+      const count = Number(element.count);
+      total += count;
+      if (element.status == 0) unauthorized = count;
+      if (element.status == 1) authorized = count;
+    });
+
+    $authorizedstatus.find('[data-authorized]').find('.num').html(format.numComma(authorized));
+    $authorizedstatus.find('[data-authorized]').find('.bar-graph-bar').css({width: authorized/total*100 + '%'});
+    $authorizedstatus.find('[data-unauthorized]').find('.num').html(format.numComma(unauthorized));
+    $authorizedstatus.find('[data-unauthorized]').find('.bar-graph-bar').css({width: unauthorized/total*100 + '%'});
+
+    return { isLoading: true };
+  }
+</script>
+<script>
+  var assettypeData = requestStatus('assettype');
+  assettypeData
+  .then((data)=>{
+    data.loading.setLoaded(true);
+    return data.data
+  })
+  .then(setStatusAssettype)
+  .then(function (data) {
+    if(data.isLoading){
+      const $loadingParent = $(`#assettype-graph`);
+      removeLoading($loadingParent);
+    }
+  });
+
+  var operatingData = requestStatus('operating');
+  operatingData
+  .then((data)=>{
+    data.loading.setLoaded(true);
+    return data.data
+  })
+  .then(setStatusOperating)
+  .then(function (data) {
+    if(data.isLoading){
+      const $loadingParent = $(`#operating-graph`);
+      removeLoading($loadingParent);
+    }
+  });
+
+  var authorizedData = requestStatus('authorized');
+  authorizedData
+  .then((data)=>{
+    data.loading.setLoaded(true);
+    return data.data
+  })
+  .then(setStatusAuthorized)
+  .then(function (data) {
+    if(data.isLoading){
+      const $loadingParent = $(`#authorized-graph`);
+      removeLoading($loadingParent);
+    }
+  });
+</script>
+<% } %>

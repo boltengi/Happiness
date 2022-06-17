@@ -1,0 +1,129 @@
+<% const columnObj = {}
+  for (let i = 0; i < columnList.length ; i = i+2){
+    columnObj[columnList[i]] = columnList[i+1]
+  }
+%>
+<!-- modal-comp -->
+<div class="modal-comp" id="modalNew" data-height="600px">
+  <div class="modal-align">
+    <div class="modal-box loading-parent">
+      <div class="modal-wrap modal-tab">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-tab-links">
+              <div class="modal-tab-link on"><a href=""><%= __("administrationGroup|New group") %></a></div>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close"><span class="sr-only"><%= __("administrationGroup|close") %></span></button>
+        </div>
+        <!-- Modal container -->
+        <div class="modal-container" data-validation>
+          <div class="modal-tab-content on">
+            <div class="form-group-list">
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Parent group") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required>
+                      <select name="" id="newSensor_group">
+                        <% for (let j = 0; j < groupList.length; j += 2) { %>
+                          <option value="<%= groupList[j] %>"><%= groupList[j+1] %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                 <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Group name") %></dt>
+                  <dd>
+                    <div class="ui-input default-style" data-valid data-required data-maxbyte data-rel="<%= columnObj.group_name %>"><input type="text" placeholder="" id="newGroup_name"></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationGroup|Maximum request length exceeded") %>'><%= __("administrationGroup|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt class="is-essential"><%= __("administrationGroup|Add user") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-valid data-required data-multi="true" data-newUser>
+                      <select name="" id="newUsers">
+                          <option value=""><%= __("administrationGroup|Select one at least.") %></option>
+                        <% for (let j = 0; j < userList.length; j += 2) { %>
+                          <option value="<%= userList[j] %>"><%= userList[j+1] %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="form-group">
+                <dl>
+                  <dt><%= __("administrationGroup|Description") %></dt>
+                  <dd>
+                    <div class="ui-textarea default-style" data-valid data-maxbyte data-rel="<%= columnObj.desc %>"><textarea name="" id="newDesc" cols="30" rows="10"></textarea></div>
+                  </dd>
+                  <dd>
+                    <div class="form-info"><p class="warning-status" title='<%= __("administrationGroup|Maximum request length exceeded") %>'><%= __("administrationGroup|Maximum request length exceeded") %></p></div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="btn-modal-box">
+            <button type="button" class="btn btn-normal secondary-style modal-btn-close"><%= __("administrationGroup|Close") %></button>
+            <button type="button" id="newBtn" class="btn btn-normal primary-style long-size"><%= __("administrationGroup|Save changes") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //modal-comp -->
+
+<script>
+  logdata('/admin/group/newgroup', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  maxbyte('.ui-input[data-maxbyte]');
+  maxbyte('.ui-textarea[data-maxbyte]');
+  required('.ui-input[data-required]');
+  required('.ui-select[data-required]');
+</script>
+
+<script>
+	validation('#modalNew [data-validation]');
+  var validationNew = $('#modalNew [data-validation]').data('validation');
+</script>
+
+<script>
+  var modalNew = popupModal('#modalNew');
+  modalNew.open('#modalNew');
+
+  $('#newBtn').on('click', function(e){
+
+    const $parent = $('#modalNew .form-group-list').eq(0);
+    const group_name = $parent.find('#newGroup_name').val();
+    const sensor_group = $parent.find('#newSensor_group').val();
+    const users = $.map($parent.find('[data-newUser]').find('.selected-item'), function(ele){
+      return $(ele).data('originval');
+    });
+    const desc = $parent.find('#newDesc').val();
+    const dataValue = {
+      "name": group_name,
+      "parent": sensor_group,
+      "user_list": users,
+      "desc": desc
+    }
+
+    requestCreate(dataValue, validationNew, $('#modalNew .loading-parent'));
+  });
+</script>

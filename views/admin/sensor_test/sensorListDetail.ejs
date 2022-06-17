@@ -1,0 +1,133 @@
+<div class="accordion-detail">
+  <div class="accordion-detail-btn-box">
+    <button type="button" class="btn btn-icon btn-accordion-minus">
+      <span class="icon icon-accordion-minus"><span
+          class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+    </button>
+  </div>
+  <!-- accordion-detail-content -->
+  <div class="accordion-detail-content">
+    <div class="table-comp">
+      <table class="table detail-style">
+        <caption><%= __("administrationSensor|sensorDetailInformation") %></caption>
+        <colgroup>
+          <col style="width: 40%; " />
+          <col style="width: 30%; " />
+          <col style="width: 30%; " />
+        </colgroup>
+        <tbody>
+          <% for( let i = 0; i < ObjView.length; i++ ){ %>
+          <% const data = ObjView[i]; %>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Sensor ID") %></dt>
+                  <dd><%= data.sensor_id %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Status") %></dt>
+                  <dd>
+                    <% if (data.status == 0) { %><span class="disconnected-color"><%= __("administrationSensor|Disconnected") %></span>
+                    <% } else if (data.status == 1) { %><span class="connected-color"><%= __("administrationSensor|Connected") %></span><% } %>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Version") %></dt>
+                  <dd><%= data.version %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Reg time") %></dt>
+                  <dd><%= dateFormat(data.regtime) %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Uptime") %></dt>
+                  <dd><%= data.uptime %></dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Last connected time") %></dt>
+                  <dd><%= dateFormat(data.last_connected_time) %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Asset") %></dt>
+                  <dd>
+                    <%= __("administrationSensor|Total") %> - <%= data.asset_total_count %> /
+                    <span class="connected-color"><%= __("administrationSensor|Connected") %></span> - <%= data.asset_conn_count %> /
+                    <span class="disconnected-color"><%= __("administrationSensor|Disconnected") %></span> - <%= data.asset_disconn_count %>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Sensor Type") %></dt>
+                  <dd>
+                    <% if(data.sensor_type == 0) { %> Sensor Device
+                    <% } else if(data.sensor_type == 1) { %> Embedded Software
+                    <% } else { %> Client Software <% } %>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+            <td>
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("administrationSensor|Asset list") %></dt>
+                  <dd>
+                    <div class="ui-select default-style" data-width="194px">
+                      <select name="" id="">
+                        <% for (let j = 0; j < data.asset_list.length; j++){ %>
+                        <option value="asset<%=i%>-<%=j%>"><%= data.asset_list[j] %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- //accordion-detail-content -->
+</div>
+
+<script>
+  var data = <%- JSON.stringify(ObjView) %>;
+  console.log(data)
+</script>
+<script>
+  selectDropdown('.ui-select');
+  formWidth();
+</script>

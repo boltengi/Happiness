@@ -1,0 +1,47 @@
+/**********************************
+ ********** list **************
+ **********************************/
+.ul-list
+{
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.ul-list li
+{
+    list-style: none;
+}
+
+.ul-list li + li
+{
+    margin-top: 2px;
+}
+
+.list-style
+{
+    font-size: 10px;
+
+    position: relative;
+
+    margin: 0;
+    padding-left: 6px;
+}
+
+.list-style:before
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    content: '-';
+}
+
+/**********************************
+ ********** spacing **************
+ **********************************/
+.top-spacing
+{
+    margin-top: 5px;
+}

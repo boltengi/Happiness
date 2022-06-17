@@ -1,0 +1,179 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("wirelessAP|Surveillance of AP with stationary") %></h2>
+    </div>
+
+    <div class="card-body">
+      <div class="chart-divide-header top-spacing">
+        <div class="chart-header-left">
+          <div class="title-left-item">
+            <div id="apList">
+              <div class="ui-select default-style" data-width="300px">
+                <select name="">
+                  <option value=""><%= __("wirelessAP|Select from AP List") %></option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-header-right">
+          <!-- <div class="title-right-item">
+            <span class="ui-switch-label default-style"><%= __("wirelessAP|On Off") %></span>
+            <div class="ui-switch default-style">
+              <input type="checkbox" name="switch0" id="switch0">
+              <label for="switch0"><span class="sr-only"><%= __("wirelessAP|switch") %></span></label>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div id="graph">
+        <%- include('./apWithStationaryGraph.ejs', {rendering: 'dummy'})%>
+      </div>
+    </div>
+
+    <div class="card-body top-spacing">
+      <div id="assetMonitor" class="loading-parent pick-parent">
+        <div class="html-container">
+          <%- include('./apWithStationaryMonitor.ejs', {
+            ObjView : [],
+            pages : 1, current : 1,
+            time: {type: 'detection_time', from: '', to: ''},
+            rendering: 'dummy'
+          })%>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  formWidth();
+  selectDropdown('.ui-select.default-style');
+</script>
+<script>
+  var sensor_id = getState().sensor_id;
+  var ap = getState()[sensor_id];
+  var isExistAP = ap ? ap.ap_mac : ap;
+  if(!sensor_id || (ap ? !ap.ap_mac : !ap)){
+    requestGraph(sensor_id);
+    logdata('/wireless/apWithStationary/apNameList', ap);
+  }
+  if (sensor_id) {
+    const ap = getState()[sensor_id];
+
+    const apListLoading = requestAPList();
+    apListLoading.then(function(data){
+
+      logdata('/wireless/apWithStationary/apNameList', data);
+
+      const $apList = $('#apList');
+      $apList.html(`<div class="ui-select default-style" data-width="300px"><select name=""></select></div>`);
+      const $apListSelect = $apList.find('select');
+      const apList = data.ObjView || [];
+      if(!isExistAP) $apListSelect.append(`<option value=""><%= __("wirelessAP|Select from AP List") %></option>`);;
+      $.each(apList, function(index, element){
+        const isSelected = ap && element.ap_mac == ap.ap_mac && element.name == ap.ap_name;
+        $apListSelect.append(`<option value="${element.ap_mac}" ${isSelected ? "selected" : ""} id="aplist${index}"></option>`);
+        $apListSelect.find('#aplist' + index)[0].innerHTML = element.name;
+      });
+
+      maintainState();
+      /**
+      * @date 2021-04-12
+      * @desc ap list select 에 mac 정보 노출
+      * @company
+      */
+      selectDropdown('#apList .ui-select.default-style' ,{
+        templates: {
+          selectedItem: function(element){
+            const {originval,textval,dataval} = element;
+            const html = `${textval}${ textval != "<%= __("wirelessAP|Select from AP List") %>" ? ` (${originval})` : "" }`;
+            return html;
+          },
+          option: function(element){
+            const {originval, textval, dataval, isSelected} = element;
+            const html = `
+              <li class="${this.selectItemClass}${isSelected ?' on' : ''}" data-originval="${originval}">
+                <a href="#">${textval}${ textval != "<%= __("wirelessAP|Select from AP List") %>" ? ` (${originval})` : "" }</a>
+              </li>
+            `;
+            return html;
+          }
+        }
+      });
+      /*************************************/
+      if(!isExistAP) $apList.find('.ui-select').data('selectDropdown').open();
+      formWidth();
+
+      if(!isExistAP) return;
+
+      const ap_mac = ap.ap_mac;
+
+      const page = getState().page || 1;
+      const entries = getState().entries || 10;
+
+      const time = getState().time || null;
+      const stateFilter = getState().filter && getState().filter.length ? getState().filter : null;
+      const filters = stateFilter && stateFilter.map(function(element){
+        const filter = {};
+        filter[element.key.originval] = element.value.originval;
+        return filter;
+      });
+
+      requestList(page, entries, sensor_id, ap_mac, time, filters);
+      requestGraph(sensor_id);
+    })
+    .catch(function(error){console.error('Error:', error)});
+  }
+
+  if(!sensor_id){
+    $('#apList select').prop('disabled', true);
+  }
+
+  if(sensor_id && isExistAP){
+    removePick($('#assetMonitor'));
+  }else{
+    $(`#assetMonitor .html-container`).append($('#tableTemplate .template-container .tab-content-table').clone().html())
+    addPick($('#assetMonitor'),{mainMsg: "<%= __("wirelessAP|Please select 'Sensor & AP' in sensor tree") %>", subMsg: "<%= __("wirelessAP|There is no data to show you right now.") %>"});
+  }
+</script>
+
+<script>
+  var $apList = $('#apList');
+  $apList.off('change.apList').on('change.apList', 'select',function(e){
+    const page = 1;
+    const entries = getState().entries;
+    const sensor_id = getState().sensor_id;
+    const ap_mac = $(this).find('option:selected').val();
+    const ap_name = $(this).find('option:selected').text();
+
+    const time = getState().time; // maintain time after changing sensor tree
+    const stateFilter = getState().filter && getState().filter.length ? getState().filter : null;
+    const filters = stateFilter && stateFilter.map(function(element){
+      const filter = {};
+      filter[element.key.originval] = element.value.originval;
+      return filter;
+    }); // maintain time after changing sensor tree
+
+    setState({page: page, [sensor_id]: {ap_name: ap_name,ap_mac:ap_mac}});
+
+    requestList(page, entries, sensor_id, ap_mac, time, filters);
+    requestGraph();
+
+    removePick($('#assetMonitor'));
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

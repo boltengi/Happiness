@@ -1,0 +1,398 @@
+.tail-datetime-calendar
+{
+    box-sizing: border-box;
+    width: 213px;
+
+    border: 3px solid var(--calendar-default-border-color);
+    border-radius: 4px;
+    background: var(--calendar-default-bg);
+}
+
+.tail-datetime-calendar .calendar-actions
+{
+    position: relative;
+
+    display: block;
+
+    padding-top: 8px;
+    padding-bottom: 9px;
+
+    text-align: center;
+
+    background-color: var(--calendar-default-header-bg);
+}
+
+.tail-datetime-calendar .calendar-actions span.label
+{
+    font-family: var(--font-family-title);
+    font-size: 9px;
+    line-height: 1;
+    line-height: 22px;
+
+    display: inline-block;
+
+    vertical-align: top;
+
+    color: var(--calendar-default-header-color);
+    text-shadow: none;
+}
+
+.tail-datetime-calendar .calendar-actions span.action-prev,
+.tail-datetime-calendar .calendar-actions span.action-next
+{
+    position: absolute;
+    top: 50%;
+
+    width: 22px;
+    height: 22px;
+    margin-top: -11px;
+
+    background-color: var(--calendar-default-btn-bg);
+}
+
+.tail-datetime-calendar .calendar-actions span.action-prev
+{
+    left: 43px;
+}
+
+.tail-datetime-calendar .calendar-actions span.action-next
+{
+    right: 43px;
+}
+
+.tail-datetime-calendar .calendar-actions span.action-prev:after
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 0;
+    height: 0;
+    margin-top: -4px;
+    margin-left: -2px;
+
+    content: '';
+
+    border-top: 4px solid transparent;
+    border-right: 5px solid var(--calendar-default-btn-color);
+    border-bottom: 4px solid transparent;
+}
+
+.tail-datetime-calendar .calendar-actions span.action-next:after
+{
+    position: absolute;
+    top: 50%;
+    right: 50%;
+
+    width: 0;
+    height: 0;
+    margin-top: -4px;
+    margin-right: -2px;
+
+    content: '';
+
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 5px solid var(--calendar-default-btn-color);
+}
+
+.tail-datetime-calendar .calendar-actions span:first-child:before,
+.tail-datetime-calendar .calendar-actions span:last-child:before
+{
+    display: none;
+}
+
+.tail-datetime-calendar .calendar-actions span[data-action]:hover
+{
+    background-color: transparent;
+}
+
+.tail-datetime-calendar .calendar-datepicker
+{
+    box-sizing: border-box;
+    padding-right: 8px;
+    padding-bottom: 11px;
+    padding-left: 8px;
+
+    border-bottom: 1px solid var(--calendar-default-content-border-color);
+    border-radius: 4px;
+    background: var(--calendar-default-content-bg);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr th
+{
+    font-size: 8px;
+
+    color: var(--calendar-default-thead-color);
+    background: var(--calendar-default-thead-bg);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week
+{
+    font-size: 8px;
+    line-height: 16px;
+
+    height: 16px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week:first-child
+{
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week:last-child
+{
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td
+{
+    box-sizing: border-box;
+    height: 30px;
+    padding-top: 4px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr:last-child td
+{
+    height: 33px;
+    padding-bottom: 3px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day
+{
+    height: 20px;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td,
+.tail-datetime-calendar .calendar-datepicker table tr th
+{
+    line-height: 1;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week span.inner
+{
+    font-family: var(--font-family-title);
+    font-size: 8px;
+    line-height: 13px;
+
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+
+    color: var(--calendar-default-content-color);
+    border-width: 2px;
+    border-radius: 50%;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day:hover span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week:hover span.inner
+{
+    border-color: transparent;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-next,
+.tail-datetime-calendar .calendar-datepicker table tr td.date-previous
+{
+    background-color: var(--calendar-default-bg-disabled);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-next span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr td.date-previous span.inner
+{
+    color: var(--calendar-default-color-disabled);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-disabled span.inner
+{
+    color: var(--calendar-default-color-disabled);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td:first-child
+{
+    border-right: 1px solid var(--calendar-default-week-border-color);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td:last-child
+{
+    border-left: 1px solid var(--calendar-default-week-border-color);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-today:before
+{
+    display: none;
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-today span.inner
+{
+    color: var(--calendar-default-color-today);
+    border: 2px solid var(--calendar-default-border-color-today);
+    background: var(--calendar-default-bg-today);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day.date-select span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr td.calendar-day.date-select:hover span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week.date-select span.inner,
+.tail-datetime-calendar .calendar-datepicker table tr th.calendar-week.date-select:hover span.inner
+{
+    color: var(--calendar-default-color-today);
+    border-color: var(--calendar-default-border-color-today);
+    background: var(--calendar-default-bg-today);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-disabled
+{
+    background-color: var(--calendar-default-bg-disabled);
+}
+
+.tail-datetime-calendar .calendar-datepicker table tr td.date-disabled:after
+{
+    display: none;
+}
+
+.tail-datetime-calendar .calendar-timepicker
+{
+    display: flex;
+
+    padding-top: 8px;
+    padding-right: 38px;
+    padding-bottom: 8px;
+    padding-left: 38px;
+
+    border-top: 2px solid var(--timepicker-default-border-color);
+    border-radius: 4px;
+    background: var(--timepicker-default-bg);
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field
+{
+    box-sizing: border-box;
+    width: 31%;
+    height: 22px;
+    margin-right: 3%;
+    padding-top: 0;
+    padding-right: 14px;
+    padding-bottom: 0;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field:after
+{
+    line-height: 20px;
+
+    position: absolute;
+    top: 0;
+    right: -3px;
+
+    content: ':';
+
+    color: var(--timepicker-default-color);
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field:last-child
+{
+    margin-right: 0;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field:last-child:after
+{
+    display: none;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input[type=text]
+{
+    font-family: var(--font-family-title);
+    font-size: 10px;
+
+    box-sizing: border-box;
+    height: 22px;
+    padding-right: 0;
+    padding-left: 0;
+
+    vertical-align: top;
+
+    color: var(--timepicker-default-form-color);
+    border: 1px solid var(--timepicker-default-form-border-color);
+    background: var(--timepicker-default-form-bg);
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input[type=text]:focus
+{
+    color: var(--timepicker-default-form-color);
+    background-color: var(--timepicker-default-form-bg);
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step
+{
+    width: 14px;
+    height: 11px;
+
+    cursor: pointer;
+
+    border: none;
+    background-color: var(--calendar-default-btn-bg);
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-up
+{
+    top: 0;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-down
+{
+    top: 11px;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-up:before
+{
+    top: 5px;
+
+    margin-left: -2px;
+
+    border-width: 0 2px 3px 2px;
+    border-style: solid;
+    border-color: transparent transparent var(--timepicker-default-form-border-color) transparent;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input:focus + button + button.step-down:before
+{
+    border-color: transparent transparent var(--timepicker-default-form-border-color) transparent;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-down:before
+{
+    top: 3px;
+
+    margin-left: -2px;
+
+    border-width: 3px 2px 0 2px;
+    border-style: solid;
+    border-color: var(--timepicker-default-form-border-color) transparent transparent transparent;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input:focus + button + button.step-up:before
+{
+    border-color: var(--timepicker-default-form-border-color) transparent transparent transparent;
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-up:hover,
+.tail-datetime-calendar .calendar-timepicker .timepicker-field button.picker-step.step-down:hover,
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input:focus + button.picker-step,
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input:focus + button.picker-step + button.picker-step
+{
+    background-color: var(--calendar-default-btn-bg);
+}
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field label
+{
+    display: none;
+}
+
+.tail-datetime-calendar button.calendar-close
+{
+    display: none;
+}

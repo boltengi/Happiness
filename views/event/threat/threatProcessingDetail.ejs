@@ -1,0 +1,64 @@
+<div class="accordion-detail">
+  <!-- accordion-detail-content -->
+  <div class="accordion-detail-content">
+    <div class="table-comp">
+      <table class="table detail-style">
+        <caption>DetailInformation</caption>
+          <colgroup>
+            <col style="width: 50%; ">
+            <col style="width: 50%; ">
+          </colgroup>
+        <tbody>
+          <% for (let i = 0; i < ObjView.length; i++) { %>
+          <% const data = ObjView[i] %>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventThreat|Sensor name") %></dt>
+                  <dd><%= data.sensor_name %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info multi-style">
+                <dl>
+                  <dt><%= __("eventThreat|Data") %></dt>
+                  <dd>
+                    <% const dataData =  data.solution %>
+                    <% if (dataData) { %>
+                    <% let dataArr = dataData.split('|') %>
+                    <ul class="ul-style">
+                    <% for (let j = 0; j < dataArr.length; j++) { %>
+                      <li class="list-style"><%= dataArr[j] %></li>
+                    <% } %>
+                    </ul>
+                    <% } %>
+                  </dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="detail-info">
+                <dl>
+                  <dt><%= __("eventThreat|Response") %></dt>
+                  <dd><%= data.response %></dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- //accordion-detail-content -->
+</div>
+
+<script>
+  logdata('/event/threat/threatprocessingdetail', <%- JSON.stringify(locals) %>);
+</script>

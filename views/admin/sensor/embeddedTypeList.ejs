@@ -1,0 +1,451 @@
+<!-- search-area -->
+<div class="search-area">
+  <div class="search-right">
+    <!-- search-timefilter -->
+    <div class="search-timefilter">
+      <!-- timesearch-area -->
+      <div class="timesearch-area">
+        <div class="ui-radio default-style">
+          <input type="radio" name="time_type" id="embeddedtype_reg_time" checked>
+          <label for="embeddedtype_reg_time"><%= __("administrationSensor|Reg time") %></label>
+        </div>
+        <div class="ui-time">
+          <div class="time-setting">
+            <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("administrationSensor|Quick select") %></span></button>
+            <div class="time-setting-content">
+              <div class="time-setting-header">
+                <h3 class="time-setting-title"><%= __("administrationSensor|Quick select") %></h3>
+                <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+              </div>
+              <ul>
+                <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("administrationSensor|Today") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("administrationSensor|Last 7day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("administrationSensor|Last 30day") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("administrationSensor|This week") %></button></li>
+                <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("administrationSensor|This month") %></button></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ui-datepicker datepicker-from">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="embeddedtype_from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+          </div>
+          <span class="form-text">-</span>
+          <div class="ui-datepicker datepicker-to">
+            <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="embeddedtype_to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+          </div>
+        </div>
+      </div>
+      <!-- //.timesearch-area -->
+
+      <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("administrationSensor|search") %></span></span></button>
+
+      <!--
+      * @date 2021-04-15
+      * @desc add reset button
+      * @company
+      * -->
+      <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("administrationSensor|reset") %></span></span></button>
+      <!-- // @date 2021-04-15 -->
+    </div>
+    <!-- //search-timefilter -->
+
+    <!-- filter-custom -->
+    <div class="filter-custom">
+      <div class="custom-result">
+        <!-- <div class="result-item">
+          <div class="result-title" data-result-key="asset_name">Asset name</div>
+          <div class="result-text" data-result-value="Norma">Norma</div>
+          <button type="button" class="btn btn-icon btn-result-delete"><span class="icon icon-custom-search-delete"><span class="sr-only">delete</span></span></button>
+        </div> -->
+      </div>
+      <div class="custom-search">
+        <button type="button" class="btn btn-icon btn-custom-search"><span class="icon icon-custom-search"><span class="sr-only"><%= __("administrationSensor|Add filter") %></span></span></button>
+        <div class="custom-search-content">
+          <div class="custom-search-header">
+            <h3 class="custom-search-title"><%= __("administrationSensor|Add filter") %></h3>
+            <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("administrationSensor|close") %></span></button>
+          </div>
+          <div class="custom-search-box">
+            <div class="ui-search">
+              <div class="filter-select">
+              </div>
+              <div class="condition-box">
+              </div>
+            </div>
+          </div>
+          <div class="custom-search-footer">
+            <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("administrationSensor|Add") %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //filter-custom -->
+
+  </div>
+</div>
+<!-- //.search-area -->
+<div class="pack">
+  <!-- table-comp -->
+  <div class="table-comp table-accordion table-check">
+    <div class="table-scroll default-style">
+      <div class="thead-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " /><!-- checkbox -->
+            <col style="width: 5%; " /><!-- accordion btn -->
+            <col style="width: 18%; " /><!-- Sensor group -->
+            <col style="width: 22%; " /><!-- Sensor name -->
+            <col style="width: 18%; " /><!-- Product IP -->
+            <col style="width: 22%; " /><!-- Sensor ID -->
+            <col style="width: 6%; " /><!-- Status -->
+            <col style="width: 6%; " /><!-- Edit -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox" name="embeddedTypeCheckbox0" id="embeddedTypeCheckbox0">
+                  <label for="embeddedTypeCheckbox0"><span
+                      class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </th>
+              <th scope="col" class="cell-accordion">
+                <span class="accordion-empty"></span>
+              </th>
+              <th scope="col"><%= __("administrationSensor|Sensor group") %></th>
+              <th scope="col"><%= __("administrationSensor|Sensor name") %></th>
+              <th scope="col"><%= __("administrationSensor|Product IP") %></th>
+              <th scope="col"><%= __("administrationSensor|Sensor ID") %></th>
+              <th scope="col"><%= __("administrationSensor|Status") %></th>
+              <th scope="col"><%= __("administrationSensor|Edit") %></th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="tbody-scroll">
+        <table class="table default-style">
+          <caption><span class="sr-only"><%= __("administrationSensor|SensorList") %></span></caption>
+          <colgroup>
+            <col style="width: 3%; " /><!-- checkbox -->
+            <col style="width: 5%; " /><!-- accordion btn -->
+            <col style="width: 18%; " /><!-- Sensor group -->
+            <col style="width: 22%; " /><!-- Sensor name -->
+            <col style="width: 18%; " /><!-- Product IP -->
+            <col style="width: 22%; " /><!-- Sensor ID -->
+            <col style="width: 6%; " /><!-- Status -->
+            <col style="width: 6%; " /><!-- Edit -->
+          </colgroup>
+          <tbody>
+            <% for (let i = 0; i < ObjView.length; i++) { %>
+            <% const data = ObjView[i] %>
+            <!-- accordion-content-title -->
+            <tr class="accordion-content-title<%= (data.status) == -1 ? " is-detected cursor-pointer" : ""%>" data-sid="<%= data.idx %>"  data-sensor_id="<%= data.sensor_id %>" data-sensor_ip="<%= data.sensor_ip %>">
+              <td class="cell-check">
+                <div class="ui-checkbox default-style empty-type">
+                  <input type="checkbox"  name="embeddedType<%= i %>-check" id="embeddedType<%= i %>-check"">
+                  <label for="embeddedType<%= i %>-check"><span class="sr-only"><%= __("administrationSensor|select") %></span></label>
+                </div>
+              </td>
+              <td class="cell-accordion">
+                <button type="button" class="btn btn-icon btn-accordion"<%= (data.status) == -1 ? " disabled" : ""%>>
+                  <span class="icon icon-accordion"><span class="sr-only"><%= __("administrationSensor|open/fold") %></span></span>
+                </button>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color">-</span>
+                <% } else { %><span class="ellipsis"><%= data.group_name %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= __("administrationSensor|Not Registred") %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_name %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= data.sensor_ip %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_ip %></span><% } %>
+              </td>
+              <td>
+                <% if(data.status == -1){ %><span data-btn="detected" class="registred-color"><%= data.sensor_id %></span>
+                <% } else { %><span class="ellipsis"><%= data.sensor_id %></span><% } %>
+              </td>
+              <td class="cell-center">
+                <% if(data.status == 0 || data.status == -1){ %><span class="status status-disconnected"></span>
+                <% } else { %><span class="status status-connected"></span><% } %>
+              </td>
+              <td class="cell-center">
+                <button type="button" class="btn btn-icon btn-edit" data-btn="edit"<%= (data.status) == -1 ? " disabled" : undefined%>>
+                  <span class="icon icon-edit"><span class="sr-only"><%= __("administrationSensor|edit") %></span></span>
+                </button>
+              </td>
+            </tr>
+            <!-- //accordion-content-title -->
+            <!-- accordion-content -->
+            <tr class="accordion-content">
+              <td colspan="8">
+                <div class="accordion-content-box">
+                </div>
+              </td>
+            </tr>
+            <!-- //accordion-content -->
+            <% } %>
+          </tbody>
+        </table>
+        <!--
+        * @date 2021-05-31
+        * @desc front performance improvement - dummy rendering
+        * @company
+        * -->
+        <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+        <!-- // @date 2021-05-31 -->
+        <!-- empty -->
+        <div class="empty">
+          <div class="empty-box">
+            <div class="symbol symbol-empty">
+              <span class="symbol-icon question-style"></span>
+              <div class="symbol-figure empty-style"></div>
+            </div>
+            <p class="main-msg"><%= __("administrationSensor|No data available") %></p>
+            <p class="sub-msg"><%= __("administrationSensor|There is no data to show you right now.") %></p>
+          </div>
+        </div>
+        <!-- //empty -->
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <!-- //table-comp -->
+</div>
+<div class="table-bottom">
+  <div class="btn-table-box">
+    <button type="button" data-btn="delete" class="btn btn-normal secondary-style"><%= __("administrationSensor|Delete") %></button>
+    <button type="button" data-btn="new" class="btn btn-normal primary-style long-size"><%= __("administrationSensor|New sensor") %></button>
+  </div>
+  <div class="table-bottom-right">
+    <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current, paginationID: 'embeddedtypePagination'}) %>
+    <div class="ui-select default-style" data-direction="up">
+      <select name="" id="embeddedtypeListEntries">
+        <option value="10" selected><%= __("administrationSensor|Show 10 entries") %></option>
+        <option value="20"><%= __("administrationSensor|Show 20 entries") %></option>
+        <option value="30"><%= __("administrationSensor|Show 30 entries") %></option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/admin/sensor/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script type="text/javascript">
+  setTime('.ui-time');
+  dateTime('.ui-time');
+	filterCustom('#embeddedTypeList .filter-custom', {data: customFilterCondition['embeddedtype']});
+  selectDropdown('#embeddedTypeList .ui-select');
+  tableCheck('.table-check');
+  tableAccordion('.table-accordion', {
+    beforeSlideDown : function(obj){
+      const sensor_id = obj.btnEle.closest('tr').data('sensor_id');
+    return requestDetail(sensor_id, obj);
+    },
+    afterSlideUp: function(obj){
+      obj.btnEle.closest('tr').prev('.accordion-content').find('.accordion-content-box').html('');
+    }
+  })
+  formWidth();
+</script>
+
+<script>
+  maintainState();
+</script>
+
+<script>
+  var getTime = () => {
+    const time = {
+      type: 'regtime',
+      from: $.trim($('#embeddedtype_from-datepicker').val()),
+      to: $.trim($('#embeddedtype_to-datepicker').val())
+    }
+    return time;
+  }
+  var getFilter = () => {
+    const $customResult = $('#embeddedTypeList .custom-result');
+    const $resultItem = $('#embeddedTypeList .result-item');
+    const filters = $.map($resultItem, function(element){
+      const filterSelect = $(element).find('.result-title').data('result-key');
+      const filterCondition = $(element).find('.result-text').data('result-value');
+      const filter = {};
+      filter[filterSelect] = filterCondition;
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+  var getStateFilter = () => {
+    const $customResult = $('#embeddedTypeList .custom-result');
+    const $resultItem = $('#embeddedTypeList .result-item');
+    const filters = $.map($resultItem, function(element){
+      const $filterTitle = $(element).find('.result-title');
+      const $filterText = $(element).find('.result-text');
+      const filterSelect = $filterTitle.data('result-key');
+      const filterCondition = $filterText.data('result-value');
+      const filterSelectText = $filterTitle.text();
+      const filterConditionText = $filterText.text();
+      const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+      return filter
+    });
+    return filters.length ? filters : null;
+  }
+</script>
+
+<script>
+  // entries 변경
+  $('#embeddedtypeListEntries').off('change.entries').on('change.entries', function(){
+
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'embeddedType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({embeddedType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  // page 변경
+  $('#embeddedtypePagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'embeddedType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#embeddedtypeListEntries').find('option:selected').val() || 10;
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState()[selectedTab] && getState()[selectedTab].time ? getState()[selectedTab].time : null;
+    const filters = getState()[selectedTab] && getState()[selectedTab].filter && getState()[selectedTab].filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    const stateFilter = getState()[selectedTab] && getState()[selectedTab].filter;
+    /*************************************/
+
+    setState({embeddedType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  $('#embeddedTypeList [data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'embeddedType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({embeddedType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('#embeddedTypeList [data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const sid = getState().sid;
+    const selectedTab = getState().selectedTab || 'deviceType';
+    const sensorType = selectedTab == 'deviceType' ? 0 :
+                     selectedTab == 'embeddedType' ? 1 : 2;
+    const tabObj = getState()[selectedTab] || {};
+    const page = 1;
+    const entries = tabObj.entries || 10;
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({embeddedType: {page: page, entries:entries, time: time, filter: stateFilter}});
+    requestList(page, entries, sensorType, sid, time, filters);
+  });
+  /*************************************/
+</script>
+
+<script type="text/javascript">
+  // new sensor
+  $('[data-btn="new"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+
+    const sidGid = getSubContext();
+
+    const dataValue = {
+      status: 2,
+      sensor_type: 1,
+      gid: sidGid.gid
+    }
+    requestNewPopup(dataValue);
+  });
+  $('[data-btn="detected"]').off('click.openNewSensor').on('click.openNewSensor', function(){
+    const sensor_ip = $(this).closest('tr').data('sensor_ip');
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    const dataValue = {
+      status: -1,
+      sensor_ip: sensor_ip,
+      sensor_id: sensor_id,
+      sensor_type: 1,
+      is_Sensor_type_Fix: true,
+    }
+
+    requestNewPopup(dataValue);
+  });
+</script>
+
+<script type="text/javascript">
+  // edit 수정
+  $('[data-btn="edit"]').off('click.edit').on('click.edit', function(){
+    const sensor_id = $(this).closest('tr').data('sensor_id');
+
+    const dataValue = {}
+
+    requestEditPopup(dataValue, sensor_id);
+  });
+</script>
+
+<script>
+  $('#embeddedTypeList [data-btn="delete"]').off('click.delete').on('click.delete', function(){
+    const tableCheckedId = $.map($('#embeddedTypeList').find('.cell-check input:checked'), function(ele){
+      return $(ele).closest('tr').data('sensor_id');
+    });
+
+    requestDelete(tableCheckedId);
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>

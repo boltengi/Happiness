@@ -1,0 +1,99 @@
+<%- contentFor('title')%>
+<%= __("asset|Diagnosed status") %> - <%= __("asset|Asset") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<main id="main">
+
+  <!-- page-title-comp -->
+  <div class="page-title-comp">
+    <h2 class="page-title">
+      <span class="icon-title icon-title-asset"></span> <%= __("asset|Asset") %>
+    </h2>
+  </div>
+  <!-- //page-title-comp -->
+
+  <div id="summary"></div>
+
+  <div class="table-divide-wrap">
+    <div class="table-divide">
+      <!-- card -->
+      <div class="card">
+        <div id="informationDetail"></div>
+
+        <div id="trends"></div>
+
+        <div id="vulnerabilityList"></div>
+
+      </div>
+      <!-- //card -->
+    </div>
+  </div>
+
+
+</main>
+<!-- //main -->
+<script>
+  var setState = (objState) => {
+    const state = $.extend({}, history.state, objState);
+    history.replaceState(state, null);
+  }
+  var getState = function(req, res) {
+    return history.state || {};
+  }
+  var maintainState = () => {
+    const {vulnerabilityEntries = 10, vulnerabilityPage = 1, vulnerabilityTime = 7, trendsTime = 7} = history.state || {};
+    $('#vulnerabilityTime').find(`option[value="${vulnerabilityTime}"]`).prop('selected', true);
+    $('#trendsTime').find(`option[value="${trendsTime}"]`).prop('selected', true);
+    $('#vulnerabilityEntries').find(`option[value="${vulnerabilityEntries}"]`).prop('selected', true);
+    $('#pagination').find('.page-item.page-num').removeClass('active').filter(function(index, element){return $(element).data('page') == vulnerabilityPage}).addClass('active');
+  }
+</script>
+<script>
+  var getQueryString = function(){
+    const query = window.location.search.substr(1).split('&');
+    if (query == '') return {};
+    const obj = {}
+    for (let i = 0; i < query.length; i++){
+      const p = query[i].split('=', 2);
+      if(p.length == 1) obj[p[0]] = '';
+      else obj[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));;
+    }
+    return obj
+  }
+</script>
+<script>
+  var openLoading = function($loadingParent, option){
+    const DELAYLOADINGTIME = 300;
+    let data = { isLoaded: false };
+    setTimeout(()=>{
+      if(!data.isLoaded){
+        addLoading($loadingParent, option);
+      }
+    }, DELAYLOADINGTIME);
+
+    return {
+      setLoaded: function(isLoaded){
+        data.isLoaded = isLoaded
+      }
+    }
+  }
+</script>
+
+<%- include('./detection.script.request.ejs')%>
+
+<script>
+  window.addEventListener("load", function (event) {
+    const asset_id = location.href.split('/')[location.href.split('/').length-1];
+
+    requestSummary();
+
+    requestInformation(asset_id);
+
+    requestTrendsTemplate();
+
+    const page = getState().page || 1;
+    const vulnerabilityEntries = getState().vulnerabilityEntries || 10;;
+    const time = getState().time || 7;
+    requestVulnerability(asset_id, page, vulnerabilityEntries, time);
+  });
+</script>

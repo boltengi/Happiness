@@ -1,0 +1,95 @@
+<div id="partial" style="display: none; ">
+  <div class="loading-container" style="z-index: 10; ">
+    <!-- loading -->
+    <div class="loading">
+      <div class="circle-box">
+        <div class="circle">
+          <div class="circle-mask-full"><div class="fill"></div></div>
+          <div class="circle-mask-half"><div class="fill"></div><div class="fill fix"></div></div>
+        </div>
+        <div class="circle-line start-style"></div>
+        <div class="circle-line end-style"></div>
+      </div>
+    </div>
+    <div class="loading-bg"></div>
+    <!-- //loading -->
+  </div>
+
+  <div class="pick-container" style="z-index: 10; ">
+    <!-- pick -->
+  	<div class="pick">
+  		<div class="pick-box">
+        <div class="symbol symbol-pick">
+					<span class="symbol-icon question-style"></span>
+					<div class="symbol-figure pick-style"></div>
+				</div>
+  			<p class="main-msg"><%= __("partial|Please select 'Sensor' in sensor tree") %></p>
+  			<p class="sub-msg"><%= __("partial|There is no data to show you right now.") %></p>
+  		</div>
+  	</div>
+  	<!-- //pick -->
+  </div>
+</div>
+
+</style>
+<script>
+  var addLoading = ($loadingParent, option = {}) => {
+
+    if( $loadingParent.find('.loading-container').length ) return;
+
+    const $loadingContainer = $('#partial .loading-container').clone();
+    const $loadingBg = $loadingContainer.find('.loading-bg');
+    const {template, size} = option;
+    if(size) $loadingContainer.find('.circle-box').addClass('large-size');
+    if(template) {
+      let $template = ''
+      switch(template){
+        case 'tableList':
+          $template = $('#tableTemplate .template-container').clone();
+          $loadingContainer.css({"height": "700px"});
+          if(option.time === false) {
+            $template.find('.timesearch-area').remove();
+          }else if(option.time === 'regtime'){
+            $template.find('#sensorserver-time').hide();
+            $template.find('#reg-time').show();
+          }
+          break;
+        case 'cardTableList':
+          $template = $('#cardTableTemplate .template-container').clone();
+          $template.find('.card-title').append(option.title);
+          if(option.filter === false) {
+            $template.find('.card-header-right').remove();
+            $template.find('.filter-custom').remove();
+          }
+          if(option.time === false) {
+            $template.find('.timesearch-area').remove();
+          }
+          $loadingContainer.css({"height": "700px"});
+          break;
+        default:
+          break;
+      }
+      $loadingBg.html($template);
+    }
+    $loadingParent.append($loadingContainer);
+  }
+  var removeLoading = ($loadingParent, option = {}) => {
+    const $loadingContainer = $loadingParent.find('.loading-container');
+    $loadingContainer.remove();
+  }
+</script>
+<script>
+  var addPick = ($pickParent, option = {}) => {
+    if( $pickParent.find('.pick-container').length ) return;
+
+    const $pickContainer = $('#partial .pick-container').clone();
+
+    if(option.mainMsg) $pickContainer.find('.main-msg').html(option.mainMsg);
+    if(option.subMsg) $pickContainer.find('.sub-msg').html(option.subMsg);
+    $pickParent.append($pickContainer);
+  }
+  var removePick = ($pickParent, option = {}) => {
+    const $pickContainer = $pickParent.find('.pick-container');
+    $pickContainer.remove();
+  }
+</script>

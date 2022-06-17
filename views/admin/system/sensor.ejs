@@ -1,0 +1,38 @@
+<div class="system-content">
+  <% for(let i = 0; i< ObjView.length; i++) { %>
+  <% const data = ObjView[i] %>
+  <div class="data-info">
+    <dl>
+      <dt><%= __("administrationSystem|Current version") %> <span class="new-status"><%= __("administrationSystem|NEW") %></span></dt>
+      <dd><span class="data-text"><%= data.sensor_version %></span></dd>
+    </dl>
+    <dl>
+      <dt><%= __("administrationSystem|Latest version") %></dt>
+      <dd><span class="data-text"><%= __("administrationSystem|The version shown above is the lastest one as of today") %></span></dd>
+    </dl>
+    <dl style="display: none; ">
+      <dt><%= __("administrationSystem|Offline file update") %></dt>
+      <dd>
+        <div class="ui-file default-style" data-width="380px">
+          <input type="file" name="file1" id="file1">
+          <label for="file1">
+            <span class="file-upload"><%= __("administrationSystem|File Upload") %></span>
+          </label>
+          <span class="file-name">File Name.*</span>
+        </div>
+        <button type="button" class="btn btn-normal primary-style long-size"><%= __("administrationSystem|Update") %></button>
+      </dd>
+    </dl>
+    <dl style="display: none; ">
+      <dt><%= __("administrationSystem|Online update") %></dt>
+      <dd>
+        <div class="ui-refresh">
+          <div class="ui-input default-style" data-width="380px"><input type="text" placeholder='<%= __("administrationSystem|Check the latest update version") %>'/></div>
+          <button type="button" class="btn btn-icon btn-refresh"><span class="icon icon-refresh"><span class="sr-only"><%= __("administrationSystem|refresh") %></span></span></button>
+        </div>
+        <button type="button" class="btn btn-normal primary-style long-size"><%= __("administrationSystem|Update") %></button>
+      </dd>
+    </dl>
+  </div>
+  <% } %>
+</div>

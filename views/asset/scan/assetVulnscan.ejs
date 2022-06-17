@@ -1,0 +1,132 @@
+<!-- card-box -->
+<article class="card-box">
+  <div class="card-header">
+    <h2 class="card-title"><%= __("assetScan|Open service") %></h2>
+  </div>
+  <div class="card-body">
+    <!-- card-content -->
+    <div class="card-content">
+      <!-- search-area -->
+      <div class="search-area">
+
+      </div>
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp">
+          <div class="table-scroll default-style">
+            <div class="thead-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("assetScan|Vulnscan") %></span></caption>
+                <colgroup>
+                  <col style="width: 20%; " /><!-- Processed time -->
+                  <col style="width: 10%; " /><!-- Port -->
+                  <col style="width: 16%; " /><!-- Protocol -->
+                  <col style="width: 16%; " /><!-- Service name -->
+                  <col style="width: 22%; " /><!-- Service product -->
+                  <col style="width: 16%; " /><!-- Service version -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="row"><%= __("assetScan|Processed time") %></th>
+                    <th scope="row"><%= __("assetScan|Port") %></th>
+                    <th scope="row"><%= __("assetScan|Protocol") %></th>
+                    <th scope="row"><%= __("assetScan|Service name") %></th>
+                    <th scope="row"><%= __("assetScan|Service product") %></th>
+                    <th scope="row"><%= __("assetScan|Service version") %></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("assetScan|Vulnscan") %></span></caption>
+                <colgroup>
+                  <col style="width: 20%; " /><!-- Processed time -->
+                  <col style="width: 10%; " /><!-- Port -->
+                  <col style="width: 16%; " /><!-- Protocol -->
+                  <col style="width: 16%; " /><!-- Service name -->
+                  <col style="width: 22%; " /><!-- Service product -->
+                  <col style="width: 16%; " /><!-- Service version -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <tr>
+                    <td class="cell-center"><%= dateFormat(data.processed_time) %></td><!-- Processed time -->
+                    <td class="cell-center"><%= data.port %></td><!-- Port -->
+                    <td class="cell-center"><%= data.protocol %></td><!-- Protocol -->
+                    <td class="cell-center"><%= data.service_name %></td><!-- Service name -->
+                    <td class="cell-center"><%= data.service_product %></td><!-- Service product -->
+                    <td class="cell-center"><%= data.service_version %></td><!-- Service version -->
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <% if (ObjView.length == 0) { %>
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("assetScan|No data available") %></p>
+                  <p class="sub-msg"><%= __("assetScan|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="vulnscanEntries">
+              <option value="10" selected><%= __("assetScan|Show 10 entries") %></option>
+              <option value="20"><%= __("assetScan|Show 20 entries") %></option>
+              <option value="30"><%= __("assetScan|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //card-content -->
+  </div>
+</article>
+<!-- //card-box -->
+
+<script>
+  logdata('/asset/scan/assetVulnscan', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+  selectDropdown('.ui-select');
+  formWidth();
+</script>
+<script>
+  // entries 변경
+  $('#vulnscanEntries').off('change.vulnscanEntries').on('change.vulnscanEntries', function(){
+    const aid = location.href.split('/')[location.href.split('/').length-1];
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+    setState({vulnscanPage: page, vulnscanEntries: entries});
+    requestVulnscan(aid, page, entries);
+  });
+
+  // pagination 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const aid = location.href.split('/')[location.href.split('/').length-1];
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = $('#vulnscanEntries option:selected').val() || 10;
+    setState({vulnscanPage: page});
+    requestVulnscan(aid, page, entries);
+  });
+</script>

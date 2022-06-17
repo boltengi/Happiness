@@ -1,0 +1,3580 @@
+<%- contentFor('title')%>
+<%= __("dashboard|Dashboard") %> - <%= __(`common|ProgramName${company}`) %>
+
+<%- contentFor('body')%>
+<!--
+* @date 2021-05-31
+* @desc front performance improvement - dummy rendering
+* @company
+* -->
+<link rel="preload" as="script" href="/js/ui-lib.highcharts.min.js">
+<!-- // @date 2021-05-31 -->
+<!-- main -->
+<main id="main" class="dash-main">
+  <!-- dashboard-wrap -->
+  <div class="dashboard-wrap">
+
+    <div class="dashboard-wrap-util">
+      <div class="dashboard-wrap-util-fullpage">
+        <button type="button" class="btn btn-icon small-size btn-fullpage" style="visibility:hidden">
+          <span class="icon icon-fullpage icon-small"><span class="sr-only">fullpage</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-wrap-top">
+      <div class="dashboard-left-box left-style-shadow">
+        <div class="dashboard-moniter default-style loading-parent" id="assetboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Asset") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-top">
+              <!-- dash-date -->
+              <div class="dash-date basic-position">(<%= __("dashboard|Today") %>)</div>
+              <!-- dash-date -->
+              <!-- dash-list -->
+              <ul class="dash-list" data-asset>
+                <li class="dash-list-item cursor-pointer" data-filter-link="asset-total">
+                  <div class="dash-number" data-total></div>
+                  <div class="dash-text"><%= __("dashboard|Total") %></div>
+                </li>
+                <li class="dash-list-item col-style cursor-pointer" data-filter-link="asset-auth">
+                  <div class="dash-number" data-auth></div>
+                  <div class="dash-text"><%= __("dashboard|Auth") %></div>
+                </li>
+                <li class="dash-list-item normal-style cursor-pointer" data-filter-link="asset-unauth">
+                  <div class="dash-number" data-unauth></div>
+                  <div class="dash-text"><%= __("dashboard|Unauth") %></div>
+                </li>
+                <li class="dash-list-item cursor-pointer" data-filter-link="asset-new">
+                  <div class="dash-number" data-new></div>
+                  <div class="dash-text"><%= __("dashboard|New") %></div>
+                </li>
+              </ul>
+              <!-- dash-list -->
+            </div>
+            <div class="dashboard-moniter-content-bottom">
+              <!-- dash-date -->
+              <div class="dash-date under-position">(<%= __("dashboard|Month") %>)</div>
+              <!-- dash-date -->
+              <p class="dash-content-title">
+                - <%= __("dashboard|Assets activitiy") %>
+              </p>
+              <!-- CHARTS -->
+              <!-- asset-chart -->
+              <figure class="highcharts-figure">
+                  <div id="asset-chart" style="height:209px"></div>
+                  <button id="asset-chart-button" class="autocompare" style="display:none">Set extremes</button>
+              </figure>
+              <!-- CHARTS -->
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-moniter default-style loading-parent" id="sensorboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Sensor") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-top">
+              <!-- dash-date -->
+              <div class="dash-date basic-position">(<%= __("dashboard|Today") %>)</div>
+              <!-- dash-date -->
+              <!-- dash-list -->
+              <ul class="dash-list" data-sensor>
+                <li class="dash-list-item cursor-pointer" data-filter-link="sensor-total">
+                  <div class="dash-number" data-total></div>
+                  <div class="dash-text"><%= __("dashboard|Total") %></div>
+                </li>
+                <li class="dash-list-item col-style cursor-pointer" data-filter-link="sensor-conn">
+                  <div class="dash-number" data-conn></div>
+                  <div class="dash-text"><%= __("dashboard|Conn") %></div>
+                </li>
+                <li class="dash-list-item bad-style cursor-pointer" data-filter-link="sensor-disconn">
+                  <div class="dash-number" data-disconn></div>
+                  <div class="dash-text"><%= __("dashboard|Disconn") %></div>
+                </li>
+                <li class="dash-list-item cursor-pointer" data-filter-link="sensor-new">
+                  <div class="dash-number" data-new></div>
+                  <div class="dash-text"><%= __("dashboard|New") %></div>
+                </li>
+              </ul>
+              <!-- dash-list -->
+            </div>
+            <div class="dashboard-moniter-content-bottom">
+               <!-- dash-date -->
+               <div class="dash-date under-position">(<%= __("dashboard|Month") %>)</div>
+               <!-- dash-date -->
+              <p class="dash-content-title">
+                - <%= __("dashboard|Sensors activity") %>
+              </p>
+              <!-- CHARTS -->
+              <!-- sensor-chart -->
+              <figure class="highcharts-figure">
+                  <div id="sensor-chart" style="height:209px"></div>
+                  <button id="sensor-chart-button" class="autocompare" style="display:none">Set extremes</button>
+              </figure>
+              <!-- CHARTS -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-center-box center-style-shadow">
+        <div class="dashboard-moniter emphasis-bg loading-parent" id="networkboard-graph">
+          <div class="tab data-style">
+            <div class="dashboard-moniter-title">
+              <div class="tab-links">
+                <div class="tab-link on"><a href="#network"><%= __(`common|ProgramName${company}`) %> <%= __("dashboard|network") %></a></div>
+              </div>
+            </div>
+            <div class="dashboard-moniter-content">
+              <div class="dashboard-moniter-content-center">
+                <div class="tab-container">
+                  <div id="network" class="tab-content on">
+                    <!-- dashboard-network -->
+                    <div class="dashboard-network">
+                      <!-- dashboard-network-main -->
+                      <div class="dashboard-network-main">
+                        <div id="myNetworkMultiHighChart" class="chart-block network-graph"></div>
+                        <div class="dashboard-network-condition">
+                          <div id="networkGroup"></div>
+                        </div>
+                        <div class="dashboard-network-info">
+                          <div class="dashboard-network-onoff" id="networkOnOff">
+                            <span class="ui-switch-label default-style"><%= __("dashboard|Refresh") %></span>
+                            <div class="ui-switch default-style">
+                              <input type="checkbox" name="networkSwitch" id="networkSwitch">
+                              <label for="networkSwitch"><span class="sr-only"><%= __("dashboard|switch") %></span></label>
+                            </div>
+                          </div>
+                          <div class="dashboard-network-summary">
+                            <div class="brief-summary" id="network-summary">
+                              <div class="title"><%= __("dashboard|Total") %></div>
+                              <!--
+                              * @date 2021-06-04
+                              * @desc show count of connection and disconnection
+                              * @company
+                              * -->
+                              <dl class="group-style" style="display: none; ">
+                                <dt><%= __("dashboard|Group") %></dt>
+                                <dd class="conn-style" data-group></dd>
+                              </dl>
+                              <dl class="sensor-style" style="display: none; ">
+                                <dt><%= __("dashboard|Sensor") %></dt>
+                                <dd class="conn-style" data-sensor></dd>
+                                <dd class="disconn-style" data-sensor></dd>
+                              </dl>
+                              <dl class="asset-style" style="display: none; ">
+                                <dt><%= __("dashboard|Asset") %></dt>
+                                <dd class="conn-style" data-asset></dd>
+                                <dd class="disconn-style" data-asset></dd>
+                              </dl>
+                              <!-- // @date 2021-06-04 -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- //dashboard-network-main -->
+                      <!-- dashboard-network-detail -->
+                      <div class="dashboard-network-detail">
+                        <!-- dashboard-screen -->
+                        <div class="dashboard-screen default-style" id="myScreenDetail">
+                          <div class="dashboard-screen-title">
+                            <h2 class="title"><%= __("dashboard|Group") %> : <span data-group></span>, <%= __("dashboard|Sensor") %> : <span data-sensor></span>, <%= __("dashboard|Asset") %> : <span data-assetCount></span></h2>
+                            <div class="title-right">
+                              <button type="button" class="screen-btn-close"><span class="sr-only">close</span></button>
+                            </div>
+                          </div>
+                          <div class="dashboard-screen-content">
+                            <div class="screen-line-box opacity-style">
+                              <div id="myNetworkDetailHighChart" class="chart-block"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- //dashboard-screen -->
+                      </div>
+                      <!-- //dashboard-network-detail -->
+                    </div>
+                    <!-- //dashboard-network -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-right-box right-style-shadow">
+        <div class="dashboard-moniter triple-style loading-parent" id="vulnerabilityboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Vulnerability") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-top">
+                 <!-- dash-date -->
+                 <div class="dash-date basic-position">(<%= __("dashboard|Week") %>)</div>
+                 <!-- dash-date -->
+              <div class="dashboard-moniter-content-left cursor-pointer" data-filter-link="vulnerability-count">
+                <p class="dash-content-title">
+                  - <%= __("dashboard|Vulnerability Count") %>
+                </p>
+                <div id="mySolidgaugeHighChart" class="chart-block"></div>
+              </div>
+              <div class="dashboard-moniter-content-right">
+                <p class="dash-content-title">
+                 - <%= __("dashboard|Asset Count") %>
+                </p>
+                <div class="brief-box">
+                  <!-- table-comp -->
+                  <div class="table-comp">
+                    <table class="table brief-style" data-asset-count>
+                      <caption>table</caption>
+                      <colgroup>
+                        <col>
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th scope="col"><%= __("dashboard|Grade") %></th>
+                          <th scope="col"><%= __("dashboard|Asset") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th class="title-total"><%= __("dashboard|Total") %></th>
+                          <td class="value cell-center" data-total></td>
+                        </tr>
+                        <tr>
+                          <th class="title-critical"><%= __("dashboard|Critical") %></th>
+                          <td class="value cell-center" data-critical></td>
+                        </tr>
+                        <tr>
+                          <th class="title-high"><%= __("dashboard|High") %></th>
+                          <td class="value cell-center" data-high></td>
+                        </tr>
+                        <tr>
+                          <th class="title-medium"><%= __("dashboard|Medium") %></th>
+                          <td class="value cell-center" data-medium></td>
+                        </tr>
+                        <tr>
+                          <th class="title-low"><%= __("dashboard|Low") %></th>
+                          <td class="value cell-center" data-low></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- //table-comp -->
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-moniter-content-bottom">
+               <!-- dash-date -->
+               <div class="dash-date zero-position">(<%= __("dashboard|Week") %>)</div>
+               <!-- dash-date -->
+              <p class="dash-content-title">
+                - <%= __("dashboard|Vulnerability Count") %>
+              </p>
+              <!-- Vulnerability Count -->
+              <figure class="highcharts-figure">
+                <div id="vulnerability-Count-chart" style="height:120px"></div>
+                <button id="vulnerability-Count-chart-button" class="autocompare" style="display:none">Set extremes</button>
+              </figure>
+              <!-- Vulnerability Count -->
+
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-moniter loading-parent" id="threatboard-graph">
+          <div class="tab detail-style">
+            <div class="dashboard-moniter-title">
+              <div class="tab-links">
+                <div class="tab-link on"><a href="#threat"><%= __("dashboard|Threat") %></a></div>
+                <div class="tab-link"><a href="#block"><%= __("dashboard|Block") %></a></div>
+              </div>
+            </div>
+            <div class="dashboard-moniter-content">
+              <div class="dashboard-moniter-content-center">
+                <!-- dash-date -->
+                  <div class="dash-date basic-position">(<%= __("dashboard|Last 5 event") %>)</div>
+                <!-- dash-date -->
+                <div class="tab-container">
+                  <div id="threat" class="tab-content on">
+                    <!-- table-comp -->
+                    <div class="table-comp">
+                      <table class="table note-style">
+                        <caption>table</caption>
+                        <colgroup>
+                          <col style="width:35%">
+                          <col style="width:30%">
+                          <col style="width:35%">
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th scope="col"><%= __("dashboard|Event type") %></th>
+                            <th scope="col"><%= __("dashboard|Sensor name") %></th>
+                            <th scope="col">
+                              <%= __("dashboard|Detection trend") %>
+                              <div class="week">(<%= __("dashboard|Week") %>)</div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- //table-comp -->
+                  </div>
+                  <div id="block" class="tab-content">
+                    <!-- table-comp -->
+                    <div class="table-comp">
+                      <table class="table note-style">
+                        <caption>table</caption>
+                        <colgroup>
+                          <col style="width:35%">
+                          <col style="width:30%">
+                          <col style="width:35%">
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th scope="col"><%= __("dashboard|Event type") %></th>
+                            <th scope="col"><%= __("dashboard|Asset name") %></th>
+                            <th scope="col">
+                              <%= __("dashboard|Setup date") %>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- //table-comp -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-wrap-bottom">
+      <div class="dashboard-box">
+        <div class="dashboard-moniter simple-style loading-parent" id="vulnerabilityassetboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Vulnerable assets Top5") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-center" >
+               <!-- dash-date -->
+               <div class="dash-date basic-position">(<%= __("dashboard|Week") %>)</div>
+               <!-- dash-date -->
+               <!-- chart -->
+               <!-- Vulnerable assets Top5 -->
+               <figure class="highcharts-figure">
+                   <div id="vulnerable-assets-top5" style="height:192px"></div>
+               </figure>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-moniter simple-style loading-parent" id="vulnerabilitytopnboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Vulnerability Top5") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-center">
+              <!-- dash-date -->
+                <div class="dash-date basic-position">(<%= __("dashboard|Week") %>)</div>
+              <!-- dash-date -->
+              <!-- table-comp -->
+              <div class="table-comp">
+                <table class="table note-style">
+                  <caption>table</caption>
+                  <colgroup>
+                    <col style="width: 30%;">
+                    <col style="width: 50%;">
+                    <col style="width: 20%;">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col"><%= __("dashboard|Vulnerability code") %></th>
+                      <th scope="col"><%= __("dashboard|Title") %> (<%= __("dashboard|Description") %>)</th>
+                      <th scope="col"><%= __("dashboard|Counts") %></th>
+                    </tr>
+                  </thead>
+                  <tbody id="Vulnerability_Top5">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-moniter simple-style loading-parent" id="vulnerabilityserviceboard-graph">
+          <div class="dashboard-moniter-title">
+            <h2 class="title"><%= __("dashboard|Vulnerable services") %></h2>
+          </div>
+          <div class="dashboard-moniter-content">
+            <div class="dashboard-moniter-content-center">
+              <!-- dash-date -->
+                <div class="dash-date basic-position">(<%= __("dashboard|Week") %>)</div>
+              <!-- dash-date -->
+              <figure class="highcharts-figure">
+                <div id="vulnerability-in-services-chart" style="height:230px;"</div>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- //dashboard-wrap -->
+
+
+</main>
+<!-- //main -->
+
+  <style>
+    #myNetworkMultiHighChart {
+      overflow: hidden;
+      width: 740px;
+      height: 817px;
+      margin: 0 auto;
+    }
+    #myNetworkDetailHighChart {
+      overflow: hidden;
+      width: 294px;
+      height: 244px;
+    }
+    #mySolidgaugeHighChart {
+      width: 156px;
+      height: 156px;
+    }
+  </style>
+  <!--
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  * -->
+  <script src="/js/ui-lib.highcharts.min.js"></script>
+  <!-- // @date 2021-05-14 -->
+
+  <script>
+    var openLoading = function($loadingParent, option){
+      const DELAYLOADINGTIME = 300;
+      let data = { isLoaded: false };
+      setTimeout(()=>{
+        if(!data.isLoaded){
+          addLoading($loadingParent, option);
+        }
+      }, DELAYLOADINGTIME);
+
+      return {
+        setLoaded: function(isLoaded){
+          data.isLoaded = isLoaded
+        }
+      }
+    }
+  </script>
+  <script>
+    window.addEventListener("load", function (event) {
+      formWidth();
+      tab('.tab');
+    });
+  </script>
+  <script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  var dashboardScreen;
+  window.addEventListener('DOMContentLoaded',() => {
+    screen('.dashboard-screen', {
+      beforeCloseCallback: function(){
+        if(myNetworkMultiHighChart){
+          myNetworkMultiHighChart.series[0].nodes.forEach((item, i) => {
+            if(item.selected) myNetworkMultiHighChart.series[0].nodes[i].select(false);
+          });
+        }
+      }
+    });
+    dashboardScreen = $('.dashboard-screen').data('screen');
+    dashboardScreen.close();
+  });
+  /*************************************/
+  </script>
+  <script>
+    var TIME = 3 * 60 * 1000;
+    var myInterval = (cb, TIME) => {
+      let flag = true;
+      const tick = () => {
+        setTimeout(() => {
+          if(!flag) return;
+          cb().then((data)=>{
+            tick();
+          });
+        }, TIME);
+      }
+
+      cb().then((data)=>{
+        tick();
+      });
+      return () => { flag = false; }
+    }
+  </script>
+  <script>
+    var requestGraphData = function(type, loading){
+      return fetch(`/dashboard/dashboard/${type}`)
+      .then(function(response){
+        return {
+          data: response.json(),
+          loading: loading
+        };
+      })
+      .then((data)=>{
+        data.loading.setLoaded(true);
+        return data.data;
+      });
+    }
+  </script>
+  <script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  var assetChart, sensorChart, myNetworkMultiHighChart, myNetworkDetailHighChart, mySolidgaugeHighChart, vulnerabilityCountChart, threatDetectiontrendChart, vulnerableAssetsTop5, vulnerabilityInServicesChart;
+  var preventNetworkClickEvent, threatDetectiontrendChartCallback;
+  /*************************************/
+  window.addEventListener('DOMContentLoaded',() => {
+    assetChart = Highcharts.chart('asset-chart', {
+
+        credits: {enabled:false},
+        chart: {
+            type: 'column',
+            events: {
+              load: function() {
+                // console.log('test', this.yAxis[0]);
+                $(this.series[0].legendSymbol.element).attr({
+                  x: 0,
+                  y: 8,
+                });
+                $(this.series[1].legendSymbol.element).attr({
+                  x: 0,
+                  y: 8,
+                });
+              }
+            }
+        },
+        title: {
+            text: null
+        },
+        xAxis: {
+          categories: [],
+          reversed: false,
+          lineColor: '#DEDEDE',
+          labels: {
+            x: 5,
+            rotation: -60,
+            style:{
+              color:'#B1B1B0',
+              fontFamily:FontFamily.FontFamilyContent,
+              fontSize:'10px',
+            },
+          },
+          // max: 31,
+          tickPosition: 'inside',
+          tickColor: '#DEDEDE',
+          tickWidth: 1,
+          tickLength: 5,
+          tickmarkPlacement: 'on',
+          tickPositions: [0,6,12,18,24,30],
+        },
+        yAxis: {
+          // tickInterval: 0,
+          gridLineWidth:0,
+          title: {
+            text: null
+          },
+          labels: {
+            x: -8,
+            style:{
+              color:'#B1B1B0',
+              fontFamily:FontFamily.FontFamilyContent,
+            },
+            formatter: function () {
+              if (this.isLast || this.isFirst || (this.value == 0)) {
+                const value = Math.abs(this.value);
+                return Highcharts.numberFormat(value, 0, '.', ',')
+              }
+           }
+         },
+        },
+        plotOptions: {
+          series: {
+            // borderRadius: 0,
+            stacking: 'normal',
+            pointWidth: 4,
+            borderRadius: 4,
+            borderWidth:0,
+          }
+        },
+        colors: [
+          GRAPH_COLOR.DASHBOARD_ASSET_DETECTION,
+          GRAPH_COLOR.DASHBOARD_ASSET_REGISTRATION
+          ],
+        tooltip: {
+          useHTML: true,
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: { fontSize: '10px', color: '#fff'},
+          headerFormat: '',
+          formatter: function () {
+            // return Math.abs(this.point.y);
+            return `
+             ${this.x} : ${Math.abs(this.point.y)}
+            `;
+            // return `
+            // <table>
+            //   <tr><td style="text-align: center;">${this.x}</td></tr>
+            //   <tr><td style="text-align: center;">${Math.abs(this.point.y)}</td></tr>
+            // </table>
+            // `;
+            },
+          padding: 4
+        },
+        legend:{
+          useHTML:true,
+          align: 'right',
+          verticalAlign: 'top',
+          // symbolPadding: 25,
+          symbolWidth: 5,
+          symbolHeight: 5,
+          itemStyle:{
+             fontSize:'10px',
+             fontFamily:FontFamily.FontFamilyContent,
+             color:'#4D4F5C',
+             fontWeight:'normal',
+          }
+        },
+        series: [
+            {
+              name: '<%= __("dashboard|Detection") %>',
+              data: [{}],
+           },
+           {
+             name: '<%= __("dashboard|Registration") %>',
+             data: [{}],
+            },
+         ]
+      });
+    sensorChart = Highcharts.chart('sensor-chart', {
+      credits: {enabled:false},
+      chart: {
+          type: 'column',
+          events: {
+            load: function() {
+              $(this.series[0].legendSymbol.element).attr({
+                x: 0,
+                y: 7,
+              });
+              $(this.series[1].legendSymbol.element).attr({
+                x: 0,
+                y: 7,
+              });
+              $(this.series[2].legendSymbol.element).attr({
+                x: 0,
+                y: 7,
+              });
+            }
+          }
+      },
+      title: {
+          text: null
+      },
+      xAxis: {
+        categories: [],
+        reversed: false,
+        lineColor: '#DEDEDE',
+        labels: {
+          x: 5,
+          rotation: -60,
+          style:{
+            color:'#B1B1B0',
+            fontFamily:FontFamily.FontFamilyContent,
+            fontSize:'10px'
+          },
+         //  max: 31,
+         // showLastLabel: true
+        },
+        tickPosition: 'inside',
+        tickColor: '#DEDEDE',
+        tickWidth: 1,
+        tickLength: 5,
+        tickmarkPlacement: 'on',
+        tickPositions: [0,6,12,18,24,30]
+      },
+      yAxis: {
+        // minorTickInterval: 5,
+        // tickInterval: 5,
+        gridLineWidth:0,
+        title: {
+          text: null
+        },
+        labels: {
+          x: -8,
+          style:{
+            color:'#B1B1B0',
+            fontFamily:FontFamily.FontFamilyContent,
+          },
+          formatter: function () {
+            if (this.isLast || this.isFirst || (this.value == 0)) {
+              const value = Math.abs(this.value);
+              return Highcharts.numberFormat(value, 0, '.', ',')
+            }
+         }
+       },
+      },
+      plotOptions: {
+        series: {
+          stacking: 'normal',
+          pointWidth: 4,
+          borderRadius: 4,
+          borderWidth:0,
+          lineWidth: 1
+        }
+      },
+      colors: [
+        '#3A84FF',
+        '#B1B1B0',
+        '#FF0000'
+        ],
+        tooltip: {
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: { fontSize: '10px', color: '#fff'},
+          headerFormat: '',
+          formatter: function () {
+                  // return Math.abs(this.point.y);
+                  return `
+                   ${this.x} : ${Math.abs(this.point.y)}
+                  `;
+              },
+          padding: 4
+        },
+      legend:{
+        align: 'right',
+        verticalAlign: 'top',
+        // symbolPadding: 25,
+        symbolWidth: 5,
+        symbolHeight: 5,
+        itemStyle:{
+           fontSize:'10px',
+           fontFamily:FontFamily.FontFamilyContent,
+           color:'#4D4F5C',
+           fontWeight:'normal'
+        }
+      },
+      series: [
+          {
+            name: '<%= __("dashboard|Registration") %>',
+            data:  [],
+            // type:'areaspline',
+            // marker: {enabled: false},
+            // fillColor: {
+            //      linearGradient: [0, 0, 0, 50],
+            //      stops: [
+            //          [0, '#B1B1B0'],
+            //          [1, 'transparent']
+            //      ]
+            //  }
+          },
+          {
+            name: '<%= __("dashboard|Count") %>',
+            type:'areaspline',
+            marker: {enabled: false},
+            fillColor: {
+              linearGradient: {
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 0.7
+                },
+                 stops: [
+                    // color test #B1B1B0
+                    [0, Highcharts.color('#E7E7E6').setOpacity(1).get('rgba')],
+                    [1, Highcharts.color('#E7E7E6').setOpacity(0).get('rgba')]
+                     // [0, '#B1B1B0'],
+                     // [1, 'transparent']
+                 ]
+             },
+            data: []
+         },
+         {
+           name: '<%= __("dashboard|Disconnection") %>',
+           data: []
+          },
+       ]
+    });
+    preventNetworkClickEvent = function(flag){
+
+      if (flag) {
+        $('#network').css({'pointer-events': 'none'});
+      } else {
+        $('#network').css({'pointer-events': 'auto'});
+      }
+    }
+    myNetworkMultiHighChart = Highcharts.chart('myNetworkMultiHighChart', {
+      credits: {enabled:false},
+      chart: {
+        type: 'networkgraph',
+        backgroundColor: 'transparent',
+        spacingTop: 50,
+        spacingBottom: 20
+      },
+      title: {
+        text: undefined
+      },
+      plotOptions: {
+        networkgraph: {
+          keys: ['from', 'to'],
+          layoutAlgorithm: {
+            enableSimulation: false,
+            // friction: -0.98,
+            initialPositions: "circle",
+            linkLength: 100,
+            integration: 'verlet', // "euler"
+            // initialPositionRadius: 0.5,
+            // gravitationalConstant: 0.0625,
+            /**
+            * @date 2021-05-31
+            * @desc front performance improvement - dummy rendering
+            * @company
+            */
+            maxIterations: 250
+            /*************************************/
+          },
+          link: {
+            width: 1,
+            color: '#B1B1B0',
+            dashStyle: 'Dash'
+          },
+          dataLabels: {
+            enabled: true,
+            y: -1,
+            style: {
+              fontSize: 10,
+              fontFamily: FontFamily.FontFamilyTitle,
+              textOutline: false
+            },
+            inside: false, // text 반전
+            textPath: {
+              enabled: false // circle 에 맞춰 text 곡선처리
+            },
+            linkTextPath: {
+              enabled: false
+            },
+            linkFormat: '',
+          },
+        },
+      },
+      tooltip: {
+        enabled: false
+      },
+      series: [{
+        name: 'IoTCare',
+        id: 'IoTCare',
+        allowPointSelect: true,
+        data: [],
+        nodes: [],
+      }]
+    });
+    myNetworkDetailHighChart = Highcharts.chart('myNetworkDetailHighChart', {
+      credits: {enabled:false},
+      chart: {
+        type: 'networkgraph',
+        backgroundColor: 'transparent'
+      },
+      title: {
+        text: undefined
+      },
+      plotOptions: {
+        networkgraph: {
+          keys: ['from', 'to'],
+          layoutAlgorithm: {
+            enableSimulation: true,
+            // friction: -0.98,
+            initialPositions: "circle",
+            linkLength: 20,
+            integration: 'euler', // "euler"
+            // initialPositionRadius: 0.5,
+            // gravitationalConstant: 0.0625,
+          },
+          link: {
+            width: 1,
+            color: '#B1B1B0',
+            dashStyle: 'Dash'
+          },
+          dataLabels: {
+            enabled: true,
+            y: -1,
+            style: {
+              fontSize: 10,
+              fontFamily: FontFamily.FontFamilyTitle,
+              textOutline: false
+            },
+            inside: false, // text 반전
+            textPath: {
+              enabled: false // circle 에 맞춰 text 곡선처리
+            },
+            linkTextPath: {
+              enabled: false
+            },
+            linkFormat: '',
+          },
+        },
+      },
+      tooltip: {
+        enabled: false
+      },
+      series: [{
+        name: '',
+        id: '',
+        allowPointSelect: true,
+        data: [],
+        nodes: [],
+        turboThreshold: 6000
+      }]
+    });
+    mySolidgaugeHighChart = Highcharts.chart('mySolidgaugeHighChart', {
+      credits: {
+        enabled: false
+      },
+      chart: {
+        type: 'solidgauge',
+        margin: [0, 0, 0, 0],
+        spacingTop: 0,
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0
+      },
+      title: {
+        text: undefined
+      },
+      pane: {
+        size: '100%',
+        startAngle: 360,
+        endAngle: 0,
+        background: [{
+          outerRadius: '100%',
+          innerRadius: '91.025641%',
+          backgroundColor: '#E9EEF2',
+          borderWidth: 0,
+        }, {
+          outerRadius: '88.461538%',
+          innerRadius: '79.487179%',
+          backgroundColor: '#E9EEF2',
+          borderWidth: 0,
+        }, {
+          outerRadius: '76.913076%',
+          innerRadius: '67.974871%',
+          backgroundColor: '#E9EEF2',
+          borderWidth: 0,
+        },
+        {
+          outerRadius: '65.384615%',
+          innerRadius: '56.410256%',
+          backgroundColor: '#E9EEF2',
+          borderWidth: 0,
+        }]
+      },
+      yAxis: {
+        min: 0,
+        max: 100,
+        lineWidth: 0,
+        tickPositions: []
+      },
+      plotOptions: {
+        solidgauge: {
+          dataLabels: {
+            enabled: true,
+            y: -5,
+            borderWidth: 0,
+            backgroundColor: 'none',
+            useHTML: true,
+            shadow: false,
+            style: {
+              fontSize: '16px',
+              color: '#43425D'
+            },
+            formatter: function() {
+              return `
+              <div style="text-align:center; transform: translateY(-50%); ">
+                <span style="display:block; font-family: '${FontFamily.FontFamilyTitle}'; "></span>
+                <span style="font-size:10px; font-family: '${FontFamily.FontFamilyContent}'; "><%= __("dashboard|Total") %></span>
+              </div>`;
+            }
+          },
+          linecap: 'round',
+          stickyTracking: false,
+          rounded: true
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        pointFormat: '<span>{point.y}</span>',
+        // formatter: function () {
+        //   return `
+        //    ${this.series.name} : ${this.point.y}
+        //   `;
+        // },
+        positioner: function(labelWidth, labelHeight) {
+          return {
+            x: (this.chart.chartWidth - labelWidth) / 2,
+            y: 0
+          };
+        },
+        padding: 4
+      },
+      series: [{
+        name: 'Critical',
+        data: [{
+          color: '#FF0000',
+          radius: '100%',
+          innerRadius: '91.025641%',
+          y: []
+        }]
+      }, {
+        name: 'High',
+        data: [{
+          color: '#FFDD00',
+          radius: '88.461538%',
+          innerRadius: '79.487179%',
+          y: []
+        }]
+      }, {
+        name: 'Medium',
+        data: [{
+          color: '#3A84FF',
+          radius: '76.913076%',
+          innerRadius: '67.974871%',
+          y: []
+        }]
+      }, {
+        name: 'Low',
+        data: [{
+          color: '#93C01F',
+          radius: '65.384615%',
+          innerRadius: '56.410256%',
+          y: []
+        }]
+      }]
+    }, function Callback(){
+        // var chart = this,
+        //   series = chart.series[0],
+        //   shape = series.data[0].shapeArgs,
+        //   x = shape.x,
+        //   y = shape.y;
+        // const total = 100;
+        //   chart.renderer.text(`${total}<br><span style="font-size: 10px; y: 50" >Total</span>`)
+        //   .attr({
+        //     'y': 0,
+        //     'align': 'center',
+        //     'font-size': '16px',
+        //     'zIndex': 10
+        //   })
+        //   .css({
+        // 		fontFamily: FontFamily.FontFamilyContent,
+        //     color: '#43425D',
+        //   })
+        //   .translate(x, y)
+        //   .add(series.group);
+      });
+    vulnerabilityCountChart = Highcharts.chart('vulnerability-Count-chart', {
+        credits: false,
+
+        tooltip: {
+          backgroundColor: 'rgba(177, 177 ,176, .7)',
+          borderColor: 'transparent',
+          shadow: false,
+          style: { fontSize: '10px', color: '#fff'},
+          headerFormat: '',
+          // pointFormat: '<span>{point.y}</span>',
+          formatter: function () {
+            // return Math.abs(this.point.y);
+            return `
+             ${this.x} : ${this.point.y}
+            `;
+          },
+          padding: 4
+        },
+
+        chart: {
+          // marginBottom: 20,
+          marginLeft: 45,
+          marginRight: 20,
+        },
+
+        title: {
+            text: null
+        },
+
+        yAxis: {
+          offset: -10,
+          lineWidth: 0,
+          // min: 0,
+          // max: 100,
+          // minorTickInterval: 25,
+          title: {
+              text: null
+          },
+          labels: {
+            style:{
+              color:'#B1B1B0',
+              fontFamily:FontFamily.FontFamilyContent,
+              fontSize:'10px'
+            },
+          },
+        },
+
+        xAxis: {
+          categories: [],
+          labels: {
+            x: 6,
+            rotation: -60,
+            style:{
+              color:'#B1B1B0',
+              fontFamily:FontFamily.FontFamilyContent,
+              fontSize:'10px'
+            },
+          },
+          tickPosition: 'inside',
+          tickColor: '#DEDEDE',
+          tickWidth: 1,
+          tickLength: 5,
+          tickmarkPlacement: 'on',
+          tickPositions: [0,1,2,3,4,5,6,7],
+        },
+
+        legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                pointPlacement: 'on',
+                lineWidth: 2,
+                label: {
+                    connectorAllowed: false
+                },
+                marker:{
+                  enabled: false ,
+                  symbol: 'circle',
+                  fillColor: '#FFFFFF',
+                  lineWidth: 1,
+                  lineColor: null, // inherit from series
+                  radius: 3,
+                },
+                // pointStart: 1,
+            }
+        },
+
+        colors: [
+          '#93C01F',
+          '#3A84FF',
+          '#FFDD00',
+          '#FF0000'
+          ],
+
+        series: [{
+            name: 'Low',
+            data:  []
+        }, {
+            name: 'Medium',
+           data: []
+        }, {
+            name: 'High',
+           data: []
+        }, {
+            name: 'Critical',
+           data: []
+        }],
+    });
+    // 5times
+    threatDetectiontrendChart = [];
+    threatDetectiontrendChartCallback = (length) => {
+      for(let i=0; i<length; i++){
+        if(i == 0){
+          threatDetectiontrendChart[i] = Highcharts.chart(`detection-trend-chart-${i}`, {
+            legend: {
+                enabled: false
+            },
+            credits: false,
+            chart: {
+                type: 'area',
+                margin: 0,
+                marginTop:4,
+                marginBottom:4
+            },
+            title: {
+                text: '',
+                verticalAlign: 'bottom',
+                y: 24,
+                style: {
+                 color: '#FF0000',
+                 fontWeight: 'normal',
+                 fontSize:'10px',
+                 whiteSpace: 'nowrap',
+                 fontFamily: FontFamily.FontFamilyContent
+               },
+            },
+            xAxis: {
+             categories: [],
+             labels: {
+               enabled: false,
+             },
+             visible: false
+            },
+            yAxis: {
+              visible: false,
+              height: 32
+            },
+            tooltip: {
+              backgroundColor: 'rgba(177, 177 ,176, .7)',
+              borderColor: 'transparent',
+              shadow: false,
+              style: { fontSize: '10px', color: '#fff'},
+              headerFormat: '',
+              formatter: function () {
+                // return Math.abs(this.point.y);
+                return `
+                 ${this.x} : ${this.point.y}
+                `;
+              },
+              padding: 4
+            },
+            plotOptions: {
+              series:{
+                pointPlacement: 'on',
+                color: '#FF0000',
+                lineWidth: 1,
+                marker:{
+                  fillColor: '#FFFFFF',
+                  lineWidth: 1,
+                  lineColor: null // inherit from series
+                },
+                states: {
+                  hover: {
+                    halo: {
+                      size: 0
+                    }
+                  }
+                }
+              }
+            },
+            series: [
+                {
+                  name: 'Detection trend',
+                  marker: {
+                      enabled: false,
+                      symbol: 'circle',
+                      radius: 2
+                  },
+                  data: [],
+                  fillColor: {
+                    linearGradient: [0, 0, 0, 35],
+                    stops: [
+                       [0, '#FFC2C2'],
+                       [1, '#fff']
+                    ],
+                  }
+                }
+              ]
+          })
+        }else{
+          threatDetectiontrendChart[i] = Highcharts.chart(`detection-trend-chart-${i}`, {
+            legend: {
+                enabled: false
+            },
+            credits: false,
+            chart: {
+                type: 'area',
+                margin: 0,
+                marginTop:4,
+                marginBottom:4
+            },
+            title: {
+                text: '',
+                verticalAlign: 'bottom',
+                y: 24,
+                style: {
+                 color: '#636461',
+                 fontWeight: 'normal',
+                 fontSize:'10px',
+                 whiteSpace: 'nowrap',
+                 fontFamily: FontFamily.FontFamilyContent
+               },
+            },
+            xAxis: {
+             categories: [],
+             labels: {
+               enabled: false,
+             },
+             visible: false
+            },
+            yAxis: {
+              visible: false,
+              height: 32
+            },
+            tooltip: {
+              backgroundColor: 'rgba(177, 177 ,176, .7)',
+              borderColor: 'transparent',
+              shadow: false,
+              style: { fontSize: '10px', color: '#fff'},
+              headerFormat: '',
+              formatter: function () {
+                // return Math.abs(this.point.y);
+                return `
+                 ${this.x} : ${this.point.y}
+                `;
+              },
+              padding: 4
+            },
+            plotOptions: {
+              series:{
+                pointPlacement: 'on',
+                color: '#636461',
+                lineWidth: 1,
+                marker:{
+                  fillColor: '#FFFFFF',
+                  lineWidth: 1,
+                  lineColor: null // inherit from series
+                },
+                states: {
+                  hover: {
+                    halo: {
+                      size: 0
+                    }
+                  }
+                }
+              }
+            },
+            series: [
+                {
+                  name: 'Detection trend',
+                  marker: {
+                      enabled: false,
+                      symbol: 'circle',
+                      radius: 2
+                  },
+                  data: [],
+                  fillColor: {
+                    linearGradient: [0, 0, 0, 35],
+                    stops: [
+                       [0, '#D8D9D8'],
+                       [1, '#fff']
+                    ],
+                  }
+                }
+              ]
+          })
+        }
+      }
+    }
+
+    vulnerableAssetsTop5 = Highcharts.chart('vulnerable-assets-top5', {
+          credits: {enabled: false},
+          tooltip: {
+            // followPointer: false,
+            backgroundColor: 'rgba(177, 177 ,176, .7)',
+            borderColor: 'transparent',
+            shadow: false,
+            style: { fontSize: '10px', color: '#fff'},
+            headerFormat: '',
+            // pointFormat: '<span style="tooltipStyle">{point.y}</span>',
+            formatter: function () {
+              return `
+               ${this.series.name} : ${this.point.y}
+              `;
+            },
+            // positioner: function (labelWidth, labelHeight, point) {
+            //     return {
+            //         x: point.plotX - point.h/2 + labelWidth/2 + 80,
+            //         y: point.plotY - 20
+            //     };
+            // },
+            padding: 4,
+          },
+          chart: {
+              type: 'bar',
+              // plotBorderWidth: 1,
+              // width: 408
+              marginTop: 15,
+              marginBottom: 0,
+              events: {
+                load: function() {
+                  $(this.series[0].legendSymbol.element).attr({
+                    x: 0,
+                    y: 13,
+                  });
+                  $(this.series[1].legendSymbol.element).attr({
+                    x: 0,
+                    y: 13,
+                  });
+                  $(this.series[2].legendSymbol.element).attr({
+                    x: 0,
+                    y: 13,
+                  });
+                  $(this.series[3].legendSymbol.element).attr({
+                    x: 0,
+                    y: 13,
+                  });
+                }
+              }
+          },
+          title: {
+              text: null
+          },
+          xAxis: {
+              categories: [],
+              labels: {
+                style:{
+                  fontSize: 12,
+                  color:'#636461',
+                  fontFamily:FontFamily.FontFamilyContent,
+                  }
+              },
+
+          },
+          yAxis: {
+              lineWidth: 1,
+              lineColor: '#DEDEDE',
+              min: 0,
+              // max: 100,
+              gridLineColor:'#fff',
+              // tickInterval: 100,
+              title: {
+                  text: null
+              },
+               offset: -177,
+              labels: {
+                x: [],
+                y: -5,
+                style:{
+                  fontSize: 10,
+                  color:'#B1B1B0',
+                  fontFamily:FontFamily.FontFamilyContent,
+                  }
+              }
+          },
+          legend: {
+            // padding: 0,
+            // floating: true,
+            // x: 130,
+            y: 20,
+            x: 10,
+            padding: 15,
+            symbolWidth: 5,
+            symbolHeight: 5,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            itemMarginTop: 5,
+            itemMarginBottom: 10,
+            // width: 80,
+            borderWidth: 1,
+            borderColor: '#DEDEDE',
+            borderRadius: 2,
+            reversed: true,
+            itemStyle:{
+               fontSize:'11px',
+               fontFamily:FontFamily.FontFamilyContent,
+               color:'#4D4F5C',
+               fontWeight:'normal'
+            }
+          },
+          plotOptions: {
+            series: {
+                stacking: 'normal',
+                // height: 40,
+                pointWidth: 12,
+                // shadow: true,
+                // shadow: {
+                //   color: '#000000',
+                //   offsetX: 0,
+                //   offsetY: 2,
+                //   opacity: 0.16,
+                // },
+                borderWidth:0,
+              }
+          },
+          colors: [
+            '#93C01F',
+            '#3A84FF',
+            '#FFDD00',
+            '#FF0000',
+          ],
+          series: [
+            {
+              name: '<%= __("dashboard|Low") %>',
+              data: [],
+            },
+            {
+              name: '<%= __("dashboard|Medium") %>',
+              data: [],
+            },
+            {
+              name: '<%= __("dashboard|High") %>',
+              data: []
+            },
+            {
+              name: '<%= __("dashboard|Critical") %>',
+              data: [],
+            },
+        ]
+      });
+    vulnerabilityInServicesChart =  Highcharts.chart('vulnerability-in-services-chart', {
+      credits: false,
+      plotOptions: {
+        series:{
+          states: {
+            hover: {
+              enabled: false
+            }
+          }
+        }
+      },
+      chart: {
+          type: 'heatmap',
+          marginTop: 30,
+          marginLeft: 0,
+          // marginBottom: 40,
+          // plotBorderWidth: 0,
+          borderWidth: 0,
+          plotBorderWidth: 1,
+          plotBorderColor: '#fff',
+          width: 530,
+          backgroundColor: 'transparent',
+          style: {zIndex: 10, position: 'relative'}
+      },
+      title: {
+          text: null
+      },
+      xAxis: {
+          lineWidth: 0,
+          offset: -190,
+          categories: [],
+          labels: {
+               style: {
+                 fontSize:'10px',
+                 fontFamily:FontFamily.FontFamilyContent,
+                 color:'#636461',
+                 fontWeight:'normal'
+               },
+               useHTML:true,
+               formatter () {
+                 if(this.isLast){
+                   return `<div class="today" style="border-radius: 50%; padding: 5px; margin-top: -5px; margin-left: -5px;">${this.value}</div>`
+                 }else{
+                   return `<span>${this.value}</span>`
+                 }
+               }
+              //  formatter: function() {
+              //   if (this.isLast || this.isFirst) {
+              //     return this.value
+              //   }
+              // }
+           }
+      },
+      yAxis: {
+          gridLineWidth: 0,
+          offset: -5,
+          categories: [],
+          title: null,
+          reversed: true,
+          labels: {
+               style: {
+                 fontSize:'10px',
+                 fontFamily:FontFamily.FontFamilyContent,
+                 color:'#636461',
+                 fontWeight:'normal'
+               }
+           }
+      },
+      accessibility: {
+          point: {
+              descriptionFormatter: function (point) {
+                  var ix = point.index + 1,
+                      xName = getPointCategoryName(point, 'x'),
+                      yName = getPointCategoryName(point, 'y'),
+                      val = point.value;
+                  return ix + '. ' + xName + ' sales ' + yName + ', ' + val + '.';
+              }
+          }
+      },
+      colorAxis: {
+          // visible:false,
+          showLastLabel: false,
+          tickInterval: 20,
+          // minorTickInterval: 1,
+          stops: [
+              [0, '#c8c8c8'],
+
+              [0.002, '#FFDD00'],
+              [0.2, '#FFDD00'],
+
+              [0.2000001, '#FF8800'],
+              [0.4, '#FF8800'],
+
+              [0.4000001, '#FF0000'],
+              [0.6, '#FF0000'],
+
+              [0.6000001, '#C20000'],
+              [0.8, '#C20000'],
+
+              [0.8000001, '#6B0000'],
+              [1, '#6B0000']
+          ],
+          min: 0,
+          max: 100,
+          labels: {
+            y: 6,
+            x: 5,
+            style: {
+              fontSize:'10px',
+              fontFamily:FontFamily.FontFamilyContent,
+              color:'#636461',
+              fontWeight:'normal'
+            }
+          },
+
+      },
+      tooltip: {
+        followPointer: false,
+        backgroundColor: 'rgba(177, 177 ,176, .7)',
+        borderColor: 'transparent',
+        shadow: false,
+        style: { fontSize: '10px', color: '#fff'},
+        headerFormat: '',
+        formatter: function () {
+            return `
+             ${this.series.chart.axes[1].categories[this.point.y]} : ${this.point.value}
+            `;
+        },
+        padding: 4
+      },
+      series: [{
+          name: 'Vulnerability in services',
+          borderWidth: 2,
+          borderColor: '#fff',
+          data: [],
+          dataLabels: {
+              enabled: true,
+              style:{
+                fontFamily:FontFamily.FontFamilyContent,
+                fontSize:'10px',
+                color: '#fff',
+                stroke:0,
+                textOutline: 0
+              }
+          }
+      }],
+      legend: {
+          align: 'right',
+          layout: 'vertical',
+          margin: 0,
+          verticalAlign: 'top',
+          y: 15,
+          x: 14,
+          symbolHeight: 155,
+      },
+    });
+  });
+  </script>
+  <script>
+    var setAssetboardData = function(data){
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      let total = 0;
+      let auth = 0;
+      let unauth = 0;
+      let assetNew = 0;
+
+      // Asset listT
+      // assetAllowed 예외처리 배열에 한개도없을때, 1개 있을때 2개 있을때
+
+      ObjView[0].assetAllowed.map((data) => {
+        const assetAllowed = data.assetAllowed;
+        const assetCount = data.assetCount;
+
+        switch (assetAllowed) {
+          case 0:
+            unauth = assetCount;
+            break;
+          case 1:
+            auth = assetCount;
+            break;
+        }
+      })
+
+      total = auth + unauth;
+
+      assetNew = ObjView[0].assetNew[0].assetNewCount;
+
+      const $asset = $('[data-asset]');
+      $asset.find('[data-total]').html(total);
+      $asset.find('[data-auth]').html(auth);
+      $asset.find('[data-unauth]').html(unauth);
+      $asset.find('[data-new]').html(assetNew);
+
+      // Asset activitiy
+      // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+      let categories_array_all = [];
+      let categories_array = [];
+      let indexDictionary = {};
+
+      ObjView[0].assetActivity.forEach((data) => {
+        // let date = data.date.slice(-5);
+        let date = data.date;
+        categories_array_all.push(date)
+        if(categories_array.indexOf(date) != -1){
+          return ;
+        }
+        categories_array.push(date)
+      })
+
+      // let categories = categories_array;
+      let categories = categories_array.map((date)=>{
+        return date.slice(-5);
+        // const date_array = date.split('-');
+        // let newDate = date_array[1] + '<span style="margin-bottom:10px"> - </span>' + date_array[2]
+        // return newDate;
+      });
+
+      // make dictionary
+      categories_array.map((data, i) => {
+        indexDictionary[data] = i
+      })
+
+      let graphData_Detection = [];
+      let graphData_Registration = [];
+
+      for(let i=0; i<categories_array.length; i++){
+        graphData_Detection.push(0);
+        graphData_Registration.push(0);
+      }
+
+      let assetIndex = 0;
+
+      ObjView[0].assetActivity.map((data, index) => {
+
+        if(data.count > 0){
+          switch (data.regtype) {
+            case 0:
+              assetIndex = indexDictionary[data.date]
+              graphData_Detection[assetIndex] = data.count;
+              break;
+            case 1:
+              assetIndex = indexDictionary[data.date]
+              graphData_Registration[assetIndex] = data.count * -1;
+              break;
+          }
+        }
+
+      })
+      assetChart.xAxis[0].update({categories:categories});
+      assetChart.series[0].update({data:graphData_Detection});
+      assetChart.series[1].update({data:graphData_Registration});
+
+      // 임시로 이벤트 걸기
+      // for minorTickInterval
+      // for y Axis min value
+      // the button action
+      // 함수로 실행!
+
+      setTimeout(() => {
+        // chart.yAxis[0].options.minorTickInterval = 1;
+          const maxValue =
+            Math.abs(assetChart.yAxis[0].max) > Math.abs(assetChart.yAxis[0].min) ?
+            Math.abs(assetChart.yAxis[0].max) :
+            Math.abs(assetChart.yAxis[0].min) ;
+
+
+          let minValue = maxValue * -1;
+
+          assetChart.yAxis[0].update({
+            min: minValue,
+            max: maxValue
+          });
+
+          setTimeout(() => {
+            let value = Math.abs(assetChart.yAxis[0].max) / 5;
+            assetChart.yAxis[0].update({
+              minorTickInterval: value,
+            });
+          }, 0)
+
+      }, 0);
+
+      return { isLoading: true };
+    }
+    var setSensorboardData = function(data){
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      let total = 0;
+      let conn = 0;
+      let disconn = 0;
+      let sensorNew = 0;
+
+      ObjView[0].sensorStatus.map((data) => {
+        const sensorStatus = data.sensorStatus;
+        const sensorCount = data.sensorCount;
+
+        switch (sensorStatus) {
+          case 0:
+            disconn = sensorCount;
+            break;
+          case 1:
+            conn = sensorCount;
+            break;
+        }
+      })
+
+      total = conn + disconn;
+
+      sensorNew = ObjView[0].sensorNew[0].sensorNewCount;
+
+      const $sensor = $('[data-sensor]');
+      $sensor.find('[data-total]').html(total);
+      $sensor.find('[data-conn]').html(conn);
+      $sensor.find('[data-disconn]').html(disconn);
+      $sensor.find('[data-new]').html(sensorNew);
+
+      // Asset activitiy
+      // 중복날짜 제거해서 저장하는 배열
+      let categories_array = [];
+
+      ObjView[0].sensorDisconnection.forEach((data) => {
+        let date = data.date;
+        if(categories_array.indexOf(date) != -1){
+          return ;
+        }
+        categories_array.push(date)
+      })
+
+      let graphData_Registration = [];
+      let graphData_Count = [];
+      let graphData_Disconnection = [];
+
+      var categories = categories_array.map((date)=>{
+        return date.slice(-5);
+      });
+
+      ObjView[0].sensorDisconnection.map((data, index) => {
+        graphData_Disconnection[index] = data.count * -1;
+      })
+
+      ObjView[0].sensorRegistration.map((data, index) => {
+        graphData_Registration[index] = data.count;
+        graphData_Count[index] = data.totalCount;
+      })
+
+      sensorChart.xAxis[0].update({categories:categories});
+      sensorChart.series[0].update({data:graphData_Registration});
+      sensorChart.series[1].update({data:graphData_Count});
+      sensorChart.series[2].update({data:graphData_Disconnection});
+
+      // 임시로 이벤트 걸기
+      // for minorTickInterval
+      // for y Axis min value
+      // the button action
+      // 함수로 실행!
+
+      setTimeout(() => {
+          const maxValue = Math.abs(sensorChart.yAxis[0].max) > Math.abs(sensorChart.yAxis[0].min) ?
+                           Math.abs(sensorChart.yAxis[0].max) : Math.abs(sensorChart.yAxis[0].min) ;
+          let value = maxValue / 5;
+          let minValue = maxValue * -1;
+
+          sensorChart.yAxis[0].update({
+            max: maxValue,
+            min: minValue
+          });
+
+          setTimeout(() => {
+            let value = Math.abs(sensorChart.yAxis[0].max) / 5;
+            sensorChart.yAxis[0].update({
+              minorTickInterval: value,
+            });
+          }, 0)
+
+      }, 0);
+      return { isLoading: true };
+    }
+    var setNetworkboardData = function(data){
+
+      // 'all' - show all data as graph
+      // 'group' - show only direct subgroup data as graph
+      // used in 'getInitObjView', 'getSensorCount' , 'createGroupSelect' function
+      /**
+      * @date 2021-06-04
+      * @desc draw graph as group if company is BUS_Secure
+      * @company
+      */
+      const groupBy = <% if(company == 'BUS_Secure') { %> 'group'<% } else { %> 'all'<% } %>;
+      /*************************************/
+      const ObjView = data.ObjView[0].treeList.concat(data.ObjView[0].assetList);
+
+      const graphColors = {
+        root: GRAPH_COLOR.NETWORK_ROOT,
+        group: GRAPH_COLOR.NETWORK_GROUP,
+        sensor: GRAPH_COLOR.NETWORK_SENSOR,
+        sensor_disconn: GRAPH_COLOR.NETWORK_SENSOR_DISCONN,
+        asset: GRAPH_COLOR.NETWORK_ASSET,
+        asset_disconn: GRAPH_COLOR.NETWORK_ASSET_DISCONN
+      }
+      const nodeStyle= {
+        root: (root) => {
+          const {text} = root;
+          function getTextWidth(text){
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            const textSVG = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textSVG.textContent = text;
+            textSVG.style.fontFamily = FontFamily.FontFamilyTitle;
+            textSVG.style.fontSize = '11px';
+            svg.setAttribute('width',0);
+            svg.setAttribute('height',0);
+            svg.append(textSVG);
+            document.body.append(svg);
+            const width =  textSVG.getBBox().width;
+            svg.remove();
+            return Math.round(width);
+          }
+          const space = 4;
+          const radius = getTextWidth(text)/2 + space > 36 ? getTextWidth(text)/2 + space : 36;
+
+          return {
+            marker: {
+              radius: radius,
+              states: {
+                select: {lineWidth: 0, radiusPlus: 0, fillColor: graphColors.root},
+              }
+            },
+            color: graphColors.root,
+            dataLabels: {
+              color: '#fff',
+              y: 15,
+              style: {
+                fontSize: 11,
+                textOutline: 'none'
+              }
+            }
+          }
+        },
+        group: () => {
+          return {
+            marker: {
+              radius: 12.5,
+              states: {
+                select: {lineWidth: 0, radiusPlus: 0, fillColor: graphColors.group},
+              }
+            },
+            color: graphColors.group,
+            dataLabels: {color: graphColors.group, y: -15, style: {fontSize: 12}},
+            events: {
+              select: function(param){
+                const _ObjView = deepCopy(ObjView);
+                const $selectLast = $('#networkGroup .networkGroup-select:last-child');
+                const thisGroupID = this.id.replace('folder','');
+                const order = $selectLast.data('order');
+                const rootID = $selectLast.find('select option:first-child').val();
+
+                setTimeout(()=>{
+                  $(`#networkGroup .networkGroup-select[data-order="${order}"]`).find(`select option[value=${thisGroupID}]`).prop('selected', true).trigger('change')
+                },0);
+              }
+            }
+          }
+        },
+        sensor: (sensor = {}) => {
+          const {status} = sensor;
+          return {
+            marker: {
+              radius: 10,
+              states: {
+                hover: {lineColor: status === 0 ? GRAPH_COLOR.NETWORK_SENSOR_DISCONN_SUB : GRAPH_COLOR.NETWORK_SENSOR_SUB, lineWidth: 5},
+                select: {lineColor: status === 0 ? GRAPH_COLOR.NETWORK_SENSOR_DISCONN_SUB : GRAPH_COLOR.NETWORK_SENSOR_SUB, lineWidth: 5, fillColor: status === 0 ? graphColors.sensor_disconn : graphColors.sensor}
+              }
+            },
+            color: status === 0 ? graphColors.sensor_disconn : graphColors.sensor,
+            dataLabels: {color: graphColors.sensor, y: -5, style: {fontSize: 11}},
+            events: {
+              select: function(param){
+
+                if(this.id.includes('sensor')) return;
+
+                const _ObjView = deepCopy(ObjView);
+
+                const thisSensor = this.id.replace('file','');
+                const selfElement = getNode(_ObjView, {key: 'text', value: thisSensor}, 'folder');
+                const selfElementStatus = selfElement.status === undefined ? undefined : {status: selfElement.status};
+
+                dashboardScreen.open();
+
+                const graphData = [];
+                _ObjView.forEach(function(element){
+                  if(element.type == 'asset') {
+                    const sensor = getParent(_ObjView, element.parent,element.type) || {};
+                    if(sensor.sid != thisSensor) return;
+                    if(element.parent != sensor.sid) return;
+                    const from = sensor.type + sensor.sid;
+                    const to = element.type + element.aid;
+                    graphData.push({from: from || '', to: to, color: element.status === 0 ? GRAPH_COLOR.NETWORK_ASSET_DISCONN: undefined});
+                  }
+                });
+
+                const _sensor = getParent(_ObjView, thisSensor, 'asset') || {};
+                const _group = getParent(_ObjView, _sensor.parent, 'folder') || {};
+                const nodeData = [];
+                nodeData.push({
+                  id: 'file' + _sensor.sid,
+                  name: _sensor.text,
+                  ...nodeStyle.sensor({status:_sensor.status}),
+                  events: {select: null, unselect: null}
+                });
+                _ObjView.forEach(function(element){
+                  if(element.type == 'asset') {
+                    const sensor = getParent(_ObjView, element.parent,element.type) || {};
+                    if(sensor.sid != thisSensor) return;
+                    if(element.parent == sensor.sid) {
+                      let assetStatus = 1;
+                      if(element.status === 0) assetStatus = 0;
+                      nodeData.push({
+                        id: 'asset' + element.aid, name: element.text, ...nodeStyle.asset({status: assetStatus}),
+                        events: {
+                          select: function(param){
+                            const _ObjView = deepCopy(ObjView);
+                            const aid = this.id.replace('asset','');
+                            const asset = getNode(_ObjView, {key: 'aid', value: aid}, 'asset');
+                            const sensor = getParent(_ObjView, asset.parent, 'asset');
+
+                            const url = '/asset/scan';
+                            const conditions = {
+                              filter: [{
+                                sensor_name: sensor.text
+                              }]
+                            }
+                            movePage(url, conditions);
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+
+                myNetworkDetailHighChart.series[0].update({
+                  name: thisSensor,
+                  id: thisSensor,
+                  data: graphData,
+                  nodes: nodeData,
+                });
+
+
+                const $myScreenDetail = $('#myScreenDetail');
+                const group = _group.text;
+                const sensor = _sensor.text;
+                let assetCount = graphData.length;
+
+                  $myScreenDetail.find('[data-group]').html(group);
+                  $myScreenDetail.find('[data-sensor]').html(sensor);
+                  $myScreenDetail.find('[data-assetCount]').html(assetCount);
+
+              },
+              unselect: function(){
+                if(this.selected) dashboardScreen.close({beforeCloseCallback: null});
+              }
+            }
+          }
+        },
+        asset: (asset = {}) => {
+          const {status} = asset;
+          return {
+            marker: {
+              radius: 5,
+              states: {
+                hover: {lineColor: status === 0 ? GRAPH_COLOR.NETWORK_ASSET_DISCONN_SUB: GRAPH_COLOR.NETWORK_ASSET_SUB, lineWidth: 3, radiusPlus: 0},
+                select: {lineColor: status === 0 ? GRAPH_COLOR.NETWORK_ASSET_DISCONN_SUB: GRAPH_COLOR.NETWORK_ASSET_SUB, lineWidth: 3, radiusPlus: 0, fillColor: status == 0 ? graphColors.asset_disconn : graphColors.asset}
+              }
+            },
+            color: status == 0 ? graphColors.asset_disconn : graphColors.asset,
+            dataLabels: {color: graphColors.asset, y: 0, style: {fontSize: 10}},
+            events: {
+              select: function(param){
+                const _ObjView = deepCopy(ObjView);
+                const sid = this.id.replace('file','').replace('-asset','').replace('-connect','').replace('-disconnect','');
+                const sensor = getNode(_ObjView, {key: 'sid', value: sid}, 'file');
+
+                const url = '/asset/scan';
+                const conditions = {
+                  filter: [{
+                    sensor_name: sensor.text
+                  }]
+                }
+                movePage(url, conditions);
+              },
+            }
+          }
+        }
+      };
+
+      function getInitObjView(id){
+        let _ObjView;
+        if(groupBy == 'all') _ObjView = deepCopy(ObjView);
+        else {
+          _ObjView = deepCopy(ObjView).filter(element=>element.parent == id || element.gid == id);
+          if ( id != '1' ) {
+            _ObjView.forEach(element=>{
+              _ObjView.push(...deepCopy(ObjView).filter(_element=>_element.parent == element.gid && _element.parent != id));
+            });
+          }
+        }
+        return _ObjView
+      }
+      function getGroupObjView(_initObjView, id){
+        let _groupObjView = [];
+        let _groupID = [id];
+        for(let i = 0; i<_groupID.length; i++){
+          const id = _groupID[i];
+          if(id != '#' && id != 1){
+            _initObjView.forEach(function(element){
+              if(_groupObjView.indexOf(element) != -1) return;
+              if(element.type == 'folder'){
+                if(element.gid == id) return _groupObjView.push(element);
+                if(element.parent == id) _groupObjView.push(element);
+                if(element.parent == id && element.gid != id) _groupID.push(element.gid);
+                return;
+              }else if(element.type == 'file'){
+                if(element.parent == id) return _groupObjView.push(element);
+              }else if(element.type == 'asset'){
+                return _groupObjView.filter(element=>element.type == 'file').forEach(function(ele){
+                  if(element.parent == ele.sid) return _groupObjView.push(element);
+                });
+              }
+            });
+          }else{
+            _groupObjView = _initObjView;
+          }
+        };
+        return _groupObjView;
+      }
+      function getSensorCount(_initObjView, id){
+        let sensorCount;
+        if(groupBy == 'all') sensorCount = false;
+        else sensorCount = id != 1 ? _initObjView.filter(element=>element.type == 'folder').length != 1 : false; // hasSubGroup
+        return sensorCount;
+      }
+      function getNode(_ObjView, selfItem, type){
+        let self;
+        _ObjView.forEach(function(element, i){
+          switch(type){
+            case 'folder':
+              if(element[selfItem.key] == selfItem.value) self = element;
+              break;
+            case 'file':
+              if(element[selfItem.key] == selfItem.value) self = element;
+              break;
+            case 'asset':
+              if(element[selfItem.key] == selfItem.value) self = element;
+              break;
+            default:
+              break;
+          }
+
+        });
+        return {...self}
+      }
+      function getParent(_ObjView, parentID, type){
+        let parent;
+        _ObjView.forEach(function(element, i){
+          switch(type){
+            case 'folder':
+              if(element.gid == parentID) parent = element;
+              break;
+            case 'file':
+              if(element.gid == parentID) parent = element;
+              break;
+            case 'asset':
+              if(element.sid == parentID) parent = element;
+              break;
+            default:
+              break;
+          }
+        });
+        return parent
+      }
+      function createBeriefSummary(_ObjView){
+
+        const $networkSummary = $('#network-summary');
+
+        const group = _ObjView.filter(function(element){return element.type == 'folder'}).length;
+        const sensor = _ObjView.filter(function(element){return element.type == 'file'}).length;
+        /**
+        * @date 2021-06-04
+        * @desc show count of connection and disconnection
+        * @company
+        */
+        const sensor_conn = _ObjView.filter(function(element){return element.type == 'file' && element.status == 1}).length;
+        const sensor_disconn = _ObjView.filter(function(element){return element.type == 'file' && element.status == 0}).length;
+        const asset = _ObjView.filter(function(element){return element.type == 'asset' && element.status == 1}).length;
+        const asset_conn = _ObjView.filter(function(element){return element.type == 'asset' && element.status == 0}).length;
+        const asset_disconn = _ObjView.filter(function(element){return element.type == 'asset'}).length;
+
+        if (group) $networkSummary.find('[data-group]').html(group).closest('dl').show();
+        $networkSummary.find('[data-sensor].conn-style').html(sensor_conn);
+        $networkSummary.find('[data-sensor].disconn-style').html(sensor_disconn);
+        if (sensor) $networkSummary.find('dl.sensor-style').show();
+        $networkSummary.find('[data-asset].conn-style').html(asset_conn);
+        $networkSummary.find('[data-asset].disconn-style').html(asset_disconn);
+        if (asset) $networkSummary.find('dl.asset-style').show();
+        /*************************************/
+      }
+      function createGroupSelect(_initObjView, order, rootID = '#'){
+
+        if(groupBy == 'all' && rootID != '#') return; // for default networkgraph
+
+        const $networkGroup = $('#networkGroup');
+        if (!$networkGroup.find(`.networkGroup-select[data-order="${order}"]`).length) $networkGroup.append(`<div id="networkGroup-select${order}" data-order=${order} class="networkGroup-select"></div>`);
+
+        const $networkGroupSelect = $(`
+          <div class="ui-select default-style" data-width="210px">
+            <select name="" id=""></select>
+          </div>
+        `);
+        $networkGroup.find(`.networkGroup-select[data-order="${order}"]`).html($networkGroupSelect);
+
+        _initObjView.forEach(function(element){
+          if(element.type == 'folder') {
+            const value = element.gid;
+            const text = element.gid == rootID && order != 0 ? '-' : element.text;
+
+            $networkGroupSelect.find('select').append(`<option value="${value}">${text}</option>`);
+          }
+        });
+        selectDropdown(`.networkGroup-select[data-order="${order}"] .ui-select.default-style`);
+        formWidth();
+        $networkGroupSelect.find('select').off('change.networkGroup').on('change.networkGroup', function(){
+          const id = $(this).find('option:selected').val();
+          const order = $(this).closest('.networkGroup-select').data('order')*1;
+          updateGroup(id, rootID, order);
+        });
+      };
+      function updateGroup(id, rootID, order){
+
+        const $networkGroup = $('#networkGroup');
+
+        const _initObjView = getInitObjView(id);
+        const _groupObjView = getGroupObjView(_initObjView, id);
+        const sensorCount = getSensorCount(_initObjView, id);
+        drawNetworkGraph(_groupObjView, sensorCount);
+
+        dashboardScreen.close();
+
+        const nextOrder = order + 1;
+
+        $networkGroup.find(`.networkGroup-select`).each(function(){
+          if($(this).data('order') >= nextOrder) $(this).remove();
+        });
+        if(rootID == id || id == '1') return; // click '-'
+        if(!_initObjView.filter(element => element.gid != id && element.gid !== undefined).length) return; // click group that has no subgroup
+
+        createGroupSelect(_initObjView, nextOrder, id);
+      }
+      function getMultiGraphData(_ObjView, sensorCount){
+        const graphData = [];
+
+        _ObjView.forEach(function(element){
+          switch(element.type){
+            case 'folder':
+              if(element.parent == '#') return element.idx = 'root' + element.gid;
+              element.idx = element.type + element.gid;
+              break;
+            case 'file':
+              if(!sensorCount) element.idx = element.type + element.sid;
+              else {
+                const group = getParent(_ObjView, element.parent,element.type) || {};
+                if (!group.statusCount) group.statusCount = {connect:0, disconnect: 0};
+                if (element.status) group.statusCount.connect++;
+                else group.statusCount.disconnect++;
+                if (group.statusCount.connect == 1) graphData.push({from: group.idx, to: group.idx + '-sensor-connect'});
+                if (group.statusCount.disconnect == 1) graphData.push({from: group.idx, to: group.idx + '-sensor-disconnect'});
+                return;
+              }
+              break;
+            case 'asset':
+              const sensor = getParent(_ObjView, element.parent,element.type) || {};
+              if (!sensor.statusCount) sensor.statusCount = {connect:0, disconnect: 0};
+              if (element.status) sensor.statusCount.connect++;
+              else sensor.statusCount.disconnect++;
+              if(!graphData.filter(element=>element.to == 'file' + sensor.sid).length) return
+              if (sensor.statusCount.connect == 1) graphData.push({from: sensor.idx, to: sensor.idx + '-asset-connect'});
+              if (sensor.statusCount.disconnect == 1) graphData.push({from: sensor.idx, to: sensor.idx + '-asset-disconnect'});
+              return;
+              break;
+          }
+          const from = getParent(_ObjView, element.parent,element.type) || {};
+          const to = element;
+          if(graphData.filter(element=>element.from == from.idx && element.to == to.idx).length) return;
+          if(!from.idx) from.idx = from.type == 'folder' ? 'folder' + from.gid : from.type == 'file' ? 'file' + from.sid : 'asset' + from.aid;
+          if(from.text) graphData.push({from: from.idx, to:to.idx});
+        });
+        return graphData;
+      }
+      function getMultiNodeData(_ObjView, sensorCount){
+        const nodeData = [];
+        _ObjView.forEach(function(element){
+          const isNodeData = nodeData.find(function(node){return element.text == node.id})
+          if(isNodeData) return;
+          let type = '';
+          let idx;
+          switch(element.type){
+            case 'folder':
+              if(element.parent == '#') type = 'root';
+              else type = 'group';
+              idx = (element.parent == '#' ? 'root' : 'folder') + element.gid;
+              if(nodeData.filter(element=>element.id == idx).length) return;
+              nodeData.push({id:idx, name: element.text, ...nodeStyle[type]({text:element.text})});
+              if(sensorCount){
+                if(!element.statusCount) return;
+                if(element.statusCount.connect) nodeData.push({id:idx + '-sensor-connect',name: element.statusCount.connect, ...nodeStyle['sensor']({status: 1})});
+                if(element.statusCount.disconnect) nodeData.push({id:idx + '-sensor-disconnect',name: element.statusCount.disconnect, ...nodeStyle['sensor']({status: 0})});
+              }
+              break;
+            case 'file':
+              if(!sensorCount){
+                type = 'sensor'
+                idx = element.type + element.sid;
+                if(nodeData.filter(element=>element.id == idx).length) return;
+                nodeData.push({id:idx, name: element.text, ...nodeStyle[type]({status:element.status})});
+                if(!element.statusCount) return;
+                if(element.statusCount.connect) nodeData.push({id:idx + '-asset-connect',name: element.statusCount.connect, ...nodeStyle['asset']({status: 1})});
+                if(element.statusCount.disconnect) nodeData.push({id:idx + '-asset-disconnect',name: element.statusCount.disconnect, ...nodeStyle['asset']({status: 0})});
+              }
+              break;
+          }
+        });
+        return nodeData;
+      }
+      function drawNetworkGraph(_ObjView, sensorCount){
+        preventNetworkClickEvent(true);
+        setTimeout(function(){
+          const graphData = getMultiGraphData(_ObjView, sensorCount);
+          const nodeData = getMultiNodeData(_ObjView, sensorCount);
+          myNetworkMultiHighChart.series[0].update({
+            data: graphData,
+            nodes: nodeData,
+          });
+          preventNetworkClickEvent(false);
+        }, 0);
+      }
+      function drawDetailGraph(){
+
+        const graphData = [];
+        const nodeData = [];
+
+        // Update the chart
+        myNetworkDetailHighChart.series[0].update({
+          data: graphData,
+          nodes: nodeData,
+        });
+      };
+      dashboardScreen.close();
+
+      let initObjView = getInitObjView(1);
+
+      createBeriefSummary(deepCopy(ObjView));
+      createGroupSelect(initObjView, 0);
+      drawNetworkGraph(initObjView);
+      drawDetailGraph();
+
+      return { isLoading: true };
+    }
+    var setVulnerabilityCountCircleData = function(data){
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+      let total = 0;
+      let critical = 0;
+      let high = 0;
+      let medium = 0;
+      let low = 0;
+
+      // Vulnerability Count - circle
+
+      ObjView[0].vulnSeverityTotal.map((data) => {
+        switch (data.severity) {
+          case 0:
+            low = data.count;
+            break;
+          case 1:
+            medium = data.count;
+            break;
+          case 2:
+            high = data.count;
+            break;
+          case 3:
+            critical = data.count;
+            break;
+        }
+      })
+
+      total = critical + high + medium + low;
+
+      // Update the chart
+      /**
+      * @date 2021-04-23
+      * @desc fix bug about max value of graph in dashboard
+      * @company
+      */
+      mySolidgaugeHighChart.update({
+        yAxis: {
+          max: total ? total : 100,
+        },
+      });
+      /*************************************/
+      mySolidgaugeHighChart.update({plotOptions: {
+        solidgauge: {
+          dataLabels: {
+            enabled: true,
+            y: -5,
+            borderWidth: 0,
+            backgroundColor: 'none',
+            useHTML: true,
+            shadow: false,
+            style: {
+              fontSize: '16px',
+              color: '#43425D'
+            },
+            formatter: function() {
+              return `
+              <div style="text-align:center; transform: translateY(-50%); ">
+                <span style="display:block; font-family: '${FontFamily.FontFamilyTitle}'; ">${total}</span>
+                <span style="font-size:10px; font-family: '${FontFamily.FontFamilyContent}'; "><%= __("dashboard|Total") %></span>
+              </div>`;
+            }
+          },
+        }
+      }});
+      mySolidgaugeHighChart.series[0].update({
+        name: 'Critical',
+        data: [{
+          color: '#FF0000',
+          radius: '100%',
+          innerRadius: '91.025641%',
+          y: critical
+        }]
+      });
+      mySolidgaugeHighChart.series[1].update({
+        name: 'High',
+        data: [{
+          color: '#FFDD00',
+          radius: '88.461538%',
+          innerRadius: '79.487179%',
+          y: high
+        }]
+      });
+      mySolidgaugeHighChart.series[2].update({
+        name: 'Medium',
+        data: [{
+          color: '#3A84FF',
+          radius: '76.913076%',
+          innerRadius: '67.974871%',
+          y: medium
+        }]
+      });
+      mySolidgaugeHighChart.series[3].update({
+        name: 'Low',
+        data: [{
+          color: '#93C01F',
+          radius: '65.384615%',
+          innerRadius: '56.410256%',
+          y: low
+        }]
+      });
+
+      return { isLoading: true };
+    }
+    var setVulnerabilityAssetCountData = function(data){
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      let total = 0;
+      let critical = 0;
+      let high = 0;
+      let medium = 0;
+      let low = 0;
+
+      // Vulnerability Count - circle
+     ObjView[0].vulnAssetSeverity.map((data) => {
+        switch (data.severity) {
+          case 0:
+            low = data.count;
+            break;
+          case 1:
+            medium = data.count;
+            break;
+          case 2:
+            high = data.count;
+            break;
+          case 3:
+            critical = data.count;
+            break;
+        }
+      })
+
+      total = critical + high + medium + low;
+
+      const $asset_count = $('[data-asset-count]');
+      $asset_count.find('[data-total]').html(total);
+      $asset_count.find('[data-critical]').html(critical);
+      $asset_count.find('[data-high]').html(high);
+      $asset_count.find('[data-medium]').html(medium);
+      $asset_count.find('[data-low]').html(low);
+    }
+    var setVulnerabilityCountGraphData = function(data){
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      // Vulnerability Count
+      // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+      let categories_array_all = [];
+      let categories_array = [];
+      let indexDictionary = {};
+
+      ObjView[0].vulnSeverity.forEach((data) => {
+        let date = data.date;
+        categories_array_all.push(date)
+        if(categories_array.indexOf(date) != -1){
+          return ;
+        }
+        categories_array.push(date)
+      })
+
+      // let categories = categories_array;
+      let categories = categories_array.map((date)=>{
+        return date.slice(-5);
+      });
+
+      // make dictionary
+      categories_array.map((data, i) => {
+        indexDictionary[data] = i
+      })
+
+
+      let graphData_Critical = [];
+      let graphData_High = [];
+      let graphData_Medium = [];
+      let graphData_Low = [];
+
+      for(let i=0; i<categories_array.length; i++){
+        graphData_Critical.push(0);
+        graphData_High.push(0);
+        graphData_Medium.push(0);
+        graphData_Low.push(0);
+      }
+
+      let vulnSeverityIndex = 0;
+
+      ObjView[0].vulnSeverity.map((data, index) => {
+
+        if(data.count > 0){
+          switch (data.severity) {
+            case 0:
+              vulnSeverityIndex = indexDictionary[data.date]
+              graphData_Low[vulnSeverityIndex] = data.count;
+              break;
+            case 1:
+              vulnSeverityIndex = indexDictionary[data.date]
+              graphData_Medium[vulnSeverityIndex] = data.count;
+              break;
+            case 2:
+              vulnSeverityIndex = indexDictionary[data.date]
+              graphData_High[vulnSeverityIndex] = data.count;
+              break;
+            case 3:
+              vulnSeverityIndex = indexDictionary[data.date]
+              graphData_Critical[vulnSeverityIndex] = data.count;
+              break;
+          }
+        }
+
+      })
+
+      vulnerabilityCountChart.xAxis[0].update({categories:categories});
+      vulnerabilityCountChart.series[0].update({data:graphData_Low});
+      vulnerabilityCountChart.series[1].update({data:graphData_Medium});
+      vulnerabilityCountChart.series[2].update({data:graphData_High});
+      vulnerabilityCountChart.series[3].update({data:graphData_Critical});
+
+      // 임시로 이벤트 걸기 for minorTickInterval
+      // the button action
+      setTimeout(() => {
+        // chart.yAxis[0].options.minorTickInterval = 1;
+        const max = Math.ceil(vulnerabilityCountChart.yAxis[0].max);
+
+        vulnerabilityCountChart.yAxis[0].update({
+          max: max
+        });
+
+        setTimeout(() => {
+          let value = Math.abs(vulnerabilityCountChart.yAxis[0].max) / 4;
+          vulnerabilityCountChart.yAxis[0].update({
+            minorTickInterval: value,
+          });
+        }, 0)
+
+      }, 0);
+
+    }
+    var setVulnerabilityData = function(data){
+      setVulnerabilityCountCircleData(data);
+      setVulnerabilityAssetCountData(data);
+      setVulnerabilityCountGraphData(data);
+
+      return { isLoading: true };
+    }
+    var setThreatTableData = function(data){
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      $target = $('#threat tbody');
+
+      // TIME 분 마다 데이터 받을시
+      // 기존 tr 배열 삭제
+      $target.html('');
+
+      /**
+      * @date 2021-04-19
+      * @desc mistranslation
+      * @company
+      */
+      const threatEventType = [
+        "<%= __("dashboard|ZeroDay") %>",
+        "<%= __("dashboard|CVE") %>",
+        "<%= __("dashboard|OneDay") %>",
+        "<%= __("dashboard|Spoofing") %>",
+        "<%= __("dashboard|Zombie service") %>",
+        "<%= __("dashboard|Backdoor") %>",
+        "<%= __("dashboard|ICMP Redirect") %>",
+        "<%= __("dashboard|Mining Nodes") %>",
+      ]
+      /*************************************/
+
+      ObjView[0].threatLastedList.forEach((data, i) => {
+        if(i==0){
+          $target.append(`
+          <tr>
+            <td class="cell-center"><span class="rating rating-highlight">${threatEventType[data.category]}</span></td>
+            <td class="cell-center warning-color">${data.sensor_name}</td>
+            <td class="cell-center">
+              <!-- Dection trend chart -->
+              <figure class="highcharts-figure">
+                <div id="detection-trend-chart-${i}" style=" width: 90px; height: 54px; margin: 0 auto;"></div>
+              </figure>
+              <!-- Dection trend chart -->
+            </td>
+          </tr>
+          `)
+        }else{
+          $target.append(`
+          <tr>
+            <td class="cell-center"><span class="rating rating-default">${threatEventType[data.category]}</span></td>
+            <td class="cell-center">${data.sensor_name}</td>
+            <td class="cell-center">
+              <!-- Dection trend chart -->
+              <figure class="highcharts-figure">
+                <div id="detection-trend-chart-${i}" style="width: 90px; height: 54px; margin: 0 auto;"></div>
+              </figure>
+              <!-- Dection trend chart -->
+            </td>
+          </tr>
+          `)
+        }
+      })
+
+      // Detection trend
+      threatDetectiontrendChartCallback(ObjView[0].threatLastedList.length);
+      // 날짜를 저장하는 배열, 중복날짜 제거해서 저장하는 배열, 날짜별 인덱스가지는 객체
+      let categories_array_all = [];
+      let categories_array = [];
+      let indexDictionary = {};
+
+      ObjView[0].threatLastedTime.forEach((data) => {
+        let date = data.date;
+        categories_array_all.push(date)
+        if(categories_array.indexOf(date) != -1){
+          return ;
+        }
+        categories_array.push(date)
+      })
+
+      // let categories = categories_array;
+      let categories = categories_array.map((date)=>{
+        return date.slice(-5);
+      });
+
+      // make dictionary
+      categories_array.map((data, i) => {
+        indexDictionary[data] = i
+      })
+
+      // title array
+      let titleDataArry = [];
+      ObjView[0].threatLastedList.forEach((listItem, i) => {
+        titleDataArry.push(listItem.date);
+      })
+
+      // graphData
+      const trendSeriesData = Array.from(Array(ObjView[0].threatLastedList.length), ()=>Array(categories_array.length).fill(0));
+
+      // 현재 event type, sensor name
+      /*
+      ObjView[0].threatLastedTime 돌면서
+      객체의 sesnor_name과 threatLastedList의 sesnor_name과
+      객체의 category threatLastedList의 category 같을때
+      count 값 가져옴
+      */
+      ObjView[0].threatLastedList.forEach((listItem, i) => {
+        ObjView[0].threatLastedTime.forEach((timeItem, j) => {
+          if(listItem.sensor_name == timeItem.sensor_name && listItem.category == timeItem.category){
+            switch (i) {
+              case 0:
+                trendSeriesData[i][indexDictionary[timeItem.date]] = timeItem.count;
+                break;
+              case 1:
+                trendSeriesData[i][indexDictionary[timeItem.date]] = timeItem.count;
+                break;
+              case 2:
+                trendSeriesData[i][indexDictionary[timeItem.date]] = timeItem.count;
+                break;
+              case 3:
+                trendSeriesData[i][indexDictionary[timeItem.date]] = timeItem.count;
+                break;
+              case 4:
+                trendSeriesData[i][indexDictionary[timeItem.date]] = timeItem.count;
+                break;
+            }
+          }
+        });
+      });
+
+    // chartMarginTopArry 배열의 row총합이 0이면 chart margin top 0
+    // chartMarginTop = 0
+    let chartMarginTop = 7;
+    const chartMarginTopArry = trendSeriesData.map((item, index)=>{
+      let total = 0
+      item.forEach((data, i) => {
+        total += data
+      })
+      return total
+    })
+
+    // update
+    ObjView[0].threatLastedList.forEach((listItem, i) => {
+      threatDetectiontrendChart[i].xAxis[0].update({categories:categories});
+
+      // titleDataArry[0]
+      threatDetectiontrendChart[i].setTitle({text:titleDataArry[i]});
+
+      threatDetectiontrendChart[i].series[0].update({data:trendSeriesData[i]});
+
+      // chartMarginTopArry 배열의 row총합이 0이면 chart margin top 0
+      if(chartMarginTopArry[i] == 0)
+        threatDetectiontrendChart[i].update({chart:{marginTop:2}})
+    })
+
+    }
+    var setBlockTableData = function(data){
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      $target = $('#block tbody');
+
+      // TIME 분 마다 데이터 받을시
+      // 기존 tr 배열 삭제
+      $target.html('');
+
+      /**
+      * @date 2021-04-19
+      * @desc mistranslation
+      * @company
+      */
+      const blockEventType = {
+        1: "<%= __("dashboard|Checkup status") %>",
+        2: "<%= __("dashboard|Unauthorized") %>",
+      };
+      /*************************************/
+
+      ObjView[0].blockLastedList.forEach((data, i) => {
+        if(i==0){
+          $target.append(`
+          <tr>
+            <td class="cell-center" style="height:55px"><span class="rating rating-highlight">${blockEventType[data.rules]}</span></td>
+            <td class="cell-center warning-color">${data.asset_name}</td>
+            <td class="cell-center warning-color">${data.regtime}</td>
+          </tr>
+          `)
+        }else{
+          $target.append(`
+          <tr>
+            <td class="cell-center" style="height:55px"><span class="rating rating-default">${blockEventType[data.rules]}</span></td>
+            <td class="cell-center">${data.asset_name}</td>
+            <td class="cell-center">${data.regtime}</td>
+          </tr>
+          `)
+        }
+      })
+    }
+    var setVulnerabilityAssetsTop5Data= function(data) {
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      // asset_name dictionary
+      let _asset_name = [];
+      let  asset_name = [];
+      let _indexDictionary = {};
+      let indexDictionary = {};
+      let asset_totalDictionary = {};
+
+      let _severityData = null;
+      let severityData = null;
+      let xPosition = 0;
+
+      if(!ObjView[0].length){
+        xPosition = -340;
+        while(true){
+          if(asset_name.length >= 5) break;
+          asset_name.push('');
+        }
+        // severityData[0] - low, severityData[1] - medium, severityData[2] - High, severityData[3] - Critical
+        severityData = Array.from(Array(4), ()=> Array(_asset_name.length).fill(0))
+      }else {
+        ObjView[0].forEach((data, i) => {
+          let date = data.asset_name;
+          if(_asset_name.indexOf(date) != -1){
+            return ;
+          }
+          _asset_name.push(date);
+        })
+
+        if(_asset_name.length < 5 ){
+          while(true){
+            if(_asset_name.length >= 5) break;
+            _asset_name.push('');
+          }
+        }
+
+        _asset_name.map((data, i) => {
+          _indexDictionary[data] = i
+        })
+
+        // get asset_totalDictionary
+        _asset_name.forEach((item, i) => {
+          asset_totalDictionary[`${i}`] = 0;
+        });
+        ObjView[0].forEach((item, i) => {
+          _asset_name.forEach((data, j) => {
+            if(item.asset_name == data)
+              asset_totalDictionary[`${j}`] += parseInt(item.count, 10)
+          });
+        });
+
+        // sort asset_totalDictionary
+        let sortobj = [];
+        let numberTo = _asset_name.length-1;
+        for (let number in asset_totalDictionary) {
+          sortobj.push([parseInt(number,10), asset_totalDictionary[number]]);
+        }
+        sortobj.sort(function(a, b) {
+          return b[1] - a[1];
+        });
+        sortobj.forEach((item, i) => {
+          sortobj[i].push(i);
+        });
+
+
+        // sortobj 의 인덱스로
+        // asset_name, indexDictionary total 순으로 배치
+        sortobj.forEach((item, i) => {
+          asset_name[sortobj[i][2]] = _asset_name[sortobj[i][0]];
+          indexDictionary[Object.keys(_indexDictionary)[sortobj[i][0]]] = i;
+        });
+
+        // severityData[0] - low, severityData[1] - medium, severityData[2] - High, severityData[3] - Critical
+        severityData = Array.from(Array(4), ()=> Array(asset_name.length).fill(0))
+
+        ObjView[0].forEach((data, i) => {
+          let severity = data.severity;
+          switch (severity) {
+            case 0:
+              severityData[0][indexDictionary[data.asset_name]] = Number(data.count);
+              break;
+            case 1:
+              severityData[1][indexDictionary[data.asset_name]] = Number(data.count);
+              break;
+            case 2:
+              severityData[2][indexDictionary[data.asset_name]] = Number(data.count);
+              break;
+            case 3:
+              severityData[3][indexDictionary[data.asset_name]] = Number(data.count);
+              break;
+          }
+        });
+      }
+
+      // 5개 이상의 값이 들어오는것을 방지
+      if(asset_name.length > 5){
+        asset_name =  asset_name.slice(0, 5);
+      }
+
+      severityData.forEach((item, i) => {
+        if(item.length > 5){
+          severityData[i] = item.slice(0, 5);
+        }
+      });
+
+      vulnerableAssetsTop5.xAxis[0].update({categories:asset_name});
+      vulnerableAssetsTop5.yAxis[0].update({
+        labels: {
+          x: xPosition,
+        }
+      });
+      vulnerableAssetsTop5.series[0].update({data:severityData[0]});
+      vulnerableAssetsTop5.series[1].update({data:severityData[1]});
+      vulnerableAssetsTop5.series[2].update({data:severityData[2]});
+      vulnerableAssetsTop5.series[3].update({data:severityData[3]});
+
+      return { isLoading: true };
+    }
+    var setVulnerabilityTop5Data = function(data){
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+
+      $target = $('#Vulnerability_Top5');
+
+      // TIME 분 마다 데이터 받을시
+      // 기존 tr 배열 삭제
+      $target.html('');
+
+      ObjView[0].forEach((data, i) => {
+        if(i==0){
+          $target.append(
+          `
+          <tr>
+            <td class="cell-center"><span class="rating rating-highlight wide-size cursor-pointer" data-filter-link="event-vulnerability-code">${data.code}</span></td>
+            <td class="cell-center"><span class="ellipsis warning-color">${data.title}</span></td>
+            <td class="cell-center"><span class="warning-color">${data.count}</span></td>
+          </tr>
+          `)
+        }else{
+          $target.append(
+            `
+            <tr>
+              <td class="cell-center"><span class="rating rating-default wide-size cursor-pointer" data-filter-link="event-vulnerability-code">${data.code}</span></td>
+              <td class="cell-center"><span class="ellipsis">${data.title}</span></td>
+              <td class="cell-center">${data.count}</td>
+            </tr>
+            `
+          );
+        }
+      });
+
+      return { isLoading: true };
+    }
+    var setVulnerableServices = function (data) {
+
+      const dataObjView = data.ObjView || [];
+      let ObjView;
+      if(dataObjView.length) ObjView = dataObjView;
+
+      // 변수 선언
+      let date_array = [];
+      let name_array = [];
+      let indexDictionary = {};
+      let indexDictionary_name = {};
+
+      ObjView[0].forEach((data) => {
+        let date = data.date;
+        if(date_array.indexOf(date) != -1){
+          return ;
+        }
+        date_array.push(date)
+      })
+      ObjView[0].forEach((data,i) => {
+        let name = data.service_name;
+        if( name == null || name == "null") {
+          return ;
+        }
+        if(name_array.indexOf(name) != -1){
+          return ;
+        }
+        name_array.push(name)
+      })
+
+      // make dictionary
+      date_array.map((data, i) => {
+        indexDictionary[data] = i
+      })
+      name_array.map((data, i) => {
+        indexDictionary_name[data] = i
+      })
+
+      for(let i=0; i<5; i++){
+        if(!name_array[i]) name_array[i] = '';
+      }
+
+      // categories
+      let categories = [ ];
+
+      // make categories array
+      date_array.map((data) => {
+        // let data = data;
+        switch (data) {
+          case "Sun":
+            categories.push('<%= __("dashboard|Sun") %>')
+            break;
+          case "Mon":
+            categories.push('<%= __("dashboard|Mon") %>')
+          break;
+          case "Tue":
+            categories.push('<%= __("dashboard|Tue") %>')
+          break;
+          case "Wed":
+            categories.push('<%= __("dashboard|Wed") %>')
+          break;
+          case "Thu":
+            categories.push('<%= __("dashboard|Thu") %>')
+          break;
+          case "Fri":
+            categories.push('<%= __("dashboard|Fri") %>')
+          break;
+          case "Sat":
+            categories.push('<%= __("dashboard|Sat") %>')
+            break;
+        }
+      })
+
+      let ycategories = [];
+      name_array.map((data) => {
+        ycategories.push(data);
+      })
+
+      // heatmap data desc 0 to 6
+      let data_1 = [];
+      let data_2 = [];
+      let data_3 = [];
+      let data_4 = [];
+      let data_5 = [];
+      let data_6 = [];
+      let data_7 = [];
+      for(let i=0; i<5; i++){
+        data_1.push(0);
+        data_2.push(0);
+        data_3.push(0);
+        data_4.push(0);
+        data_5.push(0);
+        data_6.push(0);
+        data_7.push(0);
+      }
+
+      // 열 , 행
+      // 날짜 , 이름
+      // indexDictionary, indexDictionary_name
+      // heatMap data
+      for(let i=0; i < 7; i++){
+        ObjView[0].forEach((data, i) => {
+          date = data.date;
+          name = data.service_name;
+          count = data.count;
+
+          if(name == null || name == "null") {
+            return;
+          }
+
+          // 날짜보고 날짜 인덱스 확인 => data_x
+          if(indexDictionary[date] == 0){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_1[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 1){
+            // 서비스이름보고 => data_2[x]
+            for(j=0; j<name_array.length; j++){
+              data_2[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 2){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_3[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 3){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_4[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 4){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_5[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 5){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_6[indexDictionary_name[name]] = count
+            }
+          }else if(indexDictionary[date] == 6){
+            // 서비스이름보고 => data_1[x]
+            for(j=0; j<name_array.length; j++){
+              data_7[indexDictionary_name[name]] = count
+            }
+          }
+        })
+      }
+      // exception
+      // row,  service_name 없을때
+      for(let i=0; i<5; i++){
+        if(name_array[i] == ''){
+          // i
+          if(i==0){
+            data_1[0] = '';
+            data_2[0] = '';
+            data_3[0] = '';
+            data_4[0] = '';
+            data_5[0] = '';
+            data_6[0] = '';
+            data_7[0] = '';
+          }else if(i==1){
+            data_1[1] = '';
+            data_2[1] = '';
+            data_3[1] = '';
+            data_4[1] = '';
+            data_5[1] = '';
+            data_6[1] = '';
+            data_7[1] = '';
+          }else if(i==2){
+            data_1[2] = '';
+            data_2[2] = '';
+            data_3[2] = '';
+            data_4[2] = '';
+            data_5[2] = '';
+            data_6[2] = '';
+            data_7[2] = '';
+          }else if(i==3){
+            data_1[3] = '';
+            data_2[3] = '';
+            data_3[3] = '';
+            data_4[3] = '';
+            data_5[3] = '';
+            data_6[3] = '';
+            data_7[3] = '';
+          }else if(i==4){
+            data_1[4] = '';
+            data_2[4] = '';
+            data_3[4] = '';
+            data_4[4] = '';
+            data_5[4] = '';
+            data_6[4] = '';
+            data_7[4] = '';
+          }
+        }
+      }
+
+      let grahpMarginLeft = 77;
+      // 5개다 데이터가없을때 그래프 왼쪽에 마진
+      name_array.forEach((item, i) => {
+        let conunt = 0;
+        if(item == "") ++count;
+        if(count == 5) grahpMarginLeft = 75;
+      });
+
+      vulnerabilityInServicesChart.update({
+        chart: {
+          marginLeft: grahpMarginLeft
+        }
+      })
+      vulnerabilityInServicesChart.xAxis[0].update({categories:categories});
+      vulnerabilityInServicesChart.yAxis[0].update({categories: ycategories});
+      vulnerabilityInServicesChart.series[0].update({data:
+        [
+          [0, 0, data_1[0]],
+          [0, 1, data_1[1]],
+          [0, 2, data_1[2]],
+          [0, 3, data_1[3]],
+          [0, 4, data_1[4]],
+
+          [1, 0, data_2[0]],
+          [1, 1, data_2[1]],
+          [1, 2, data_2[2]],
+          [1, 3, data_2[3]],
+          [1, 4, data_2[4]],
+
+          [2, 0, data_3[0]],
+          [2, 1, data_3[1]],
+          [2, 2, data_3[2]],
+          [2, 3, data_3[3]],
+          [2, 4, data_3[4]],
+
+          [3, 0, data_4[0]],
+          [3, 1, data_4[1]],
+          [3, 2, data_4[2]],
+          [3, 3, data_4[3]],
+          [3, 4, data_4[4]],
+
+          [4, 0, data_5[0]],
+          [4, 1, data_5[1]],
+          [4, 2, data_5[2]],
+          [4, 3, data_5[3]],
+          [4, 4, data_5[4]],
+
+          [5, 0, data_6[0]],
+          [5, 1, data_6[1]],
+          [5, 2, data_6[2]],
+          [5, 3, data_6[3]],
+          [5, 4, data_6[4]],
+
+          [6, 0, data_7[0]],
+          [6, 1, data_7[1]],
+          [6, 2, data_7[2]],
+          [6, 3, data_7[3]],
+          [6, 4, data_7[4]],
+        ]
+      });
+
+      // y max value setting
+      setTimeout(() => {
+        let max = 0;
+        vulnerabilityInServicesChart.colorAxis[0].series[0].valueData.forEach((item, i) => {
+          let num = Number(item);
+          if(num > max) max = num
+        });
+        while(max%5 != 0){
+          max++;
+        }
+
+        if(max < 10){
+          max = 10;
+        }
+
+        let interval = max / 5;
+
+        vulnerabilityInServicesChart.colorAxis[0].update({
+          max: max,
+          tickInterval: interval,
+        });
+      }, 0)
+
+      return { isLoading: true };
+    }
+  </script>
+  <script>
+    var deepCopy = (obj) => {
+      return $.extend(true, [], obj);
+    };
+  </script>
+  <script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded',() => {
+    var networkboardDataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'networkboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      return myInterval(() => {
+        const networkboardData = requestGraphData('networkboard', loading);
+        return networkboardData.then(setNetworkboardData).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#networkboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    }).then((stopper)=>{
+      stopper(); // stop
+    });
+
+    var assetboardDataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'assetboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+     return myInterval(() => {
+        const assetboardData = requestGraphData('assetboard', loading);
+        return assetboardData.then(setAssetboardData).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#assetboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var sensorboardDataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'sensorboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const sensorboardData = requestGraphData('sensorboard', loading);
+        return sensorboardData.then(setSensorboardData).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#sensorboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var vulnerabilityStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'vulnerabilityboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const vulnerabilityCountCircleData = requestGraphData('vulnerabilityboard', loading);
+        return vulnerabilityCountCircleData.then(setVulnerabilityData).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#vulnerabilityboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var threatBlockTableDataStopper =  new Promise(function(resolve){
+      const loading = openLoading($(`#${'threatboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const threatTableData = requestGraphData('threatboard', loading);
+        const blockTableData = requestGraphData('blockboard', loading);
+        return Promise.all([threatTableData, blockTableData]).then((values) => {
+          setThreatTableData(values[0]);
+          setBlockTableData(values[1]);
+
+          return { isLoading: true };
+        }).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#threatboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });
+      }, TIME);
+    });
+
+    var vulnerabilityAssetsTop5DataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'vulnerabilityassetboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const vulnerabilityAssetsTop5Data = requestGraphData('vulnerabilityassetboard', loading);
+        return vulnerabilityAssetsTop5Data.then(setVulnerabilityAssetsTop5Data).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#vulnerabilityassetboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var vulnerabilityTop5DataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'vulnerabilitytopnboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const vulnerabilityTop5Data = requestGraphData('vulnerabilitytopnboard', loading);
+        return vulnerabilityTop5Data.then(setVulnerabilityTop5Data).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#vulnerabilitytopnboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var vulnerableServicesDataStopper = new Promise(function(resolve){
+      const loading = openLoading($(`#${'vulnerabilityserviceboard'}-graph`));
+      resolve(loading);
+    }).then(function(loading){
+      myInterval(() => {
+        const vulnerableServicesData = requestGraphData('vulnerabilityserviceboard', loading);
+        return vulnerableServicesData.then(setVulnerableServices).then(function (data) {
+          if(data.isLoading){
+            const $loadingParent = $(`#vulnerabilityserviceboard-graph`);
+            removeLoading($loadingParent);
+          }
+        });;
+      }, TIME);
+    });
+
+    var networkboardDataStopper;
+    $('#networkSwitch').change(function(){
+      if($(this).is(':checked')){
+        networkboardDataStopper = myInterval(() => {
+          const networkboardData = fetch(`/dashboard/dashboard/${'networkboard'}`)
+          .then(function(response){
+            return {
+              data: response.json()
+            };
+          }).then((data)=>{
+            return data.data;
+          });;
+          return networkboardData.then(setNetworkboardData);
+        }, TIME);
+      }else{
+        networkboardDataStopper();
+      }
+    });
+
+   // fullPage Test
+   // Browser compatibility
+   // IE not supported other browser supported
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
+
+  $('.btn-fullpage').on('click', () => {
+     toggleFullScreen();
+  })
+});
+  /*************************************/
+   // fullPage Test
+  </script>
+
+  <script>
+  /**
+  * @date 2021-05-14
+  * @desc front performance improvement by lighthouse
+  * @company
+  */
+  window.addEventListener('DOMContentLoaded',() => {
+    $(document).on('click.dashboard-link', '[data-filter-link]', function(){
+      const filterLink = $(this).data('filter-link');
+      let url;
+      let conditions = {};
+
+      switch(filterLink) {
+        // asset
+        case 'asset-total':
+          url = '/admin/asset';
+          break;
+        case 'asset-auth':
+          url = '/admin/asset';
+          conditions.filter = [{"allowed":1}]
+          break;
+        case 'asset-unauth':
+          url = '/admin/asset';
+          conditions.filter = [{"allowed":0}]
+          break;
+        case 'asset-new':
+          url = '/admin/asset';
+
+          /**
+          * @date 2021-04-08
+          * @desc show only registred asset today
+          * @company
+          */
+          /**
+          * @date 2021-04-16
+          * @desc change reg_time -> regtime, it's not function bug
+          * @company
+          */
+          conditions.time = [{type: 'regtime', duration: 1}];
+          /*************************************/
+          /*************************************/
+          break;
+
+        // sensor
+        case 'sensor-total':
+          url = '/admin/sensor';
+          break;
+        case 'sensor-conn':
+          url = '/admin/sensor';
+          conditions.standard = 'selectedTab';
+          conditions.selectedTab = 'deviceType';
+          conditions.filter = [{"status":1}]
+          break;
+        case 'sensor-disconn':
+          url = '/admin/sensor';
+          conditions.standard = 'selectedTab';
+          conditions.selectedTab = 'deviceType';
+          conditions.filter = [{"status":0}]
+          break;
+        case 'sensor-new':
+          url = '/admin/sensor';
+
+          /**
+          * @date 2021-04-08
+          * @desc show only registred sensor today
+          * @company
+          */
+          conditions.standard = 'selectedTab';
+          conditions.selectedTab = 'deviceType';
+          /**
+          * @date 2021-04-16
+          * @desc change reg_time -> regtime, it's not function bug
+          * @company
+          */
+          conditions.time = [{type: 'regtime', duration: 1}];
+          /*************************************/
+          /*************************************/
+          break;
+
+        // vulnerability
+        case 'vulnerability-count':
+          url = '/event/vulnerability';
+          break;
+
+        // vulnerability top5
+        case 'event-vulnerability-code':
+          const code = $(this).text();
+          url = '/event/vulnerability';
+          conditions.filter = [{"vulnerability_code":code}]
+          break;
+      }
+
+      if(!url) return;
+      movePage(url, conditions);
+    });
+  });
+  /*************************************/
+  </script>

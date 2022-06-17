@@ -1,0 +1,465 @@
+<!-- card -->
+<div class="card">
+  <!-- card-box -->
+  <article class="card-box">
+    <div class="card-header">
+      <h2 class="card-title"><%= __("assetScan|Detected status of assets") %></h2>
+      <div class="card-header-right">
+        <!-- timesearch-area -->
+        <div class="timesearch-area">
+          <div class="ui-radio default-style">
+            <input type="radio" name="time_type" id="reg_time" checked>
+            <label for="reg_time"><%= __("assetScan|Reg time") %></label>
+          </div>
+          <div class="ui-time">
+            <div class="time-setting">
+              <button type="button" class="btn btn-icon btn-time-setting"><span class="sr-only"><%= __("assetScan|Quick select") %></span></button>
+              <div class="time-setting-content">
+                <div class="time-setting-header">
+                  <h3 class="time-setting-title"><%= __("assetScan|Quick select") %></h3>
+                  <button type="button" class="btn-time-setting-close"><span class="sr-only"><%= __("assetScan|close") %></span></button>
+                </div>
+                <ul>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="today"><%= __("assetScan|Today") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last7day"><%= __("assetScan|Last 7day") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="last30day"><%= __("assetScan|Last 30day") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thisweek"><%= __("assetScan|This week") %></button></li>
+                  <li><button type="button" class="btn btn-time-choice" data-rel="thismonth"><%= __("assetScan|This month") %></button></li>
+                </ul>
+              </div>
+            </div>
+            <div class="ui-datepicker datepicker-from">
+              <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="from-datepicker" value="<%= dateFormat(time.from) %>" autocomplete="off"></div>
+            </div>
+            <span class="form-text">-</span>
+            <div class="ui-datepicker datepicker-to">
+              <div class="ui-input default-style"><input type="text" class="tail-datetime-field" id="to-datepicker" value="<%= dateFormat(time.to) %>" autocomplete="off"></div>
+            </div>
+          </div>
+        </div>
+        <!-- //.timesearch-area -->
+        <button type="button" data-btn="filter" class="btn btn-icon btn-explore"><span class="icon icon-explore"><span class="sr-only"><%= __("assetScan|search") %></span></span></button>
+
+        <!--
+        * @date 2021-04-15
+        * @desc add reset button
+        * @company
+        * -->
+        <button type="button" data-btn="reset" class="btn btn-icon btn-reset"><span class="icon icon-reset"><i class="line"></i><i class="line"></i><span class="sr-only"><%= __("assetScan|reset") %></span></span></button>
+        <!-- // @date 2021-04-15 -->
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- search-area -->
+      <div class="search-area">
+        <div class="totalAndFilter-wrap">
+          <div class="total-info">
+            <dl>
+              <dd>
+                <% if(typeof assetStatusCount !== 'undefined') { %>
+                <%= __("assetScan|Total") %> -
+                <%
+                  (function(){
+                    let total = 0
+                    for (let i = 0; i < assetStatusCount.length; i++) {
+                       total += assetStatusCount[i].count
+                    }
+                %>
+                  <%= total %>
+                <%
+                  })()
+                %>
+                 /
+                <span class="connected-color"><%= __("assetScan|Connected") %></span> -
+                <%
+                    if(assetStatusCount.length == 2){
+                      for (let i = 0; i < assetStatusCount.length; i++) {
+                        if(assetStatusCount[i].status == 1){
+                %>
+                          <%= assetStatusCount[i].count %>
+                <%
+                        }
+                      }
+                    }else if(assetStatusCount.length == 1){
+                      if(assetStatusCount[0].status == 1){
+                %>
+                        <%= assetStatusCount[0].count %>
+                <%
+                      }else{
+                %>
+                        <%= "0" %>
+                <%
+                      }
+                    }else{
+                %>
+                      <%= "0" %>
+                <%
+                    }
+                %>
+                 /
+                <span class="disconnected-color"><%= __("assetScan|Disconnected") %></span> -
+                <%
+                    if(assetStatusCount.length == 2){
+                      for (let i = 0; i < assetStatusCount.length; i++) {
+                        if(assetStatusCount[i].status == 0){
+                %>
+                          <%= assetStatusCount[i].count %>
+                <%
+                        }
+                      }
+                    }else if(assetStatusCount.length == 1){
+                      if(assetStatusCount[0].status == 0){
+                %>
+                        <%= assetStatusCount[0].count %>
+                <%
+                      }else{
+                %>
+                        <%= "0" %>
+                <%
+                      }
+                    }else{
+                %>
+                      <%= "0" %>
+                <%
+                    }
+                %>
+                <% } %>
+              </dd>
+            </dl>
+          </div>
+
+          <div class="filter-custom">
+            <div class="custom-result">
+              <!-- <div class="result-item">
+          			<div class="result-title" data-result-key="asset_name">Asset name</div>
+								<div class="result-text" data-result-value="Norma">Norma</div>
+								<button type="button" class="btn btn-icon btn-result-delete"><span class="icon icon-custom-search-delete"><span class="sr-only">delete</span></span></button>
+          		</div> -->
+            </div>
+            <div class="custom-search">
+              <button type="button" class="btn btn-icon btn-custom-search"><span
+                  class="icon icon-custom-search"><span class="sr-only"><%= __("assetScan|Add filter") %></span></span></button>
+              <div class="custom-search-content">
+                <div class="custom-search-header">
+                  <h3 class="custom-search-title"><%= __("assetScan|Add filter") %></h3>
+                  <button type="button" class="btn-custom-search-close"><span class="sr-only"><%= __("assetScan|close") %></span></button>
+                </div>
+                <div class="custom-search-box">
+                  <div class="ui-search">
+                    <div class="filter-select">
+                      <!-- <div class="ui-select default-style" data-width="140px">
+												<select name="" id="">
+													<option value="">Severity</option>
+												</select>
+											</div> -->
+                    </div>
+                    <div class="condition-box">
+                      <!-- <div class="ui-input default-style"><input type="text" placeholder="Search"></div> -->
+                      <!-- <div class="ui-select default-style">
+												<select name="" id="">
+													<option value="0">Low</option>
+													<option value="1">Medium</option>
+													<option value="2">High</option>
+													<option value="3">Critical</option>
+												</select>
+											</div> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-search-footer">
+                  <button type="button" class="btn btn-normal primary-style smaller-size btn-custom-add"><%= __("assetScan|Add") %></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //.search-area -->
+      <div class="pack">
+        <!-- table-comp -->
+        <div class="table-comp table-check">
+          <div class="table-scroll default-style">
+            <div class="thead-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("assetScan|assetList") %></span></caption>
+                <colgroup>
+                  <col style="width: 16%; " /><!-- Sensor group -->
+                  <col style="width: 16%; " /><!-- Sensor name -->
+                  <col style="width: 20%; " /><!-- Asset name -->
+                  <col style="width: 16%; " /><!-- Asset IP -->
+                  <col style="width: 16%; " /><!-- Status -->
+                  <col style="width: 16%; " /><!-- Allow Deny -->
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="row"><%= __("assetScan|Sensor group") %></th>
+                    <th scope="row"><%= __("assetScan|Sensor name") %></th>
+                    <!--
+                    * @date 2021-05-10
+                    * @desc change view column name
+                    * @company
+                    * -->
+                    <th scope="row"><%= __("assetScan|Asset name") %></th>
+                    <th scope="row"><%= __("assetScan|Asset IP") %></th>
+                    <!-- // @date 2021-05-10 -->
+                    <th scope="row"><%= __("assetScan|Status") %></th>
+                    <th scope="row"><%= __("assetScan|Allow Deny") %></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="tbody-scroll">
+              <table class="table default-style">
+                <caption><span class="sr-only"><%= __("assetScan|assetList") %></span></caption>
+                <colgroup>
+                  <col style="width: 16%; " /><!-- Sensor group -->
+                  <col style="width: 16%; " /><!-- Sensor name -->
+                  <col style="width: 20%; " /><!-- Asset name -->
+                  <col style="width: 16%; " /><!-- Asset IP -->
+                  <col style="width: 16%; " /><!-- Status -->
+                  <col style="width: 16%; " /><!-- Allow Deny -->
+                </colgroup>
+                <tbody>
+                  <% for (let i = 0; i < ObjView.length; i++) { %>
+                  <% const data = ObjView[i] %>
+                  <tr data-aid="<%= data.aid %>">
+                    <td><span class="ellipsis"><%= data.group_name %></span></td>
+                    <td><span class="ellipsis"><%= data.sensor_name %></span></td>
+                    <td class="cell-link" data-link><span class="ellipsis"><%= data.name %></span></td>
+                    <td class="cell-center"><span class="ellipsis"><%= data.ip %></span></td>
+                    <td class="cell-center">
+                      <% if (data.status == 0) { %><span class="status status-disconnected"></span>
+                      <% } else if (data.status == 1) { %><span class="status status-connected"></span>
+                      <% } else { %><span class="status status-default"></span>
+                      <% } %>
+                    </td>
+                    <td class="cell-center">
+                      <% if (data.allowed == 0) { %><span class="warning-color"><%= __("assetScan|Denied") %></span><% } else { %><span class="success-color"><%= __("assetScan|Allowed") %></span><% } %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+              <!--
+              * @date 2021-05-31
+              * @desc front performance improvement - dummy rendering
+              * @company
+              * -->
+              <% if (ObjView.length == 0 && typeof rendering == 'undefined') { %>
+              <!-- // @date 2021-05-31 -->
+              <!-- empty -->
+              <div class="empty">
+                <div class="empty-box">
+                  <div class="symbol symbol-empty">
+                    <span class="symbol-icon question-style"></span>
+                    <div class="symbol-figure empty-style"></div>
+                  </div>
+                  <p class="main-msg"><%= __("assetScan|No data available") %></p>
+                  <p class="sub-msg"><%= __("assetScan|There is no data to show you right now.") %></p>
+                </div>
+              </div>
+              <!-- //empty -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- //table-comp -->
+      </div>
+      <div class="table-bottom">
+        <div class="table-bottom-right">
+          <%- include ('../../../views/include/pagination.ejs', {pages: pages, current: current}) %>
+          <div class="ui-select default-style" data-direction="up">
+            <select name="" id="listEntries">
+              <option value="10" selected><%= __("assetScan|Show 10 entries") %></option>
+              <option value="20"><%= __("assetScan|Show 20 entries") %></option>
+              <option value="30"><%= __("assetScan|Show 30 entries") %></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <!-- //card-box -->
+</div>
+<!-- //card -->
+
+<% if(typeof rendering == 'undefined') { %>
+<script>
+  logdata('/asset/scan/:[num]', <%- JSON.stringify(locals) %>);
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+  selectDropdown('.ui-select.default-style');
+  dateTime('.ui-time');
+  setTime('.ui-time');
+	filterCustom('.filter-custom', {data: customFilterCondition})
+	formWidth();
+</script>
+<script>
+  maintainState();
+</script>
+<script>
+var getPage = () => {
+  const page = $('#pagination .active').closest('.page-item').data('page') || 1;
+  return page;
+}
+var getEntries = () => {
+  const entries = $('#listEntries option:selected').val() || 10;
+  return entries
+}
+var getSID = () => {
+  let sid = $.map($('#tree').find('.tree-item.sensor-type.checked'), function(e){
+    return $(e).data('sid');
+  });
+  sid = getTypeCheckedSensorKey('.tree-comp', '.tree-type', '.sensor-type', sid);
+  return sid
+}
+var getTime = () => {
+  const time = {
+    /**
+    * @date 2021-04-16
+    * @desc change reg_time -> regtime, it's not function bug
+    * @company
+    */
+    type: 'regtime',
+    /*************************************/
+    from: $.trim($('#from-datepicker').val()),
+    to: $.trim($('#to-datepicker').val())
+  }
+  return time;
+}
+var getFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const filterSelect = $(element).find('.result-title').data('result-key');
+    const filterCondition = $(element).find('.result-text').data('result-value');
+    const filter = {};
+    filter[filterSelect] = filterCondition;
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+var getStateFilter = () => {
+  /**
+  * @date 2021-05-06
+  * @desc fix bug about duplicated filter condition
+  * @company
+  */
+  const $list = $('#listTable');
+  const $customResult = $list.find('.custom-result');
+  const $resultItem = $customResult.find('.result-item');
+  /*************************************/
+  const filters = $.map($resultItem, function(element){
+    const $filterTitle = $(element).find('.result-title');
+    const $filterText = $(element).find('.result-text');
+    const filterSelect = $filterTitle.data('result-key');
+    const filterCondition = $filterText.data('result-value');
+    const filterSelectText = $filterTitle.text();
+    const filterConditionText = $filterText.text();
+    const filter = {key: {originval: filterSelect, dataval: filterSelectText }, value: {originval: filterCondition, dataval: filterConditionText}};
+    return filter
+  });
+  return filters.length ? filters : null;
+}
+</script>
+<script>
+  // entries 변경
+  $('#listEntries').off('change.entries').on('change.entries', function(){
+    const page = 1;
+    const entries = $(this).find('option:selected').val() || 10;
+    const sid = getSID();
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page, entries: entries});
+
+    requestList(page, entries, sid, time, filters);
+  });
+
+  // page 변경
+  $('#pagination .page-link').off('click.pagination').on('click.pagination', function(e){
+    e.preventDefault();
+    const page = $(this).closest('.page-item').data('page') || 1;
+    const entries = getEntries() || 10;
+    const sid = getSID() || [];
+
+    /**
+    * @date 2021-04-16
+    * @desc fix bug to send temp condition(time+filter)
+    * @company
+    */
+    const time = getState().time ? getState().time : null;
+    const filters = getState().filter && getState().filter.map((ele) => {return {[ele.key.originval]: ele.value.originval}});
+    /*************************************/
+
+    setState({page: page});
+
+    requestList(page, entries, sid, time, filters);
+  });
+
+  $('[data-btn="filter"]').off('click.filter').on('click.filter', function(e){
+    const page = 1;
+    const entries = getEntries() || 10;
+    const sid = getSID() || [];
+
+    const time = getTime();
+    const filters = getFilter();
+    const stateFilter = getStateFilter() || [];
+
+    setState({page: page, time: time, filter: stateFilter});
+
+    requestList(page, entries, sid, time, filters);
+  });
+
+  /**
+  * @date 2021-04-15
+  * @desc add reset button
+  * @company
+  */
+  $('[data-btn="reset"]').off('click.reset').on('click.reset', function(e){
+    const page = 1;
+    const entries = $('#listEntries option:selected').val() || 10;
+    const sid = getSID();
+
+    const time = null;
+    const filters = null;
+    const stateFilter = [];
+
+    setState({page: page, time: time, filter: filters});
+
+    requestList(page, entries, sid, time, stateFilter);
+  });
+  /*************************************/
+</script>
+<script>
+  $('#listTable tbody [data-link]').off('click.detail').on('click.detail', function(){
+    const $tr = $(this).closest('tr');
+    const aid = $tr.data('aid');
+    location.href = '/asset/scan/assetDetail/' + aid;
+  });
+</script>
+<% } else { %>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    selectDropdown('.ui-select.default-style');
+    formWidth();
+  });
+</script>
+<% } %>
